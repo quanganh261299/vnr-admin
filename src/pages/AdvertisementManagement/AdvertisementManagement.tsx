@@ -1,12 +1,11 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
-import { Checkbox, DatePicker, Select, Table } from 'antd';
+import { Button, Checkbox, DatePicker, Select, Table, Tooltip } from 'antd';
 import type { CheckboxProps, FormProps, TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
 import { TAdvertisementField, TAdvertisementTable } from '../../models/advertisement/advertisement';
 import { SelectType } from '../../models/common';
-import { fakeAdvertisementTableData } from '../../api/fakeData';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AdvertisementModal from '../../Components/Modal/AdvertisementModal/AdvertisementModal';
 import organizationApi from '../../api/organizationApi';
@@ -17,6 +16,9 @@ import { TSystemTable } from '../../models/system/system';
 import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
+import { PlusOutlined } from '@ant-design/icons';
+import advertisementApi from '../../api/advertisementApi';
+import { formatDateTime } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
   const { RangePicker } = DatePicker;
@@ -34,6 +36,9 @@ const AdvertisementManagement: FC = () => {
   // const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   // const [totalPage, setTotalPage] = useState<number>(0);
+  const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false);
+  const [isPM, setIsPM] = useState<boolean>(false)
+  const [totalData, setTotalData] = useState<number>(0);
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
@@ -56,8 +61,8 @@ const AdvertisementManagement: FC = () => {
     },
     {
       title: 'Trạng thái tài khoản',
-      dataIndex: 'account_status',
-      key: 'account_status',
+      dataIndex: 'accountStatus',
+      key: 'accountStatus',
       className: styles['center-cell'],
     },
     {
@@ -68,14 +73,14 @@ const AdvertisementManagement: FC = () => {
     },
     {
       title: 'Hạn mức chi tiêu',
-      dataIndex: 'spend_cap',
-      key: 'spend_cap',
+      dataIndex: 'spendCap',
+      key: 'spendCap',
       className: styles['center-cell'],
     },
     {
       title: 'Số tiền đã chi tiêu',
-      dataIndex: 'amount_spent',
-      key: 'amount_spent',
+      dataIndex: 'amountSpent',
+      key: 'amountSpent',
       className: styles['center-cell'],
     },
     {
@@ -86,8 +91,8 @@ const AdvertisementManagement: FC = () => {
     },
     {
       title: 'Thời gian tạo tài khoản',
-      dataIndex: 'created_time',
-      key: 'created_time',
+      dataIndex: 'createdTime',
+      key: 'createdTime',
       className: styles['center-cell'],
     },
     {
@@ -98,27 +103,40 @@ const AdvertisementManagement: FC = () => {
     },
     {
       title: 'Múi giờ',
-      dataIndex: 'timezone_name',
-      key: 'timezone_name',
+      dataIndex: 'timezoneName',
+      key: 'timezoneName',
       className: styles['center-cell'],
     },
     {
       title: 'Lí do tài khoản bị vô hiệu hóa',
-      dataIndex: 'disable_reason',
-      key: 'disable_reason',
+      dataIndex: 'disableReason',
+      key: 'disableReason',
       className: styles['center-cell'],
     },
     {
       title: 'Hạn mức chi tiêu tối thiểu nhóm chiến dịch',
-      dataIndex: 'min_campaign_group_spend_cap',
-      key: 'min_campaign_group_spend_cap',
+      dataIndex: 'minCampaignGroupSpendCap',
+      key: 'minCampaignGroupSpendCap',
       className: styles['center-cell'],
     },
     {
       title: 'Ngân sách tối thiểu hàng ngày cho chiến dịch',
-      dataIndex: 'min_daily_budget',
-      key: 'min_daily_budget',
+      dataIndex: 'minDailyBudget',
+      key: 'minDailyBudget',
       className: styles['center-cell'],
+    },
+    {
+      title: 'Cá nhân hóa',
+      dataIndex: 'isPersonal',
+      key: 'isPersonal',
+      className: styles['center-cell'],
+    },
+    {
+      title: 'Thời gian cập nhật dữ liệu',
+      dataIndex: 'updateDataTime',
+      key: 'updateDataTime',
+      className: styles['center-cell'],
+      render: (dateTime) => <span>{formatDateTime(dateTime)}</span>
     },
     // {
     //   title: 'Tùy chọn',
@@ -211,9 +229,9 @@ const AdvertisementManagement: FC = () => {
     setIsModalOpen(false)
   }
 
-  // const handleShowModal = () => {
-  //   setIsModalOpen(true)
-  // }
+  const handleShowModal = () => {
+    setIsModalOpen(true)
+  }
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
@@ -283,30 +301,51 @@ const AdvertisementManagement: FC = () => {
   }, [selectSystemId, selectAgencyId, selectTeamId])
 
   useEffect(() => {
-    // axiosInstance.get('/test').then((res) => {
-    //   console.log(res.data)
-    // })
-    const dataTable = fakeAdvertisementTableData.map((item) => ({
+    setIsPM(false)
+    setIsCallbackApi(false)
+  }, [])
+
+  useEffect(() => {
+    setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
+    advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
+      const data = res.data.data
+      if (data.length === 0 && currentPage > 1) {
+        setCurrentPage(currentPage - 1)
+      }
+      else {
+        setTotalData(res.data.paging.totalCount)
+        setDataTable(data)
+        setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
+      }
+    }).catch((err) => {
+      console.log('err', err)
+      setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
+    })
+    const dataTableConfig = dataTable.map((item) => ({
       ...item,
-      key: item.account_id
-    }))
-    setDataTable(dataTable)
-  }, [selectSystemId, selectAgencyId, selectTeamId, selectMemberId])
+      key: item.account_id,
+    }));
+    setDataTable(dataTableConfig)
+  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, isCallbackApi])
 
   return (
     <>
       <div className={styles["container"]}>
         <div className={styles['account-container']}>
-          {/* <Tooltip title="Thêm tài khoản quảng cáo">
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              className={styles['btn']}
-              onClick={() => handleShowModal()}
-            >
-              Thêm tài khoản quảng cáo
-            </Button>
-          </Tooltip> */}
+          {isPM && (
+            <>
+              <Tooltip title="Thêm tài khoản quảng cáo">
+                <Button
+                  icon={<PlusOutlined />}
+                  type="primary"
+                  className={styles['btn']}
+                  onClick={() => handleShowModal()}
+                >
+                  Thêm tài khoản quảng cáo
+                </Button>
+              </Tooltip>
+            </>
+          )}
           <Select
             allowClear
             showSearch
@@ -359,17 +398,15 @@ const AdvertisementManagement: FC = () => {
             value={selectMemberId || null}
             notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
           />
+          <div>
+            <Checkbox onChange={onChangePersonal}>Cá nhân</Checkbox>
+            <Checkbox onChange={onChangeBusiness}>Doanh nghiệp</Checkbox>
+          </div>
           <RangePicker
             format={"DD-MM-YYYY"}
             onChange={(dates) => handleRangeChange(dates)}
             placeholder={["Ngày tạo", "Ngày tạo"]}
           />
-        </div>
-        <div className={styles["filter-container"]}>
-          <div className={styles["checkbox-list"]}>
-            <Checkbox onChange={onChangePersonal}>Cá nhân</Checkbox>
-            <Checkbox onChange={onChangeBusiness}>Doanh nghiệp</Checkbox>
-          </div>
         </div>
         <Table
           columns={columns}
@@ -377,7 +414,7 @@ const AdvertisementManagement: FC = () => {
           pagination={{
             current: currentPage,
             pageSize: 10,
-            // total: totalPage,
+            total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),
           }}
@@ -387,6 +424,7 @@ const AdvertisementManagement: FC = () => {
             }
           }}
           scroll={{ x: 3000 }}
+          loading={loading.isTable}
         />
       </div>
       <AdvertisementModal

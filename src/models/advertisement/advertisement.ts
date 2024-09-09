@@ -1,22 +1,25 @@
+import { TMemberTable } from "../member/member";
+
 export type TAdvertisementTable = {
     account_id: string; //id tài khoản
     employeeId: string; // id thành viên
     name: string; // tên tài khoản
-    account_status: number; // trạng thái tài khoản
+    accountStatus: number; // trạng thái tài khoản
     currency: string; // đơn vị tiền tệ
-    spend_cap: string; // hạn mức chi tiêu
-    amount_spent: string; // số tiền đã chi tiêu
+    spendCap: string; // hạn mức chi tiêu
+    amountSpent: string; // số tiền đã chi tiêu
     balance: string; //  số tiền nợ
-    created_time: string; // thời gian tạo tài khoản
+    createdTime: string; // thời gian tạo tài khoản
     owner: string; // id chủ tài khoản quảng cáo
-    timezone_name: string; // múi giờ
-    disable_reason: number; // mã lí do tài khoản bị vô hiệu hóa
-    inforCardBanking: string;
-    typeCardBanking: number;
-    min_campaign_group_spend_cap: string; // hạn mức chi tiêu tối thiểu cho nhóm chiến dịch
-    min_daily_budget: number; // ngân sách tối thiểu hàng ngày cho các chiến dịch
-    is_person: number;
-    update_data_time: string;
+    timezoneName: string; // múi giờ
+    disableReason: number; // mã lí do tài khoản bị vô hiệu hóa
+    inforCardBanking: string; // số thẻ
+    typeCardBanking: number; // loại thẻ
+    minCampaignGroupSpendCap: string; // hạn mức chi tiêu tối thiểu cho nhóm chiến dịch
+    minDailyBudget: number; // ngân sách tối thiểu hàng ngày cho các chiến dịch
+    isPersonal: number; // Cá nhân hóa
+    updateDataTime: string; // Thời gian cập nhật
+    employee: TMemberTable;
 };
 
 export type TAdvertisementField = {

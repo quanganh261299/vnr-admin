@@ -21,6 +21,10 @@ export const route = [
     element: <Login />,
   },
   {
+    path: '/login?isPM=true',
+    element: <h1>Test</h1>
+  },
+  {
     path: "/",
     element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} />,
     errorElement: <ErrorPage />,
