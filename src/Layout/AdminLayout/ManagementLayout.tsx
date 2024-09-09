@@ -17,9 +17,9 @@ import { Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styles from './style.module.scss'
 import { Footer } from 'antd/es/layout/layout';
-import logo from '../assets/images/logo.png'
-import avatar from '../assets/images/avatar.png'
-import { clearAuthStatus } from '../helper/authStatus';
+import logo from '../../assets/images/logo.png'
+import avatar from '../../assets/images/avatar.png'
+import { clearAuthStatus } from '../../helper/authStatus';
 
 const { Header, Sider, Content } = Layout;
 

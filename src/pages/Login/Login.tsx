@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { EMAIL_REGEX } from '../../helper/const';
 import { LoginType } from '../../models/common';
-import FacebookLogin from '@greatsumini/react-facebook-login';
 import authApi from '../../api/authApi';
 
 const Login = () => {
@@ -32,10 +31,6 @@ const Login = () => {
         console.error("Error:", err.response.data.message);
       });
   };
-
-  const loginFB = () => {
-    document.querySelector<HTMLElement>('.fb-login-special-btn')?.click();
-  }
 
   useEffect(() => {
     if (getAuthStatus()) {
@@ -92,26 +87,8 @@ const Login = () => {
                 Đăng nhập
               </Button>
               <span>hoặc</span>
-              <Link onClick={loginFB}>Đăng nhập tài khoản PM</Link>
+              <Link onClick={() => navigate('/loginPM')}>Đăng nhập tài khoản PM</Link>
             </div>
-            <FacebookLogin
-              appId="27101359412813286"
-              scope='ads_management, ads_read, public_profile, email, business_management'
-              className="fb-login-special-btn"
-              onSuccess={(response) => {
-                console.log('Login Success!', response);
-                authApi.loginFB(response.accessToken).then((res) => {
-                  console.log('res', res)
-                })
-                // window.location.href = '/'
-              }}
-              onFail={(error) => {
-                console.log('Login Failed!', error);
-              }}
-              onProfileSuccess={(response) => {
-                console.log('Get Profile Success!', response);
-              }}
-            />
           </Form.Item>
         </Form>
       </div>

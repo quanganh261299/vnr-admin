@@ -9,10 +9,11 @@ import MemberManagement from "../pages/MemberManagement/MemberManagement";
 import SystemManagement from "../pages/SystemManagement/SystemManagement";
 import TeamManagement from "../pages/TeamManagement/TeamManagement";
 import { getAuthStatus } from "../helper/authStatus";
-import ManagementLayout from "../Layout/ManagementLayout";
+import ManagementLayout from "../Layout/AdminLayout/ManagementLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import CreateAccount from "../pages/CreateAccount/CreateAccount";
 import ListAccount from "../pages/ListAccount/ListAccount";
+import LoginPM from "../pages/LoginPM/LoginPM";
 
 
 export const route = [
@@ -21,12 +22,12 @@ export const route = [
     element: <Login />,
   },
   {
-    path: '/login?isPM=true',
-    element: <h1>Test</h1>
+    path: '/loginPM',
+    element: <LoginPM />
   },
   {
     path: "/",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} />,
+    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} role="ADMIN" />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -71,4 +72,14 @@ export const route = [
       }
     ]
   },
+  {
+    path: "/advertisement-account?isPM=true",
+    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} role="PM" />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+      }
+    ]
+  }
 ]

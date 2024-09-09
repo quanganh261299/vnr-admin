@@ -1,12 +1,12 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
-import { Button, Checkbox, DatePicker, Select, Table, Tooltip } from 'antd';
+import { Button, Checkbox, DatePicker, message, Select, Table, Tooltip } from 'antd';
 import type { CheckboxProps, FormProps, TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
 import { TAdvertisementField, TAdvertisementTable } from '../../models/advertisement/advertisement';
 import { SelectType } from '../../models/common';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import AdvertisementModal from '../../Components/Modal/AdvertisementModal/AdvertisementModal';
 import organizationApi from '../../api/organizationApi';
 import branchApi from '../../api/branchApi';
@@ -37,7 +37,6 @@ const AdvertisementManagement: FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   // const [totalPage, setTotalPage] = useState<number>(0);
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false);
-  const [isPM, setIsPM] = useState<boolean>(false)
   const [totalData, setTotalData] = useState<number>(0);
   const [loading, setLoading] = useState({
     isTable: false,
@@ -47,7 +46,9 @@ const AdvertisementManagement: FC = () => {
     isSelectTeam: false,
     isSelectMember: false
   })
+  const [messageApi, contextHolder] = message.useMessage();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const modalRef = useRef<{ submit: () => void }>(null);
   const navigate = useNavigate()
 
@@ -215,7 +216,16 @@ const AdvertisementManagement: FC = () => {
   };
 
   const onFinish: FormProps<TAdvertisementField>['onFinish'] = (values) => {
-    console.log('Success:', values);
+    const data = {
+      accountID: String(values.id),
+      employeeID: String(values.employeeId),
+    }
+    advertisementApi.createAdsAccount(data).then(() => {
+      success('Tạo tài khoản quảng cáo thành công!')
+    }).catch((err) => {
+      console.log('err', err)
+      error(err.response.data.message)
+    })
   };
 
   const handleOk = () => {
@@ -232,6 +242,20 @@ const AdvertisementManagement: FC = () => {
   const handleShowModal = () => {
     setIsModalOpen(true)
   }
+
+  const success = (message: string) => {
+    messageApi.open({
+      type: 'success',
+      content: message,
+    });
+  };
+
+  const error = (message: string) => {
+    messageApi.open({
+      type: 'error',
+      content: message,
+    });
+  };
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
@@ -301,7 +325,6 @@ const AdvertisementManagement: FC = () => {
   }, [selectSystemId, selectAgencyId, selectTeamId])
 
   useEffect(() => {
-    setIsPM(false)
     setIsCallbackApi(false)
   }, [])
 
@@ -330,9 +353,10 @@ const AdvertisementManagement: FC = () => {
 
   return (
     <>
+      {contextHolder}
       <div className={styles["container"]}>
         <div className={styles['account-container']}>
-          {isPM && (
+          {searchParams.get('isPM') && (
             <>
               <Tooltip title="Thêm tài khoản quảng cáo">
                 <Button

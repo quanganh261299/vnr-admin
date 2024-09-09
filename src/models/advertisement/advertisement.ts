@@ -101,3 +101,8 @@ export type TAdsTable = {
     updated_time: string;
     start_time: string;
 };
+
+export type TCreateAdsAccount = {
+    accountID: string;
+    employeeID: string;
+};
