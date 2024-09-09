@@ -6,6 +6,10 @@ const authApi = {
         const url = "/auth/login";
         return axiosInstance.post(url, data);
     },
+    loginFB: (accessToken: string) => {
+        const url = `/auth/facebook?accessToken=${accessToken}`;
+        return axiosInstance.get(url);
+    },
 };
 
 export default authApi;

@@ -109,27 +109,6 @@ const AdvertisementManagement: FC = () => {
       className: styles['center-cell'],
     },
     {
-      title: 'Mã nguồn tài trợ',
-      dataIndex: 'funding_source_details',
-      key: 'funding_source_details_id',
-      className: styles['center-cell'],
-      render: (funding_source_details) => funding_source_details.id
-    },
-    {
-      title: 'Số thẻ tín dụng',
-      dataIndex: 'funding_source_details',
-      key: 'funding_source_details_display_string',
-      className: styles['center-cell'],
-      render: (funding_source_details) => funding_source_details.display_string
-    },
-    {
-      title: 'Loại nguồn tài trợ',
-      dataIndex: 'funding_source_details',
-      key: 'funding_source_details_type',
-      className: styles['center-cell'],
-      render: (funding_source_details) => funding_source_details.type
-    },
-    {
       title: 'Hạn mức chi tiêu tối thiểu nhóm chiến dịch',
       dataIndex: 'min_campaign_group_spend_cap',
       key: 'min_campaign_group_spend_cap',

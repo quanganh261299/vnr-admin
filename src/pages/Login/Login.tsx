@@ -1,10 +1,10 @@
 import styles from './style.module.scss'
 import logo from '../../assets/images/logo.png'
 import { Button, Form, FormProps, Input, message, Spin, Typography } from 'antd';
-import { getAuthStatus, storeAuthFBStatus, storeAuthStatus } from '../../helper/authStatus';
+import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-// import { EMAIL_REGEX } from '../../helper/const';
+import { EMAIL_REGEX } from '../../helper/const';
 import { LoginType } from '../../models/common';
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import authApi from '../../api/authApi';
@@ -58,13 +58,17 @@ const Login = () => {
           wrapperCol={{ span: 32 }}
         >
           <Form.Item<LoginType>
-            label="Username"
+            label="Email"
             name="username"
             rules={[
               {
                 required: true,
                 message: 'Không được để email trống!'
               },
+              {
+                pattern: EMAIL_REGEX,
+                message: 'Email không hợp lệ!'
+              }
             ]}
           >
             <Input />
@@ -96,8 +100,10 @@ const Login = () => {
               className="fb-login-special-btn"
               onSuccess={(response) => {
                 console.log('Login Success!', response);
-                storeAuthFBStatus(response.accessToken)
-                window.location.href = '/'
+                authApi.loginFB(response.accessToken).then((res) => {
+                  console.log('res', res)
+                })
+                // window.location.href = '/'
               }}
               onFail={(error) => {
                 console.log('Login Failed!', error);
