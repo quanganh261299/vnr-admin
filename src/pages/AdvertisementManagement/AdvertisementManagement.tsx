@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
-import { Button, Checkbox, DatePicker, message, Select, Table, Tooltip } from 'antd';
+import { Button, Checkbox, DatePicker, message, Select, Spin, Table, Tooltip } from 'antd';
 import type { CheckboxProps, FormProps, TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
@@ -41,6 +41,7 @@ const AdvertisementManagement: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
+    isFullScreen: false,
     isSelectSystem: false,
     isSelectAgency: false,
     isSelectTeam: false,
@@ -216,14 +217,19 @@ const AdvertisementManagement: FC = () => {
   };
 
   const onFinish: FormProps<TAdvertisementField>['onFinish'] = (values) => {
+    setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
     const data = {
       accountID: String(values.id),
       employeeID: String(values.employeeId),
     }
     advertisementApi.createAdsAccount(data).then(() => {
+      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
       success('Tạo tài khoản quảng cáo thành công!')
+      setIsModalOpen(false)
+      setIsCallbackApi(!isCallbackApi)
     }).catch((err) => {
       console.log('err', err)
+      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
       error(err.response.data.message)
     })
   };
@@ -325,10 +331,6 @@ const AdvertisementManagement: FC = () => {
   }, [selectSystemId, selectAgencyId, selectTeamId])
 
   useEffect(() => {
-    setIsCallbackApi(false)
-  }, [])
-
-  useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
       const data = res.data.data
@@ -346,7 +348,7 @@ const AdvertisementManagement: FC = () => {
     })
     const dataTableConfig = dataTable.map((item) => ({
       ...item,
-      key: item.account_id,
+      key: item.accountId,
     }));
     setDataTable(dataTableConfig)
   }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, isCallbackApi])
@@ -444,7 +446,15 @@ const AdvertisementManagement: FC = () => {
           }}
           onRow={(record) => {
             return {
-              onClick: () => navigate(`${location.pathname}/${record.account_id}/campaigns`)
+              onClick: () => {
+                sessionStorage.setItem('breadCrumbName',
+                  JSON.stringify({
+                    accountName: record.name,
+                    campaignName: '',
+                    groupName: ''
+                  }))
+                navigate(`${location.pathname}/${record.accountId}/campaigns`)
+              }
             }
           }}
           scroll={{ x: 3000 }}
@@ -458,7 +468,9 @@ const AdvertisementManagement: FC = () => {
         handleCancel={handleCancel}
         onFinish={onFinish}
         selectSystemData={selectSystemData}
+        isLoadingBtn={loading.isBtn}
       />
+      <Spin fullscreen spinning={loading.isFullScreen} />
     </>
   )
 }

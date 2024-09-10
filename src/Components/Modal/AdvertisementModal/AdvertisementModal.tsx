@@ -19,10 +19,11 @@ interface Props {
   onFinish: (values: TAdvertisementField) => void,
   editingData?: TAdvertisementField | null,
   selectSystemData: SelectType[],
+  isLoadingBtn?: boolean
 }
 
 const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref) => {
-  const { isModalOpen, selectSystemData, handleOk, handleCancel, onFinish } = props
+  const { isModalOpen, selectSystemData, isLoadingBtn, handleOk, handleCancel, onFinish } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
   const [selectMemberDataModal, setSelectMemberDataModal] = useState<SelectType[]>([])
@@ -146,6 +147,7 @@ const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref
       onOk={handleOk}
       onCancel={handleCancel}
       centered
+      okButtonProps={{ loading: isLoadingBtn }}
     >
       <Form
         form={form}

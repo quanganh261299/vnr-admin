@@ -1,7 +1,7 @@
 import { TMemberTable } from "../member/member";
 
 export type TAdvertisementTable = {
-    account_id: string; //id tài khoản
+    accountId: string; //id tài khoản
     employeeId: string; // id thành viên
     name: string; // tên tài khoản
     accountStatus: number; // trạng thái tài khoản
@@ -32,19 +32,25 @@ export type TAdvertisementField = {
 
 export type TCampaignTable = {
     id: string; //id chiến dịch
+    accountId: string; // id tài khoản quảng cáo
     name: string; // tên chiến dịch
-    budget_rebalance_flag: boolean;
+    budgetRebalanceFlag: boolean; // tự động điều chỉnh ngân sách
     //Xác định liệu ngân sách của chiến dịch có được tự động cân bằng lại giữa các nhóm quảng cáo trong chiến dịch hay không.
-    buying_type: string; // Loại mua quảng cáo của chiến dịch.
-    created_time: string; // Thời gian chiến dịch được tạo ra
-    start_time: string; // Thời gian bắt đầu của chiến dịch
-    effective_status: string; // Trạng thái thực tế hiện tại của chiến dịch
-    configured_status: string; // Trạng thái mà bạn đã cấu hình cho chiến dịch
+    buyingType: string; // Loại mua quảng cáo của chiến dịch.
+    createdTime: string; // Thời gian chiến dịch được tạo ra
+    startTime: string; // Thời gian bắt đầu của chiến dịch
+    effectiveStatus: string; // Trạng thái thực tế hiện tại của chiến dịch
+    configuredStatus: string; // Trạng thái mà bạn đã cấu hình cho chiến dịch
     status: string; // Trạng thái mà bạn đã đặt cho chiến dịch khi tạo hoặc cập nhật nó
-    account_id: string; //  ID của tài khoản quảng cáo mà chiến dịch này thuộc về
-    budget_remaining: string; // Số tiền ngân sách còn lại cho chiến dịch
-    special_ad_category_country: string[]; //Các quốc gia mà danh mục quảng cáo đặc biệt áp dụng. Thường là mã quốc gia
-    updated_time: string; //Thời gian cập nhật cuối cùng của chiến dịch, theo định dạng ISO 8601
+    dailyBudget: string; // Ngân sách hàng ngày
+    lifetimeBudget: string; // Ngân sách trọn đời
+    budgetRemaining: string; // Số tiền ngân sách còn lại cho chiến dịch
+    specialAdCategoryCountry: string[]; //Các quốc gia mà danh mục quảng cáo đặc biệt áp dụng. Thường là mã quốc gia
+    specialAdCategory: string[]; // đối tượng quảng cáo
+    updatedTime: string; //Thời gian cập nhật data của facebook
+    objective: string; // Mục tiêu chiến dịch
+    updateDataTime: string; // Thời gian cập nhật dữ liệu
+    account?: TAdvertisementTable;
 };
 
 export type TypeTargeting = {

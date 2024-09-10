@@ -3,17 +3,20 @@ import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
-import { fakeCampaignTableData } from "../../api/fakeData"
 import { DollarOutlined, ProjectOutlined } from "@ant-design/icons"
+import advertisementApi from "../../api/advertisementApi"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
-  const [pageSize, setPageSize] = useState<number>(10);
+  // const [pageSize, setPageSize] = useState<number>(10);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [totalData, setTotalData] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [breadCrumbData, setBreadCrumbData] = useState<{ title: ReactNode }[]>([])
   const param = useParams();
   const location = useLocation();
   const advertisementUrl = location.pathname.split('/')[1]
+  const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
 
   const navigate = useNavigate()
 
@@ -28,22 +31,28 @@ const CampaignsManagment: FC = () => {
     },
     {
       title: 'Tự động cân bằng ngân sách chiến dịch',
-      dataIndex: 'budget_rebalance_flag',
-      key: 'budget_rebalance_flag',
+      dataIndex: 'budgetRebalanceFlag',
+      key: 'budgetRebalanceFlag',
       className: styles['center-cell'],
       render: (value) => value ? <span>Có</span> : <span>Không</span>,
       width: 200,
     },
     {
       title: 'Loại mua',
-      dataIndex: 'buying_type',
-      key: 'buying_type',
+      dataIndex: 'buyingType',
+      key: 'buyingType',
+      className: styles['center-cell'],
+    },
+    {
+      title: 'Thời gian tạo chiến dịch',
+      dataIndex: 'createdTime',
+      key: 'createdTime',
       className: styles['center-cell'],
     },
     {
       title: 'Thời gian bắt đầu chiến dịch',
-      dataIndex: 'start_time',
-      key: 'start_time',
+      dataIndex: 'startTime',
+      key: 'startTime',
       className: styles['center-cell'],
     },
     {
@@ -54,54 +63,96 @@ const CampaignsManagment: FC = () => {
     },
     {
       title: 'Trạng thái thực tế của chiến dịch',
-      dataIndex: 'effective_status',
-      key: 'effective_status',
+      dataIndex: 'effectiveStatus',
+      key: 'effectiveStatus',
       className: styles['center-cell'],
     },
     {
       title: 'Trạng thái cấu hình của chiến dịch',
-      dataIndex: 'configured_status',
-      key: 'configured_status',
+      dataIndex: 'configuredStatus',
+      key: 'configuredStatus',
+      className: styles['center-cell'],
+    },
+    {
+      title: 'Ngân sách hàng ngày',
+      dataIndex: 'dailyBudget',
+      key: 'dailyBudget',
+      className: styles['center-cell'],
+    },
+    {
+      title: 'Ngân sách trọn đời',
+      dataIndex: 'lifetimeBudget',
+      key: 'lifetimeBudget',
       className: styles['center-cell'],
     },
     {
       title: 'Ngân sách còn lại của chiến dịch',
-      dataIndex: 'budget_remaining',
-      key: 'budget_remaining',
+      dataIndex: 'budgetRemaining',
+      key: 'budgetRemaining',
       className: styles['center-cell'],
     },
     {
       title: 'Các quốc gia áp dụng quảng cáo',
-      dataIndex: 'special_ad_category_country',
-      key: 'special_ad_category_country',
+      dataIndex: 'specialAdCategoryCountry',
+      key: 'specialAdCategoryCountry',
       className: styles['center-cell'],
-      render: (countries) => <span>{countries.join(', ')}</span>
+      render: (countries) => {
+        return (
+          countries !== 'null' && (
+            <span>{JSON.parse(countries)}</span>
+          )
+        )
+      }
     },
     {
-      title: 'Ngày tạo chiến dịch',
-      dataIndex: 'created_time',
-      key: 'created_time',
+      title: 'Đối tượng quảng cáo',
+      dataIndex: 'specialAdCategory',
+      key: 'specialAdCategoryCountry',
+      className: styles['center-cell'],
+      render: (people) => {
+        return (
+          people !== 'null' && (
+            <span>{JSON.parse(people).join(', ')}</span>
+          )
+        )
+      }
+    },
+    {
+      title: 'Mục tiêu chiến dịch',
+      dataIndex: 'objective',
+      key: 'objective',
       className: styles['center-cell'],
     },
     {
-      title: 'Ngày chạy chiến dịch',
-      dataIndex: 'start_time',
-      key: 'start_time',
+      title: 'Thời gian cập nhật dữ liệu',
+      dataIndex: 'updateDataTime',
+      key: 'updateDataTime',
       className: styles['center-cell'],
     },
   ];
 
   useEffect(() => {
-    // axiosInstance.get('/test').then((res) => {
-    //   console.log(res.data)
-    // })
-    const dataTable = fakeCampaignTableData.map((item) => ({
+    setIsLoading(true)
+    advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10).then((res) => {
+      const data = res.data.data
+      if (data.length === 0 && currentPage > 1) {
+        setCurrentPage(currentPage - 1)
+      }
+      else {
+        setTotalData(res.data.paging.totalCount)
+        setDataTable(data)
+        setIsLoading(false)
+      }
+    }).catch((err) => {
+      console.log('err', err)
+      setIsLoading(false)
+    })
+    const dataTableConfig = dataTable.map((item) => ({
       ...item,
-      key: item.id
-    }))
-    setPageSize(10)
-    setDataTable(dataTable)
-  }, [param.accountId])
+      key: item.id,
+    }));
+    setDataTable(dataTableConfig)
+  }, [currentPage, param.accountId])
 
   useEffect(() => {
     setBreadCrumbData([
@@ -119,7 +170,9 @@ const CampaignsManagment: FC = () => {
         title: (
           <>
             <ProjectOutlined />
-            <span className={styles["breadcrumb-item"]}>Chiến dịch tài khoản {param.accountId}</span>
+            <span className={styles["breadcrumb-item"]}>
+              Chiến dịch tài khoản {breadCrumbName.accountName}
+            </span>
           </>
         )
       }
@@ -134,16 +187,21 @@ const CampaignsManagment: FC = () => {
         dataSource={dataTable}
         pagination={{
           current: currentPage,
-          pageSize: pageSize,
-          // total: totalPage,
+          pageSize: 10,
+          total: totalData,
           position: ['bottomCenter'],
           onChange: (page) => setCurrentPage(page),
         }}
         onRow={(record) => {
           return {
-            onClick: () => navigate(`${location.pathname}/${record.id}/adsets`)
+            onClick: () => {
+              const updatedData = { ...breadCrumbName, campaignName: record.name }
+              sessionStorage.setItem('breadCrumbName', JSON.stringify(updatedData))
+              navigate(`${location.pathname}/${record.id}/adsets`)
+            }
           }
         }}
+        loading={isLoading}
         scroll={{ x: 3000 }}
       />
     </div>

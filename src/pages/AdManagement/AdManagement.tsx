@@ -11,6 +11,7 @@ const AdManagement: FC = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [breadCrumbData, setBreadCrumbData] = useState<{ title: ReactNode }[]>([])
+  const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
   const param = useParams();
   const location = useLocation();
   const advertisementUrl = location.pathname.split('/')[1]
@@ -84,7 +85,7 @@ const AdManagement: FC = () => {
           <>
             <Link to={`/${campaignsUrl}`}>
               <ProjectOutlined />
-              <span className={styles["breadcrumb-item"]}>Chiến dịch tài khoản {param.accountId}</span>
+              <span className={styles["breadcrumb-item"]}>Chiến dịch tài khoản {breadCrumbName.accountName}</span>
             </Link>
           </>
         )
@@ -94,7 +95,7 @@ const AdManagement: FC = () => {
           <>
             <Link to={`/${adsetUrl}`}>
               <ClusterOutlined />
-              <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo chiến dịch {param.campaignId}</span>
+              <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo chiến dịch {breadCrumbName.campaignName}</span>
             </Link>
           </>
         )
@@ -103,7 +104,7 @@ const AdManagement: FC = () => {
         title: (
           <>
             <NotificationOutlined />
-            <span className={styles["breadcrumb-item"]}>Quảng cáo thuộc nhóm quảng cáo {param.adsetsId}</span>
+            <span className={styles["breadcrumb-item"]}>Quảng cáo thuộc nhóm quảng cáo {breadCrumbName.groupName}</span>
           </>
         )
       }
