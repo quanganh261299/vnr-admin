@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
 import { DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
+import { formatDateTime } from "../../helper/const"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
@@ -48,12 +49,14 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'createdTime',
       key: 'createdTime',
       className: styles['center-cell'],
+      render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
     },
     {
       title: 'Thời gian bắt đầu chiến dịch',
       dataIndex: 'startTime',
       key: 'startTime',
       className: styles['center-cell'],
+      render: (startTime) => <span>{formatDateTime(startTime)}</span>
     },
     {
       title: 'Trạng thái khởi tạo chiến dịch',
@@ -128,6 +131,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
       className: styles['center-cell'],
+      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>
     },
   ];
 
