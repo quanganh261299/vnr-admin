@@ -3,21 +3,18 @@ import { Button, Form, FormProps, Input, message, Select, Typography } from 'ant
 import { useEffect, useState } from 'react';
 import { EMAIL_REGEX } from '../../helper/const';
 import { SelectType } from '../../models/common';
-import groupApi from '../../api/groupApi';
-import { TypeTeamTable } from '../../models/team/team';
 import headerCreateImg from '../../assets/images/header-create.webp'
 import { TCreateUser, TUserOption } from '../../models/user/user';
 import userApi from '../../api/userApi';
 
-const CreateAccount = () => {
-  const [selectTeamData, setSelectTeamData] = useState<SelectType[]>([])
+const CreateAdAccount = () => {
   const [selectAccountData, setSelectAccountData] = useState<SelectType[]>([])
+  // const [selectedAccountLabel, setSelectedAccountLabel] = useState<string>('ADMIN')
   const [loading, setLoading] = useState({
     isSelectTeam: false,
     isSelectAccount: false,
     isBtn: false
   })
-  const [selectedAccountLabel, setSelectedAccountLabel] = useState<string>('');
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const { Title } = Typography;
@@ -37,7 +34,7 @@ const CreateAccount = () => {
   const handleAccountChange = (value: string) => {
     const selectedAccount = selectAccountData.find(account => account.value === value);
     if (selectedAccount) {
-      setSelectedAccountLabel(selectedAccount.label);
+      // setSelectedAccountLabel(selectedAccount.label);
     }
   };
 
@@ -63,21 +60,12 @@ const CreateAccount = () => {
     }));
     userApi.getRole().then((res) => {
       setSelectAccountData(
-        res.data.data.map((item: TUserOption) => ({
+        res.data.data.filter((item: TUserOption) => item.name === 'ADMIN').map((item: TUserOption) => ({
           value: item.id,
           label: item.name
         }))
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAccount: false }))
-    })
-    groupApi.getListGroup().then((res) => {
-      setSelectTeamData(
-        res.data.data.map((item: TypeTeamTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-      setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
     })
   }, [])
 
@@ -102,7 +90,7 @@ const CreateAccount = () => {
           wrapperCol={{ span: 32 }}
         >
           <Form.Item
-            label="Tài khoản"
+            label="Role"
             name="roleId"
             rules={[{ required: true, message: 'Bạn phải chọn loại tài khoản!' }]}
             className='custom-margin-form'
@@ -130,44 +118,19 @@ const CreateAccount = () => {
           >
             <Input />
           </Form.Item>
-
-          {selectedAccountLabel === 'ADMIN' && (
-            <>
-              <Form.Item<TCreateUser>
-                label="Password"
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    whitespace: true,
-                    message: 'Không được để password trống!'
-                  },
-                ]}
-              >
-                <Input.Password />
-              </Form.Item>
-            </>
-          )}
-
-          {
-            selectedAccountLabel === 'PM' && (
-              <>
-                <Form.Item
-                  label="Đội nhóm"
-                  name="groupId"
-                  rules={[{ required: true, message: 'Bạn phải chọn đội nhóm!' }]}
-                >
-                  <Select
-                    allowClear
-                    showSearch
-                    placeholder="Chọn đội nhóm"
-                    options={selectTeamData}
-                    loading={loading.isSelectTeam}
-                  />
-                </Form.Item>
-              </>
-            )}
-
+          <Form.Item<TCreateUser>
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: 'Không được để password trống!'
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
           <Form.Item>
             <Button
               type="primary"
@@ -184,4 +147,4 @@ const CreateAccount = () => {
   )
 }
 
-export default CreateAccount
+export default CreateAdAccount

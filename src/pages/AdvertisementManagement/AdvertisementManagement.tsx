@@ -332,7 +332,7 @@ const AdvertisementManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
+    advertisementApi.getListAdsAccount(currentPage, 5).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -439,7 +439,7 @@ const AdvertisementManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: 5,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

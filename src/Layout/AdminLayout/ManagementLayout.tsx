@@ -37,36 +37,21 @@ const ManagementLayout: React.FC = () => {
   const dropDownItems: MenuProps['items'] = [
     {
       label: (
-        <div className={styles["user-setting"]} onClick={() => navigate('/account')}>
-          <UnorderedListOutlined />
-          <span>List tài khoản</span>
-        </div>
-      ),
-      key: '0',
-    },
-    {
-      label: (
-        <div className={styles["user-setting"]} onClick={() => navigate('/create-account')}>
-          <UserAddOutlined />
-          <span>Tạo tài khoản</span>
-        </div>
-      ),
-      key: '1',
-    },
-    {
-      label: (
         <div className={styles["user-setting"]} onClick={Logout}>
           <LogoutOutlined />
           <span>Logout</span>
         </div>
       ),
-      key: '2',
+      key: '0',
     },
   ];
 
   useEffect(() => {
     if (location.pathname === '/') {
       setCurrent('system')
+    }
+    else if (location.pathname.includes('/account')) {
+      setCurrent('account')
     }
     else if (location.pathname.includes('/agency')) {
       setCurrent('agency')
@@ -79,6 +64,9 @@ const ManagementLayout: React.FC = () => {
     }
     else if (location.pathname.includes('/advertisement-account')) {
       setCurrent('advertisement-account')
+    }
+    else if (location.pathname.includes('/create-organization-account')) {
+      setCurrent('create-organization-account')
     }
     else setCurrent('')
   }, [location])
@@ -119,6 +107,26 @@ const ManagementLayout: React.FC = () => {
               key: 'advertisement-account',
               icon: <DollarOutlined />,
               label: <Link to='/advertisement-account'>Quản lí tài khoản quảng cáo</Link>,
+            },
+            {
+              key: 'account',
+              icon: <UnorderedListOutlined />,
+              label: <Link to='/account'>Danh sách tài khoản</Link>,
+            },
+            {
+              key: 'create-organization-account',
+              icon: <UserAddOutlined />,
+              label: <Link to='/create-organization-account'>Tạo tài khoản hệ thống</Link>,
+            },
+            {
+              key: 'create-ad-account',
+              icon: <UserAddOutlined />,
+              label: <Link to='/create-ad-account'>Tạo tài khoản quảng cáo</Link>,
+            },
+            {
+              key: 'create-bm-account',
+              icon: <UserAddOutlined />,
+              label: <Link to='/create-bm-account'>Tạo tài khoản BM</Link>,
             },
           ]}
         />

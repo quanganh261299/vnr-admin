@@ -11,9 +11,9 @@ import TeamManagement from "../pages/TeamManagement/TeamManagement";
 import { getAuthStatus } from "../helper/authStatus";
 import ManagementLayout from "../Layout/AdminLayout/ManagementLayout";
 import ProtectedRoute from "./ProtectedRoute";
-import CreateAccount from "../pages/CreateAccount/CreateAccount";
 import ListAccount from "../pages/ListAccount/ListAccount";
 import LoginPM from "../pages/LoginPM/LoginPM";
+import CreateOrganizationAccount from "../pages/CreateOrganizationAccount/CreateOrganizationAccount";
 
 
 export const route = [
@@ -63,8 +63,8 @@ export const route = [
         element: <AdManagement />
       },
       {
-        path: '/create-account',
-        element: <CreateAccount />
+        path: '/create-organization-account',
+        element: <CreateOrganizationAccount />
       },
       {
         path: '/account',

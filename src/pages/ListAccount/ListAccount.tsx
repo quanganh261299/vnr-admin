@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react'
 import styles from './style.module.scss'
-import { Table } from 'antd';
+import { Button, Space, Table } from 'antd';
 import type { TableProps } from 'antd';
 import { TUser } from '../../models/user/user';
 import userApi from '../../api/userApi';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 const ListAccount: FC = () => {
   // const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -21,19 +22,25 @@ const ListAccount: FC = () => {
   // const [messageApi, contextHolder] = message.useMessage();
   // const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
 
+  const handleShowModal = (data: TUser | null = null) => {
+    console.log('data', data)
+  }
+
+  const handleShowConfirmDelete = (data: TUser | null = null) => {
+    console.log('data', data)
+  }
+
   const columns: TableProps<TUser>['columns'] = [
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: '33%',
     },
     {
       title: 'Vai trò',
       dataIndex: 'role',
       key: 'roleName',
       render: (role) => <span>{role.name}</span>,
-      width: '33%',
     },
     {
       title: 'Đội nhóm',
@@ -52,25 +59,24 @@ const ListAccount: FC = () => {
             </>
           )
       ),
-      width: '33%'
-    }
-    // {
-    //   title: 'Tùy chọn',
-    //   key: 'action',
-    //   width: '10%',
-    //   render: (_, record) => (
-    //     <>
-    //       <Space size="middle">
-    //         <Button icon={<EditOutlined />} type="primary" onClick={() => handleShowModal(record)}>
-    //           Sửa
-    //         </Button>
-    //         <Button icon={<DeleteOutlined />} danger onClick={() => handleShowConfirmDelete(record)}>
-    //           Xóa
-    //         </Button>
-    //       </Space>
-    //     </>
-    //   ),
-    // },
+    },
+    {
+      title: 'Tùy chọn',
+      key: 'action',
+      width: '10%',
+      render: (_, record) => (
+        <>
+          <Space size="middle">
+            <Button icon={<EditOutlined />} type="primary" onClick={() => handleShowModal(record)}>
+              Sửa
+            </Button>
+            <Button icon={<DeleteOutlined />} danger onClick={() => handleShowConfirmDelete(record)}>
+              Xóa
+            </Button>
+          </Space>
+        </>
+      ),
+    },
   ];
 
   // const onFinish: FormProps<TSystemField>['onFinish'] = (values) => {
