@@ -24,9 +24,10 @@ import { clearAuthStatus } from '../../helper/authStatus';
 const { Header, Sider, Content } = Layout;
 
 const ManagementLayout: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
-  const [current, setCurrent] = useState('system');
+  const [current, setCurrent] = useState<string>('system');
+  const [headerName, setHeaderName] = useState<string>('Quản lí hệ thống')
   const navigate = useNavigate();
 
   const Logout = () => {
@@ -48,27 +49,35 @@ const ManagementLayout: React.FC = () => {
 
   useEffect(() => {
     if (location.pathname === '/') {
+      setHeaderName('Quản lí hệ thống')
       setCurrent('system')
     }
     else if (location.pathname.includes('/account')) {
+      setHeaderName('Tài khoản hệ thống')
       setCurrent('account')
     }
     else if (location.pathname.includes('/agency')) {
+      setHeaderName('Quản lí chi nhánh')
       setCurrent('agency')
     }
     else if (location.pathname.includes('/team')) {
+      setHeaderName('Quản lí đội nhóm')
       setCurrent('team')
     }
     else if (location.pathname.includes('/member')) {
+      setHeaderName('Quản lí thành viên')
       setCurrent('member')
     }
     else if (location.pathname.includes('/advertisement-account')) {
+      setHeaderName('Quản lí tài khoản quảng cáo')
       setCurrent('advertisement-account')
     }
     else if (location.pathname.includes('/ad-account')) {
+      setHeaderName('Tài khoản quảng cáo')
       setCurrent('ad-account')
     }
     else if (location.pathname.includes('/bm-account')) {
+      setHeaderName('Tài khoản BM')
       setCurrent('bm-account')
     }
     else setCurrent('')
@@ -137,6 +146,7 @@ const ManagementLayout: React.FC = () => {
             onClick={() => setCollapsed(!collapsed)}
             className={styles["btn"]}
           />
+          <h1 className={styles['title']}>{headerName}</h1>
           <Dropdown menu={{ items: dropDownItems }} trigger={['click']}>
             <div className={styles["user-infor"]}>
               <div className={styles["user-detail"]}>
