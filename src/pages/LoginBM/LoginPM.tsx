@@ -5,10 +5,10 @@ import { Button, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FacebookOutlined, RollbackOutlined } from '@ant-design/icons';
 import loginImg from '../../assets/images/login.png'
-import { storeAuthStatus } from '../../helper/authStatus';
-import { useState } from 'react';
+import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
+import { useEffect, useState } from 'react';
 
-const LoginPM = () => {
+const LoginBM = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const navigate = useNavigate()
 
@@ -16,6 +16,12 @@ const LoginPM = () => {
     setIsLoading(true)
     document.querySelector<HTMLElement>('.fb-login-special-btn')?.click();
   }
+
+  useEffect(() => {
+    if (getAuthStatus()) {
+      navigate('/', { replace: true })
+    }
+  }, [localStorage.getItem('isAllowed'), localStorage.getItem('token')])
 
   return (
     <>
@@ -35,7 +41,7 @@ const LoginPM = () => {
             onClick={loginFB}
             type='primary'
           >
-            Login PM
+            Login BM
           </Button>
         </div>
         <FacebookLogin
@@ -47,7 +53,7 @@ const LoginPM = () => {
             authApi.loginFB(response.accessToken).then((res) => {
               storeAuthStatus(res.data.data.accessToken)
               setIsLoading(false)
-              window.location.href = '/advertisement-account?isPM=true'
+              window.location.href = '/advertisement-account?isBM=true'
             })
           }}
           onFail={(error) => {
@@ -64,4 +70,4 @@ const LoginPM = () => {
   )
 }
 
-export default LoginPM
+export default LoginBM

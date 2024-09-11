@@ -358,7 +358,7 @@ const AdvertisementManagement: FC = () => {
       {contextHolder}
       <div className={styles["container"]}>
         <div className={styles['account-container']}>
-          {searchParams.get('isPM') && (
+          {searchParams.get('isBM') && (
             <>
               <Tooltip title="Thêm tài khoản quảng cáo">
                 <Button

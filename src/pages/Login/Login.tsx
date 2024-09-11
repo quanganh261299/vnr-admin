@@ -36,7 +36,7 @@ const Login = () => {
     if (getAuthStatus()) {
       navigate('/', { replace: true })
     }
-  }, [localStorage.getItem('isAllowed')])
+  }, [localStorage.getItem('isAllowed'), localStorage.getItem('token')])
 
   return (
     <>
@@ -87,7 +87,7 @@ const Login = () => {
                 Đăng nhập
               </Button>
               <span>hoặc</span>
-              <Link onClick={() => navigate('/loginPM')}>Đăng nhập tài khoản PM</Link>
+              <Link onClick={() => navigate('/loginBM')}>Đăng nhập tài khoản BM</Link>
             </div>
           </Form.Item>
         </Form>

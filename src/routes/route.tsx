@@ -12,8 +12,8 @@ import { getAuthStatus } from "../helper/authStatus";
 import ManagementLayout from "../Layout/AdminLayout/ManagementLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import ListAccount from "../pages/ListAccount/ListAccount";
-import LoginPM from "../pages/LoginPM/LoginPM";
 import CreateOrganizationAccount from "../pages/CreateOrganizationAccount/CreateOrganizationAccount";
+import LoginBM from "../pages/LoginBM/LoginPM";
 
 
 export const route = [
@@ -22,12 +22,12 @@ export const route = [
     element: <Login />,
   },
   {
-    path: '/loginPM',
-    element: <LoginPM />
+    path: '/loginBM',
+    element: <LoginBM />
   },
   {
     path: "/",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} role="ADMIN" />,
+    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['bm']} userRole="bm" />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -73,8 +73,8 @@ export const route = [
     ]
   },
   {
-    path: "/advertisement-account?isPM=true",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} role="PM" />,
+    path: "/advertisement-account?isBM=true",
+    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['bm']} userRole="bm" />,
     errorElement: <ErrorPage />,
     children: [
       {

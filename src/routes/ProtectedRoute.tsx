@@ -1,20 +1,34 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 type ProtectedRouteProps = {
-  layout: React.ElementType;
-  isAllowed: boolean;
-  role: 'ADMIN' | 'PM';
+  layout?: React.ElementType;
+  isAllowed?: boolean;
   children?: React.ReactNode;
+  roles?: string[];
+  userRole?: string;
 };
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ layout: Layout, isAllowed, role }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  layout: Layout,
+  isAllowed = true,
+  roles = [],
+  userRole = '',
+  children
+}) => {
+  const hasAccess = roles.length === 0 || roles.includes(userRole);
 
-  return isAllowed ? (
-    <Layout>
-      <Outlet />
-    </Layout>
+  return isAllowed && hasAccess ? (
+    Layout ? (
+      <Layout>
+        {children}
+      </Layout>
+    ) : (
+      <>
+        {children}
+      </>
+    )
   ) : (
-    <Navigate to={`${role === 'ADMIN' ? '/login' : '/loginPM'}`} replace={true} />
+    <Navigate to={'/login'} replace={true} />
   );
 };
 
