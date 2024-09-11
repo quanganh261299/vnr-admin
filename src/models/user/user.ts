@@ -1,4 +1,4 @@
-import { TypeTeamTable } from "../team/team";
+import { TMemberTable } from "../member/member";
 
 export type TUser = {
     id: string;
@@ -7,7 +7,6 @@ export type TUser = {
         id: string;
         name: string;
     };
-    group: TypeTeamTable;
 };
 
 export type TUserOption = {
@@ -15,9 +14,23 @@ export type TUserOption = {
     name: string;
 };
 
-export type TCreateUser = {
+export type TSystemUser = {
     email: string;
     password?: string;
-    roleId: string;
-    groupId?: string;
+    roleId?: string;
 };
+
+export type TAdUser = {
+    employeeId: string;
+    accountID: string;
+};
+
+export type TAdUserTable = {
+    accountId: string;
+    name: string;
+    employee: TMemberTable;
+    employeeName: string;
+    bm: string;
+};
+
+

@@ -1,13 +1,12 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import styles from './style.module.scss'
-import { Button, Checkbox, DatePicker, message, Select, Spin, Table, Tooltip } from 'antd';
-import type { CheckboxProps, FormProps, TableProps } from 'antd';
+import { Checkbox, DatePicker, Select, Spin, Table } from 'antd';
+import type { CheckboxProps, TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
-import { TAdvertisementField, TAdvertisementTable } from '../../models/advertisement/advertisement';
+import { TAdvertisementTable } from '../../models/advertisement/advertisement';
 import { SelectType } from '../../models/common';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import AdvertisementModal from '../../Components/Modal/AdvertisementModal/AdvertisementModal';
+import { useLocation, useNavigate } from 'react-router-dom';
 import organizationApi from '../../api/organizationApi';
 import branchApi from '../../api/branchApi';
 import groupApi from '../../api/groupApi';
@@ -16,14 +15,11 @@ import { TSystemTable } from '../../models/system/system';
 import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
-import { PlusOutlined } from '@ant-design/icons';
 import advertisementApi from '../../api/advertisementApi';
 import { formatDateTime } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
   const { RangePicker } = DatePicker;
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  // const [dataRecord, setDataRecord] = useState<TypeTeamField | null>(null)
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
   const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
@@ -35,8 +31,6 @@ const AdvertisementManagement: FC = () => {
   const [selectMemberId, setSelectMemberId] = useState<string | null>(null)
   // const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [totalPage, setTotalPage] = useState<number>(0);
-  const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false);
   const [totalData, setTotalData] = useState<number>(0);
   const [loading, setLoading] = useState({
     isTable: false,
@@ -47,10 +41,7 @@ const AdvertisementManagement: FC = () => {
     isSelectTeam: false,
     isSelectMember: false
   })
-  const [messageApi, contextHolder] = message.useMessage();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const modalRef = useRef<{ submit: () => void }>(null);
   const navigate = useNavigate()
 
   const columns: TableProps<TAdvertisementTable>['columns'] = [
@@ -140,25 +131,6 @@ const AdvertisementManagement: FC = () => {
       className: styles['center-cell'],
       render: (dateTime) => <span>{formatDateTime(dateTime)}</span>
     },
-    // {
-    //   title: 'Tùy chọn',
-    //   key: 'action',
-    //   width: 200,
-    //   fixed: 'right',
-    //   render: () => (
-    //     <>
-    //       <Space size="middle">
-    //         <Button icon={<EditOutlined />} type="primary">
-    //           Sửa
-    //         </Button>
-    //         <Button icon={<DeleteOutlined />} danger>
-    //           Xóa
-    //         </Button>
-    //       </Space>
-    //     </>
-    //   ),
-    //   className: styles['center-cell']
-    // },
   ];
 
   const onChangeSystem = (value: string) => {
@@ -214,53 +186,6 @@ const AdvertisementManagement: FC = () => {
       console.log('Start Time:', startTime);
       console.log('End Time:', endTime);
     }
-  };
-
-  const onFinish: FormProps<TAdvertisementField>['onFinish'] = (values) => {
-    setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
-    const data = {
-      accountID: String(values.id),
-      employeeID: String(values.employeeId),
-    }
-    advertisementApi.createAdsAccount(data).then(() => {
-      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
-      success('Tạo tài khoản quảng cáo thành công!')
-      setIsModalOpen(false)
-      setIsCallbackApi(!isCallbackApi)
-    }).catch((err) => {
-      console.log('err', err)
-      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
-      error(err.response.data.message)
-    })
-  };
-
-  const handleOk = () => {
-    if (modalRef.current) {
-      modalRef.current.submit();
-    }
-    console.log('OK')
-  }
-
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleShowModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const success = (message: string) => {
-    messageApi.open({
-      type: 'success',
-      content: message,
-    });
-  };
-
-  const error = (message: string) => {
-    messageApi.open({
-      type: 'error',
-      content: message,
-    });
   };
 
   useEffect(() => {
@@ -332,7 +257,8 @@ const AdvertisementManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    advertisementApi.getListAdsAccount(currentPage, 5).then((res) => {
+    advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
+      console.log('res', res.data.data)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -351,27 +277,12 @@ const AdvertisementManagement: FC = () => {
       key: item.accountId,
     }));
     setDataTable(dataTableConfig)
-  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, isCallbackApi])
+  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId])
 
   return (
     <>
-      {contextHolder}
       <div className={styles["container"]}>
         <div className={styles['account-container']}>
-          {searchParams.get('isBM') && (
-            <>
-              <Tooltip title="Thêm tài khoản quảng cáo">
-                <Button
-                  icon={<PlusOutlined />}
-                  type="primary"
-                  className={styles['btn']}
-                  onClick={() => handleShowModal()}
-                >
-                  Thêm tài khoản quảng cáo
-                </Button>
-              </Tooltip>
-            </>
-          )}
           <Select
             allowClear
             showSearch
@@ -439,7 +350,7 @@ const AdvertisementManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 5,
+            pageSize: 10,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),
@@ -461,15 +372,6 @@ const AdvertisementManagement: FC = () => {
           loading={loading.isTable}
         />
       </div>
-      <AdvertisementModal
-        ref={modalRef}
-        isModalOpen={isModalOpen}
-        handleOk={handleOk}
-        handleCancel={handleCancel}
-        onFinish={onFinish}
-        selectSystemData={selectSystemData}
-        isLoadingBtn={loading.isBtn}
-      />
       <Spin fullscreen spinning={loading.isFullScreen} />
     </>
   )

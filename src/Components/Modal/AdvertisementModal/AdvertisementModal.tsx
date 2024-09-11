@@ -10,6 +10,9 @@ import groupApi from "../../../api/groupApi";
 import { TypeTeamTable } from "../../../models/team/team";
 import employeeApi from "../../../api/employeeApi";
 import { TMemberTable } from "../../../models/member/member";
+import organizationApi from "../../../api/organizationApi";
+import { TSystemTable } from "../../../models/system/system";
+import { TAdUserTable } from "../../../models/user/user";
 
 
 interface Props {
@@ -17,13 +20,13 @@ interface Props {
   handleOk: () => void,
   handleCancel: () => void,
   onFinish: (values: TAdvertisementField) => void,
-  editingData?: TAdvertisementField | null,
-  selectSystemData: SelectType[],
+  editingData?: TAdUserTable | null,
   isLoadingBtn?: boolean
 }
 
-const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref) => {
-  const { isModalOpen, selectSystemData, isLoadingBtn, handleOk, handleCancel, onFinish } = props
+const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
+  const { isModalOpen, isLoadingBtn, handleOk, handleCancel, onFinish } = props
+  const [selectSystemDataModal, setSelectSystemDataModal] = useState<SelectType[]>([])
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
   const [selectMemberDataModal, setSelectMemberDataModal] = useState<SelectType[]>([])
@@ -31,6 +34,7 @@ const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [selectTeamModalId, setSelectTeamModalId] = useState<string | null>(null)
   const [loading, setLoading] = useState({
+    isSelectSystem: false,
     isSelectAgency: false,
     isSelectTeam: false,
     isSelectMember: false
@@ -41,6 +45,9 @@ const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref
     submit: () => {
       form.submit();
     },
+    reset: () => {
+      form.resetFields();
+    }
   }));
 
   const handleFormChange = (changedValues: any) => {
@@ -81,6 +88,19 @@ const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref
     form.setFieldValue('employeeId', undefined)
     setSelectMemberDataModal([])
   }
+
+  useEffect(() => {
+    setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
+    organizationApi.getListOrganization(undefined, undefined).then((res) => {
+      setSelectSystemDataModal(
+        res.data.data.map((item: TSystemTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
+    })
+  }, [])
 
   useEffect(() => {
     if (selectSystemModalId) {
@@ -167,9 +187,10 @@ const AdvertisementModal = forwardRef<{ submit: () => void }, Props>((props, ref
             allowClear
             showSearch
             placeholder="Chọn hệ thống"
-            options={selectSystemData}
+            options={selectSystemDataModal}
             onClear={clearSelectSystemModalId}
             notFoundContent={'Không có dữ liệu'}
+            loading={loading.isSelectSystem}
           />
         </Form.Item>
         <Form.Item

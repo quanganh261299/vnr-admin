@@ -1,152 +1,74 @@
-import { SelectType } from "../models/common";
-import { TSystemTable } from "../models/system/system";
+import { TAdUserTable } from "../models/user/user";
 
-export const fakeSystemTableData: TSystemTable[] = [
+export const fakeAdUserTableData: TAdUserTable[] = [
     {
         id: "1",
-        name: "Công ty cổ phần ABC",
-        description: "Công ty chuyên về sản xuất và kinh doanh ABC",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "John Doe",
+        employeeId: "EMP001",
+        employeeName: "Johnathan Doe",
+        bmName: "BM Alpha",
     },
     {
         id: "2",
-        name: "Công ty cổ phần BCD",
-        description:
-            "Công ty chuyên cung cấp dịch vụ BCD trong ngành công nghiệp",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Jane Smith",
+        employeeId: "EMP002",
+        employeeName: "Janette Smith",
+        bmName: "BM Beta",
     },
     {
         id: "3",
-        name: "Công ty cổ phần EFG",
-        description: "Công ty nổi tiếng với sản phẩm công nghệ EFG",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Alice Johnson",
+        employeeId: "EMP003",
+        employeeName: "Alice Maria Johnson",
+        bmName: "BM Gamma",
     },
     {
         id: "4",
-        name: "Công ty cổ phần XYZ",
-        description: "Công ty dẫn đầu trong lĩnh vực phát triển phần mềm XYZ",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Bob Williams",
+        employeeId: "EMP004",
+        employeeName: "Robert Williams",
+        bmName: "BM Delta",
     },
     {
         id: "5",
-        name: "Công ty cổ phần UVW",
-        description: "Công ty chuyên về giải pháp UVW cho doanh nghiệp",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Charlie Brown",
+        employeeId: "EMP005",
+        employeeName: "Charles Brown",
+        bmName: "BM Epsilon",
     },
     {
         id: "6",
-        name: "Công ty cổ phần RST",
-        description: "Công ty hoạt động trong lĩnh vực tài chính RST",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "David Wilson",
+        employeeId: "EMP006",
+        employeeName: "David James Wilson",
+        bmName: "BM Zeta",
     },
     {
         id: "7",
-        name: "Công ty cổ phần LMN",
-        description: "Công ty cung cấp dịch vụ viễn thông LMN",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Emily Davis",
+        employeeId: "EMP007",
+        employeeName: "Emily Rose Davis",
+        bmName: "BM Eta",
     },
     {
         id: "8",
-        name: "Công ty cổ phần OPQ",
-        description: "Công ty phát triển công nghệ tiên tiến OPQ",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Frank Miller",
+        employeeId: "EMP008",
+        employeeName: "Franklin Miller",
+        bmName: "BM Theta",
     },
     {
         id: "9",
-        name: "Công ty cổ phần HJK",
-        description:
-            "Công ty hoạt động trong lĩnh vực sản xuất hàng tiêu dùng HJK",
-        updateDate: "2023-08-29",
-        deleteDate: null,
+        name: "Grace Lee",
+        employeeId: "EMP009",
+        employeeName: "Grace Evelyn Lee",
+        bmName: "BM Iota",
     },
     {
         id: "10",
-        name: "Công ty cổ phần VWX",
-        description: "Công ty nổi tiếng với sản phẩm công nghệ VWX",
-        updateDate: "2023-08-29",
-        deleteDate: null,
-    },
-    {
-        id: "11",
-        name: "Công ty cổ phần YZA",
-        description: "Công ty cung cấp giải pháp môi trường YZA",
-        updateDate: "2023-08-29",
-        deleteDate: null,
-    },
-    {
-        id: "12",
-        name: "Công ty cổ phần BNM",
-        description:
-            "Công ty dẫn đầu trong lĩnh vực sản xuất và kinh doanh BNM",
-        updateDate: "2023-08-29",
-        deleteDate: null,
-    },
-];
-
-export const fakeSelectSystemData: SelectType[] = [
-    {
-        value: "1",
-        label: "Công ty cổ phần VWX",
-    },
-    {
-        value: "2",
-        label: "Công ty cổ phần BNM",
-    },
-    {
-        value: "3",
-        label: "Công ty cổ phần OPQ",
-    },
-];
-
-export const fakeSelectAgencyData: SelectType[] = [
-    {
-        value: "1",
-        label: "Chi nhánh cổ phần ABC",
-    },
-    {
-        value: "2",
-        label: "Chi nhánh cổ phần DEF",
-    },
-    {
-        value: "3",
-        label: "Chi nhánh cổ phần GHI",
-    },
-];
-
-export const fakeSelectTeamData: SelectType[] = [
-    {
-        value: "1",
-        label: "Đội 1",
-    },
-    {
-        value: "2",
-        label: "Đội 2",
-    },
-    {
-        value: "3",
-        label: "Đội 3",
-    },
-];
-
-export const fakeSelectMemberData: SelectType[] = [
-    {
-        value: "1",
-        label: "Member 1",
-    },
-    {
-        value: "2",
-        label: "Member 2",
-    },
-    {
-        value: "3",
-        label: "Member 3",
+        name: "Hannah White",
+        employeeId: "EMP010",
+        employeeName: "Hannah Louise White",
+        bmName: "BM Kappa",
     },
 ];

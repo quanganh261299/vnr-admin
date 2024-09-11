@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import {
   ApartmentOutlined,
   CaretDownOutlined,
+  CrownOutlined,
   DollarOutlined,
+  IdcardOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  // ProfileOutlined,
   SettingOutlined,
+  TagOutlined,
   TeamOutlined,
-  UnorderedListOutlined,
-  UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
@@ -65,8 +65,11 @@ const ManagementLayout: React.FC = () => {
     else if (location.pathname.includes('/advertisement-account')) {
       setCurrent('advertisement-account')
     }
-    else if (location.pathname.includes('/create-organization-account')) {
-      setCurrent('create-organization-account')
+    else if (location.pathname.includes('/ad-account')) {
+      setCurrent('ad-account')
+    }
+    else if (location.pathname.includes('/bm-account')) {
+      setCurrent('bm-account')
     }
     else setCurrent('')
   }, [location])
@@ -110,23 +113,18 @@ const ManagementLayout: React.FC = () => {
             },
             {
               key: 'account',
-              icon: <UnorderedListOutlined />,
-              label: <Link to='/account'>Danh sách tài khoản</Link>,
+              icon: <CrownOutlined />,
+              label: <Link to='/account'>Tài khoản hệ thống</Link>,
             },
             {
-              key: 'create-organization-account',
-              icon: <UserAddOutlined />,
-              label: <Link to='/create-organization-account'>Tạo tài khoản hệ thống</Link>,
+              key: 'ad-account',
+              icon: <TagOutlined />,
+              label: <Link to='/ad-account'>Tài khoản quảng cáo</Link>,
             },
             {
-              key: 'create-ad-account',
-              icon: <UserAddOutlined />,
-              label: <Link to='/create-ad-account'>Tạo tài khoản quảng cáo</Link>,
-            },
-            {
-              key: 'create-bm-account',
-              icon: <UserAddOutlined />,
-              label: <Link to='/create-bm-account'>Tạo tài khoản BM</Link>,
+              key: 'bm-account',
+              icon: <IdcardOutlined />,
+              label: <Link to='/bm-account'>Tài khoản BM</Link>,
             },
           ]}
         />
