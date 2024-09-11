@@ -165,19 +165,18 @@ const SystemAccount: FC = () => {
         setCurrentPage(currentPage - 1)
       }
       else {
+        const dataTableConfig = data.map((item: TUser) => ({
+          ...item,
+          key: item.id,
+        }));
         setTotalData(res.data.paging.totalCount)
-        setDataTable(data)
+        setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
     }).catch((err) => {
       console.log('err', err)
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-    const dataTableConfig = dataTable.map((item) => ({
-      ...item,
-      key: item.id,
-    }));
-    setDataTable(dataTableConfig)
   }, [currentPage, isCallbackApi])
 
   return (

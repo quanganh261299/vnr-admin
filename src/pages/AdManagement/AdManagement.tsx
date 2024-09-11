@@ -182,19 +182,18 @@ const AdManagement: FC = () => {
         setCurrentPage(currentPage - 1)
       }
       else {
+        const dataTableConfig = data.map((item: TAdsTable) => ({
+          ...item,
+          key: item.id,
+        }));
         setTotalData(res.data.paging.totalCount)
-        setDataTable(data)
+        setDataTable(dataTableConfig)
         setIsLoading(false)
       }
     }).catch((err) => {
       console.log('err', err)
       setIsLoading(false)
     })
-    const dataTableConfig = dataTable.map((item) => ({
-      ...item,
-      key: item.id,
-    }));
-    setDataTable(dataTableConfig)
   }, [param.adsetsId])
 
   useEffect(() => {

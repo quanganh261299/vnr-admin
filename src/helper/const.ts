@@ -15,3 +15,7 @@ export const formatDateTime = (dateTime: string) => {
     }
     return "";
 };
+
+export const formatNumberWithCommas = (number: number | string) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};

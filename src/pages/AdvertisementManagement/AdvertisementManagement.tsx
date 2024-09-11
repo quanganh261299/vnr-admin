@@ -16,7 +16,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
 import advertisementApi from '../../api/advertisementApi';
-import { formatDateTime } from '../../helper/const';
+import { formatDateTime, formatNumberWithCommas } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
   const { RangePicker } = DatePicker;
@@ -46,14 +46,14 @@ const AdvertisementManagement: FC = () => {
 
   const columns: TableProps<TAdvertisementTable>['columns'] = [
     {
-      title: 'Tên tài khoản',
+      title: 'Tên tài khoản quảng cáo',
       dataIndex: 'name',
       key: 'name',
       className: styles['center-cell'],
       fixed: 'left'
     },
     {
-      title: 'Trạng thái tài khoản',
+      title: 'Trạng thái tài khoản quảng cáo',
       dataIndex: 'accountStatus',
       key: 'accountStatus',
       className: styles['center-cell'],
@@ -69,27 +69,31 @@ const AdvertisementManagement: FC = () => {
       dataIndex: 'spendCap',
       key: 'spendCap',
       className: styles['center-cell'],
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>
     },
     {
       title: 'Số tiền đã chi tiêu',
       dataIndex: 'amountSpent',
       key: 'amountSpent',
       className: styles['center-cell'],
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>
     },
     {
       title: 'Số tiền nợ',
       dataIndex: 'balance',
       key: 'balance',
       className: styles['center-cell'],
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>
     },
     {
-      title: 'Thời gian tạo tài khoản',
+      title: 'Thời gian tạo tài khoản quảng cáo',
       dataIndex: 'createdTime',
       key: 'createdTime',
       className: styles['center-cell'],
+      render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
     },
     {
-      title: 'Chủ tài khoản quảng cáo',
+      title: 'Id chủ tài khoản quảng cáo',
       dataIndex: 'owner',
       key: 'owner',
       className: styles['center-cell'],
@@ -111,25 +115,21 @@ const AdvertisementManagement: FC = () => {
       dataIndex: 'minCampaignGroupSpendCap',
       key: 'minCampaignGroupSpendCap',
       className: styles['center-cell'],
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>
     },
     {
       title: 'Ngân sách tối thiểu hàng ngày cho chiến dịch',
       dataIndex: 'minDailyBudget',
       key: 'minDailyBudget',
       className: styles['center-cell'],
-    },
-    {
-      title: 'Cá nhân hóa',
-      dataIndex: 'isPersonal',
-      key: 'isPersonal',
-      className: styles['center-cell'],
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>
     },
     {
       title: 'Thời gian cập nhật dữ liệu',
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
       className: styles['center-cell'],
-      render: (dateTime) => <span>{formatDateTime(dateTime)}</span>
+      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>
     },
   ];
 
@@ -264,19 +264,18 @@ const AdvertisementManagement: FC = () => {
         setCurrentPage(currentPage - 1)
       }
       else {
+        const dataTableConfig = data.map((item: TAdvertisementTable) => ({
+          ...item,
+          key: item.accountId,
+        }));
         setTotalData(res.data.paging.totalCount)
-        setDataTable(data)
+        setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
     }).catch((err) => {
       console.log('err', err)
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-    const dataTableConfig = dataTable.map((item) => ({
-      ...item,
-      key: item.accountId,
-    }));
-    setDataTable(dataTableConfig)
   }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId])
 
   return (

@@ -152,19 +152,18 @@ const SystemManagement: FC = () => {
         setCurrentPage(currentPage - 1)
       }
       else {
+        const dataTableConfig = data.map((item: TSystemTable) => ({
+          ...item,
+          key: item.id,
+        }));
         setTotalData(res.data.paging.totalCount)
-        setDataTable(data)
+        setDataTable(dataTableConfig)
         setLoading({ ...loading, isTable: false })
       }
     }).catch((err) => {
       console.log('err', err)
       setLoading({ ...loading, isTable: false })
     })
-    const dataTableConfig = dataTable.map((item) => ({
-      ...item,
-      key: item.id,
-    }));
-    setDataTable(dataTableConfig)
   }, [currentPage, isCallbackApi])
 
   return (

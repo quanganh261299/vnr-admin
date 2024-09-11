@@ -194,8 +194,12 @@ const AgencyManagement: FC = () => {
         setCurrentPage(currentPage - 1)
       }
       else {
+        const dataTableConfig = data.map((item: TAgencyTable) => ({
+          ...item,
+          key: item.id,
+        }));
         setTotalData(res.data.paging.totalCount)
-        setDataTable(res.data.data)
+        setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
 
       }
@@ -204,11 +208,6 @@ const AgencyManagement: FC = () => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
 
     })
-    const dataTableConfig = dataTable.map((item) => ({
-      ...item,
-      key: item.id,
-    }));
-    setDataTable(dataTableConfig)
   }, [selectSystemId, currentPage, isCallbackApi])
 
   return (
