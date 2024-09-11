@@ -255,7 +255,11 @@ const AdSetManagement: FC = () => {
         }}
         onRow={(record) => {
           return {
-            onClick: () => navigate(`${location.pathname}/${record.id}/ad`)
+            onClick: () => {
+              const updatedData = { ...breadCrumbName, groupName: record.name }
+              sessionStorage.setItem('breadCrumbName', JSON.stringify(updatedData))
+              navigate(`${location.pathname}/${record.id}/ad`)
+            }
           }
         }}
         loading={isLoading}

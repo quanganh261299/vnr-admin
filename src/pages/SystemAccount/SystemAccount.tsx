@@ -31,19 +31,19 @@ const SystemAccount: FC = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: '33.33%'
+      width: '40%'
     },
     {
       title: 'Vai trò',
       dataIndex: 'role',
       key: 'roleName',
       render: (role) => <span>{role.name}</span>,
-      width: '33.33%'
+      width: '40%'
     },
     {
       title: 'Tùy chọn',
       key: 'action',
-      width: '33.33%',
+      width: '20%',
       render: (_, record) => (
         <>
           <Space size="middle">
