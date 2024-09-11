@@ -32,5 +32,3 @@ export type TAdUserTable = {
     employeeName: string;
     bm: string;
 };
-
-

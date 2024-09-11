@@ -1,4 +1,4 @@
-import { TCreateUser } from "../models/user/user";
+import { TSystemUser } from "../models/user/user";
 import axiosInstance from "./axiosClients";
 
 const userApi = {
@@ -10,7 +10,7 @@ const userApi = {
         const url = `/users?pageIndex=${pageIndex || ""}&pageSize=${pageSize}`;
         return axiosInstance.get(url);
     },
-    createUser: (data: TCreateUser) => {
+    createUser: (data: TSystemUser) => {
         const url = "/users";
         return axiosInstance.post(url, data);
     },

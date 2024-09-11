@@ -158,7 +158,7 @@ const SystemAccount: FC = () => {
   }, [])
 
   useEffect(() => {
-    setLoading({ ...loading, isTable: true })
+    setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     userApi.getListUser(currentPage, 10).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -167,18 +167,18 @@ const SystemAccount: FC = () => {
       else {
         setTotalData(res.data.paging.totalCount)
         setDataTable(data)
-        setLoading({ ...loading, isTable: false })
+        setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
     }).catch((err) => {
       console.log('err', err)
-      setLoading({ ...loading, isTable: false })
+      setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
     const dataTableConfig = dataTable.map((item) => ({
       ...item,
       key: item.id,
     }));
     setDataTable(dataTableConfig)
-  }, [currentPage])
+  }, [currentPage, isCallbackApi])
 
   return (
     <>
