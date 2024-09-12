@@ -1,18 +1,17 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
-import { Button, message, Space, Table, Tooltip } from 'antd';
+import { Button, message, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import { TSystemField, TSystemTable } from '../../models/system/system';
-import organizationApi from '../../api/organizationApi';
 import BmModal from '../../Components/Modal/BmModal/BmModal';
 import userApi from '../../api/userApi';
+import { TBmUser, TBmUserField } from '../../models/user/user';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [dataTable, setDataTable] = useState<TSystemTable[]>([])
-  const [dataRecord, setDataRecord] = useState<TSystemField | null>(null)
+  const [dataTable, setDataTable] = useState<TBmUser[]>([])
+  const [dataRecord, setDataRecord] = useState<TBmUser | null>(null)
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
@@ -25,36 +24,30 @@ const SystemManagement: FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
 
-  const columns: TableProps<TSystemTable>['columns'] = [
+  const columns: TableProps<TBmUser>['columns'] = [
     {
-      title: 'Id BM',
-      dataIndex: 'idBM',
+      title: 'Đội nhóm',
       key: 'idBM',
-      render: (text) => <span>{text}</span>,
-      width: '22%',
-    },
-    {
-      title: 'Id tài khoản facebook',
-      dataIndex: 'idFB',
-      key: 'idFB',
-      width: '22%',
+      render: (record) => <span>{record.group.name}</span>,
+      width: '25%'
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: '22%',
+      width: '25%'
     },
     {
-      title: 'Đội nhóm',
-      dataIndex: 'group',
-      key: 'group',
-      width: '22%',
+      title: 'Danh sách id BM',
+      dataIndex: 'pms',
+      key: 'pms',
+      render: (value) => value.map((item: { id: string; userId: string }) => <Tag>{item.id}</Tag>),
+      width: '25%'
     },
     {
       title: 'Tùy chọn',
       key: 'action',
-      width: '12%',
+      width: '15%',
       render: (_, record) => (
         <>
           <Space size="middle">
@@ -70,26 +63,32 @@ const SystemManagement: FC = () => {
     },
   ];
 
-  const onFinish: FormProps<TSystemField>['onFinish'] = (values) => {
+  const onFinish: FormProps<TBmUserField>['onFinish'] = (values) => {
     setLoading({ ...loading, isBtn: true })
     if (dataRecord) {
-      organizationApi.updateOrganization({ ...values, id: dataRecord?.id }).then(() => {
-        setIsModalOpen(false)
-        setIsCallbackApi(!isCallbackApi)
-        setLoading({ ...loading, isBtn: false })
-        success('Sửa hệ thống thành công!')
-      }).catch((err) => {
-        setLoading({ ...loading, isBtn: false })
-        error(err.response.data.message)
-      })
+      // organizationApi.updateOrganization({ ...values, id: dataRecord?.id }).then(() => {
+      //   setIsModalOpen(false)
+      //   setIsCallbackApi(!isCallbackApi)
+      //   setLoading({ ...loading, isBtn: false })
+      //   success('Sửa hệ thống thành công!')
+      // }).catch((err) => {
+      //   setLoading({ ...loading, isBtn: false })
+      //   error(err.response.data.message)
+      // })
     }
     else {
-      organizationApi.createOrganization(values).then(() => {
+      const data = {
+        email: values.email,
+        groupId: values.groupId,
+        bmsId: String(values.bmsId).split(',').map((id) => id.trim())
+      }
+      console.log('data', data)
+      userApi.createBmUser(data).then(() => {
         setIsModalOpen(false)
         setIsCallbackApi(!isCallbackApi)
         modalRef.current?.reset();
         setLoading({ ...loading, isBtn: false })
-        success('Tạo hệ thống thành công!')
+        success('Tạo tài khoản BM thành công!')
       }).catch((err) => {
         setLoading({ ...loading, isBtn: false })
         error(err.response.data.message)
@@ -108,7 +107,7 @@ const SystemManagement: FC = () => {
     setDataRecord(null)
   }
 
-  const handleShowModal = (data: TSystemField | null = null) => {
+  const handleShowModal = (data: TBmUser | null = null) => {
     if (data) {
       console.log('data', data)
       setDataRecord(data)
@@ -120,18 +119,19 @@ const SystemManagement: FC = () => {
     }
   }
 
-  const handleShowConfirmDelete = (data: TSystemField) => {
+  const handleShowConfirmDelete = (data: TBmUser) => {
     setDataRecord(data)
     setIsDeleteConfirm(true)
   }
 
   const handleConfirmDelete = () => {
     setLoading({ ...loading, isBtn: true })
-    organizationApi.deleteOrganization(dataRecord?.id as string).then(() => {
+    console.log('data id', dataRecord?.id)
+    userApi.deleteUser(dataRecord?.id as string).then(() => {
       setIsCallbackApi(!isCallbackApi)
       setIsDeleteConfirm(false)
       setLoading({ ...loading, isBtn: false })
-      success('Xóa hệ thống thành công!')
+      success('Xóa tài khoản BM thành công!')
     }).catch((err) => {
       error(err.response.data.message)
       setLoading({ ...loading, isBtn: false })
@@ -161,11 +161,12 @@ const SystemManagement: FC = () => {
     setLoading({ ...loading, isTable: true })
     userApi.getListBmUser(currentPage, 10).then((res) => {
       const data = res.data.data
+      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
       else {
-        const dataTableConfig = data.map((item: TSystemTable) => ({
+        const dataTableConfig = data.map((item: TBmUser) => ({
           ...item,
           key: item.id,
         }));
@@ -222,7 +223,7 @@ const SystemManagement: FC = () => {
         cancelText={'Cancel'}
         handleOk={handleConfirmDelete}
         handleCancel={handleCancelDelete}
-        description={`Bạn có chắc muốn xóa hệ thống ${dataRecord?.name} không?`}
+        description={`Bạn có chắc muốn xóa tài khoản BM ${dataRecord?.email} không?`}
         isLoadingBtn={loading.isBtn}
       />
     </>

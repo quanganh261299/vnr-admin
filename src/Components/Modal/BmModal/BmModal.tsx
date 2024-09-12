@@ -1,16 +1,17 @@
 import { Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
-import { TSystemField } from "../../../models/system/system";
 import { SelectType } from "../../../models/common";
 import groupApi from "../../../api/groupApi";
 import { TypeTeamTable } from "../../../models/team/team";
+import { TBmUser, TBmUserField } from "../../../models/user/user";
+import TextArea from "antd/es/input/TextArea";
 
 interface Props {
   isModalOpen: boolean,
   handleOk: () => void,
   handleCancel: () => void,
-  onFinish: (values: TSystemField) => void,
-  editingData?: TSystemField | null,
+  onFinish: (values: TBmUserField) => void,
+  editingData?: TBmUser | null,
   isLoadingBtn?: boolean
 }
 
@@ -30,9 +31,11 @@ const BmModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((pr
 
   useEffect(() => {
     if (editingData) {
+      console.log('editingData', editingData)
       form.setFieldsValue({
-        name: editingData?.name,
-        description: editingData?.description,
+        email: editingData.email,
+        groupId: selectTeamDataModal.find((item) => item.value === editingData.group.id)?.value,
+        bmsId: editingData.pms.map((item) => item.id).join(', ')
       });
     } else {
       form.resetFields();
@@ -67,33 +70,6 @@ const BmModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((pr
         layout="vertical"
       >
         <Form.Item
-          label="Id tài khoản BM"
-          name="idBM"
-          rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
-          className='custom-margin-form'
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Id tài khoản Facebook"
-          name="idFB"
-          rules={[{ required: true, whitespace: true, message: 'Không được để trống id Facebook' }]}
-          className='custom-margin-form'
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, whitespace: true, message: 'Không được để trống email' }]}
-          className='custom-margin-form'
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
           label="Chọn đội nhóm"
           name="groupId"
           rules={[{ required: true, message: 'Bạn phải chọn đội nhóm!' }]}
@@ -106,6 +82,24 @@ const BmModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((pr
             options={selectTeamDataModal}
             notFoundContent={'Không có dữ liệu '}
           />
+        </Form.Item>
+
+        <Form.Item
+          label="Id BM (có thể nhập nhiều id, mỗi id ngăn cách nhau bởi dấu ',')"
+          name="bmsId"
+          rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
+          className='custom-margin-form'
+        >
+          <TextArea autoSize />
+        </Form.Item>
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, whitespace: true, message: 'Không được để trống email' }]}
+          className='custom-margin-form'
+        >
+          <Input />
         </Form.Item>
 
       </Form>

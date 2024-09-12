@@ -73,7 +73,7 @@ const SystemAccount: FC = () => {
       // })
     }
     else {
-      userApi.createUser(values).then(() => {
+      userApi.createSystemUser(values).then(() => {
         setLoading({ ...loading, isBtn: false })
         setIsModalOpen(false)
         success('Tạo tài khoản thành công!')
@@ -116,16 +116,16 @@ const SystemAccount: FC = () => {
 
   const handleConfirmDelete = () => {
     setLoading({ ...loading, isBtn: true })
-    // organizationApi.deleteOrganization(dataRecord?.id as string).then(() => {
-    //   setIsCallbackApi(!isCallbackApi)
-    //   setIsDeleteConfirm(false)
-    //   setLoading({ ...loading, isBtn: false })
-    //   success('Xóa hệ thống thành công!')
-    // }).catch((err) => {
-    //   error(err.response.data.message)
-    //   setLoading({ ...loading, isBtn: false })
-    //   setIsDeleteConfirm(false)
-    // })
+    userApi.deleteUser(dataRecord?.id as string).then(() => {
+      setIsCallbackApi(!isCallbackApi)
+      setIsDeleteConfirm(false)
+      setLoading({ ...loading, isBtn: false })
+      success('Xóa tài khoản hệ thống thành công!')
+    }).catch((err) => {
+      error(err.response.data.message)
+      setLoading({ ...loading, isBtn: false })
+      setIsDeleteConfirm(false)
+    })
   }
 
   const handleCancelDelete = () => {

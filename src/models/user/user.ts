@@ -1,4 +1,5 @@
 import { TMemberTable } from "../member/member";
+import { TypeTeamTable } from "../team/team";
 
 export type TUser = {
     id: string;
@@ -31,4 +32,22 @@ export type TAdUserTable = {
     employee: TMemberTable;
     employeeName: string;
     isActive?: boolean;
+};
+
+type TBmList = {
+    id: string;
+    userId: string;
+};
+
+export type TBmUser = {
+    id: string;
+    email: string;
+    group: TypeTeamTable;
+    pms: TBmList[];
+};
+
+export type TBmUserField = {
+    email: string;
+    groupId: string;
+    bmsId: string | string[];
 };

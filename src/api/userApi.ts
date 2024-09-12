@@ -1,4 +1,4 @@
-import { TSystemUser } from "../models/user/user";
+import { TBmUserField, TSystemUser } from "../models/user/user";
 import axiosInstance from "./axiosClients";
 
 const userApi = {
@@ -18,9 +18,17 @@ const userApi = {
         }`;
         return axiosInstance.get(url);
     },
-    createUser: (data: TSystemUser) => {
+    createBmUser: (data: TBmUserField) => {
+        const url = "/users/bm";
+        return axiosInstance.post(url, data);
+    },
+    createSystemUser: (data: TSystemUser) => {
         const url = "/users";
         return axiosInstance.post(url, data);
+    },
+    deleteUser: (id: string) => {
+        const url = `/users/${id}`;
+        return axiosInstance.delete(url);
     },
 };
 

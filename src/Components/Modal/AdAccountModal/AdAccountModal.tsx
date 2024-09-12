@@ -193,7 +193,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           selectSystemEditingDataModal.find((item) => item.value === editingData.employee.group.branch.organizationId)?.value,
         branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.employee.group.branchId)?.value,
         groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.employee.groupId)?.value,
-        employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData.employee.id)?.value
+        employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData.employee.id)?.value,
+        id: editingData.accountId
       });
     } else {
       form.resetFields();
@@ -286,7 +287,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           name="id"
           rules={[{ required: true, message: 'Không được để trống tên tài khoản quảng cáo' }]}
         >
-          <Input />
+          <Input disabled={editingData ? true : false} />
         </Form.Item>
       </Form>
     </Modal>

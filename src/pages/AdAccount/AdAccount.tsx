@@ -9,6 +9,7 @@ import advertisementApi from '../../api/advertisementApi';
 import { TAdUserTable } from '../../models/user/user';
 import AdAccountModal from '../../Components/Modal/AdAccountModal/AdAccountModal';
 
+
 const AdAccount: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TAdUserTable[]>([])
@@ -28,9 +29,10 @@ const AdAccount: FC = () => {
   const columns: TableProps<TAdUserTable>['columns'] = [
     {
       title: 'Tên nhân viên',
-      dataIndex: 'name',
+      dataIndex: 'employee',
       key: 'name',
       width: '20%',
+      render: (employee) => <span>{employee.name}</span>
     },
     {
       title: 'Tên tài khoản quảng cáo',
@@ -76,16 +78,29 @@ const AdAccount: FC = () => {
       accountID: String(values.id),
       employeeID: String(values.employeeId),
     }
-    advertisementApi.createAdsAccount(data).then(() => {
-      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
-      success('Tạo tài khoản quảng cáo thành công!')
-      setIsModalOpen(false)
-      setIsCallbackApi(!isCallbackApi)
-    }).catch((err) => {
-      console.log('err', err)
-      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
-      error(err.response.data.message)
-    })
+    if (dataRecord) {
+      advertisementApi.updateAdsAccount(data).then(() => {
+        setIsModalOpen(false)
+        setIsCallbackApi(!isCallbackApi)
+        setLoading({ ...loading, isBtn: false })
+        success('Sửa tài khoản quảng cáo thành công!')
+      }).catch((err) => {
+        setLoading({ ...loading, isBtn: false })
+        error(err.response.data.message)
+      })
+    }
+    else {
+      advertisementApi.createAdsAccount(data).then(() => {
+        setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+        success('Tạo tài khoản quảng cáo thành công!')
+        setIsModalOpen(false)
+        setIsCallbackApi(!isCallbackApi)
+      }).catch((err) => {
+        console.log('err', err)
+        setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+        error(err.response.data.message)
+      })
+    }
   };
 
   const handleOk = () => {
@@ -118,16 +133,16 @@ const AdAccount: FC = () => {
 
   const handleConfirmDelete = () => {
     setLoading({ ...loading, isBtn: true })
-    // organizationApi.deleteOrganization(dataRecord?.id as string).then(() => {
-    //   setIsCallbackApi(!isCallbackApi)
-    //   setIsDeleteConfirm(false)
-    //   setLoading({ ...loading, isBtn: false })
-    //   success('Xóa hệ thống thành công!')
-    // }).catch((err) => {
-    //   error(err.response.data.message)
-    //   setLoading({ ...loading, isBtn: false })
-    //   setIsDeleteConfirm(false)
-    // })
+    advertisementApi.deleteAdsAccount(dataRecord?.accountId as string).then(() => {
+      setIsCallbackApi(!isCallbackApi)
+      setIsDeleteConfirm(false)
+      setLoading({ ...loading, isBtn: false })
+      success('Xóa tài khoản quảng cáo thành công!')
+    }).catch((err) => {
+      error(err.response.data.message)
+      setLoading({ ...loading, isBtn: false })
+      setIsDeleteConfirm(false)
+    })
   }
 
   const handleCancelDelete = () => {
@@ -152,6 +167,7 @@ const AdAccount: FC = () => {
     setLoading({ ...loading, isTable: true })
     advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
       const data = res.data.data
+      console.log('res', res.data.data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
@@ -168,7 +184,7 @@ const AdAccount: FC = () => {
       console.log('err', err)
       setLoading({ ...loading, isTable: false })
     })
-  }, [currentPage])
+  }, [currentPage, isCallbackApi])
 
   return (
     <>

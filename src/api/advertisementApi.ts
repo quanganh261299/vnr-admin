@@ -47,6 +47,14 @@ const advertisementApi = {
         const url = "/adsAccount";
         return axiosInstance.post(url, data);
     },
+    updateAdsAccount: (data: TCreateAdsAccount) => {
+        const url = "/adsAccount";
+        return axiosInstance.put(url, data);
+    },
+    deleteAdsAccount: (id: string) => {
+        const url = `/adsAccount/${id}`;
+        return axiosInstance.delete(url)
+    }
 };
 
 export default advertisementApi;
