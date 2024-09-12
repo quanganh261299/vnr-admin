@@ -196,7 +196,11 @@ const AdManagement: FC = () => {
           key: item.id,
         }));
         setTotalPage(res.data.paging.totalPages)
-        setDataTable(dataTableConfig)
+        setDataTable((prevData) => {
+          const prevDataIds = new Set(prevData.map(item => item.id));
+          const newData = dataTableConfig.filter((item: TAdsTable) => !prevDataIds.has(item.id));
+          return [...prevData, ...newData];
+        });
         setIsLoading(false)
       }
     }).catch((err) => {

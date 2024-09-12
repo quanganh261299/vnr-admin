@@ -249,8 +249,14 @@ const AdvertisementManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    advertisementApi.getListAdsAccountActive(currentPage, 10).then((res) => {
-      console.log('res', res.data.data)
+    advertisementApi.getListAdsAccountActive(
+      currentPage,
+      10,
+      selectSystemId as string,
+      selectAgencyId as string,
+      selectTeamId as string,
+      selectMemberId as string
+    ).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

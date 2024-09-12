@@ -6,8 +6,10 @@ const userApi = {
         const url = "/Role";
         return axiosInstance.get(url);
     },
-    getListUser: (pageIndex?: number, pageSize?: number) => {
-        const url = `/users?pageIndex=${pageIndex || ""}&pageSize=${pageSize}`;
+    getListSystemUser: (pageIndex?: number, pageSize?: number) => {
+        const url = `/users/system?pageIndex=${
+            pageIndex || ""
+        }&pageSize=${pageSize}`;
         return axiosInstance.get(url);
     },
     createUser: (data: TSystemUser) => {
