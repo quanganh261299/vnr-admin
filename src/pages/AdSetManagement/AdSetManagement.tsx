@@ -5,12 +5,12 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime } from "../../helper/const"
+import { formatDateTime, formatNumberWithCommas } from "../../helper/const"
 
 const AdSetManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdSetsTable[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [totalData, setTotalData] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [breadCrumbData, setBreadCrumbData] = useState<{ title: ReactNode }[]>([])
   const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
@@ -28,12 +28,6 @@ const AdSetManagement: FC = () => {
       key: 'name',
       className: styles['center-cell'],
       fixed: 'left'
-    },
-    {
-      title: 'Tổng số lần hiển thị',
-      dataIndex: 'lifetimeImps',
-      key: 'lifetimeImps',
-      className: styles['center-cell'],
     },
     {
       title: 'Giới hạn độ tuổi',
@@ -138,28 +132,31 @@ const AdSetManagement: FC = () => {
       className: styles['center-cell'],
     },
     {
-      title: 'Trang đối tượng được quảng cáo',
+      title: 'Id Fanpage',
       dataIndex: 'promoteObjectPageId',
       key: 'page_id',
       className: styles['center-cell'],
     },
     {
-      title: 'Ngân sách theo ngày',
-      dataIndex: 'dailyBudget',
-      key: 'dailyBudget',
+      title: 'Ngân sách',
+      key: 'budget',
       className: styles['center-cell'],
-    },
-    {
-      title: 'Ngân sách trọn đời',
-      dataIndex: 'lifetimeBudget',
-      key: 'lifetimeBudget',
-      className: styles['center-cell'],
+      render: (record) => {
+        if (record.dailyBudget) {
+          return <span>{formatNumberWithCommas(record.dailyBudget)}</span>;
+        }
+        else if (record.lifetimeBudget) {
+          return <span>{formatNumberWithCommas(record.lifetimeBudget)}</span>;
+        }
+        else return <span>Ngân sách thuộc nhóm quảng cáo</span>
+      },
     },
     {
       title: 'Ngân sách còn lại của nhóm quảng cáo',
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>
     },
     {
       title: 'Thời gian tạo nhóm quảng cáo',
@@ -184,6 +181,14 @@ const AdSetManagement: FC = () => {
     },
   ];
 
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = target
+    if (scrollTop + clientHeight >= scrollHeight - 10 && !isLoading && currentPage < totalPage) {
+      setCurrentPage(prevPage => prevPage + 1)
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListAdSet(String(param.campaignId), currentPage, 10).then((res) => {
@@ -196,7 +201,7 @@ const AdSetManagement: FC = () => {
           ...item,
           key: item.id,
         }));
-        setTotalData(res.data.paging.totalCount)
+        setTotalPage(res.data.paging.totalPages)
         setDataTable(dataTableConfig)
         setIsLoading(false)
       }
@@ -245,13 +250,7 @@ const AdSetManagement: FC = () => {
       <Table
         columns={columns}
         dataSource={dataTable}
-        pagination={{
-          current: currentPage,
-          pageSize: 10,
-          total: totalData,
-          position: ['bottomCenter'],
-          onChange: (page) => setCurrentPage(page),
-        }}
+        pagination={false}
         onRow={(record) => {
           return {
             onClick: () => {
@@ -262,7 +261,8 @@ const AdSetManagement: FC = () => {
           }
         }}
         loading={isLoading}
-        scroll={{ x: 3500 }}
+        onScroll={handleScroll}
+        scroll={{ x: 3500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )

@@ -5,13 +5,13 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
 import { DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime } from "../../helper/const"
+import { formatDateTime, formatNumberWithCommas } from "../../helper/const"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
   // const [pageSize, setPageSize] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [totalData, setTotalData] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [breadCrumbData, setBreadCrumbData] = useState<{ title: ReactNode }[]>([])
   const param = useParams();
@@ -52,7 +52,7 @@ const CampaignsManagment: FC = () => {
       render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
     },
     {
-      title: 'Thời gian bắt đầu chiến dịch',
+      title: 'Thời gian chạy chiến dịch',
       dataIndex: 'startTime',
       key: 'startTime',
       className: styles['center-cell'],
@@ -77,22 +77,25 @@ const CampaignsManagment: FC = () => {
       className: styles['center-cell'],
     },
     {
-      title: 'Ngân sách hàng ngày',
-      dataIndex: 'dailyBudget',
-      key: 'dailyBudget',
+      title: 'Ngân sách',
+      key: 'budget',
       className: styles['center-cell'],
-    },
-    {
-      title: 'Ngân sách trọn đời',
-      dataIndex: 'lifetimeBudget',
-      key: 'lifetimeBudget',
-      className: styles['center-cell'],
+      render: (record) => {
+        if (record.dailyBudget) {
+          return <span>{formatNumberWithCommas(record.dailyBudget)}</span>;
+        }
+        else if (record.lifetimeBudget) {
+          return <span>{formatNumberWithCommas(record.lifetimeBudget)}</span>;
+        }
+        else return <span>Ngân sách thuộc nhóm quảng cáo</span>
+      },
     },
     {
       title: 'Ngân sách còn lại của chiến dịch',
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
+      render: (value) => formatNumberWithCommas(value)
     },
     {
       title: 'Các quốc gia áp dụng quảng cáo',
@@ -135,9 +138,18 @@ const CampaignsManagment: FC = () => {
     },
   ];
 
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = target
+    if (scrollTop + clientHeight >= scrollHeight - 10 && !isLoading && currentPage < totalPage) {
+      setCurrentPage(prevPage => prevPage + 1)
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10).then((res) => {
+      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -147,8 +159,12 @@ const CampaignsManagment: FC = () => {
           ...item,
           key: item.id,
         }));
-        setTotalData(res.data.paging.totalCount)
-        setDataTable(dataTableConfig)
+        setTotalPage(res.data.paging.totalPages)
+        setDataTable((prevData) => {
+          const prevDataIds = new Set(prevData.map(item => item.id));
+          const newData = dataTableConfig.filter((item: TCampaignTable) => !prevDataIds.has(item.id));
+          return [...prevData, ...newData];
+        });
         setIsLoading(false)
       }
     }).catch((err) => {
@@ -188,13 +204,7 @@ const CampaignsManagment: FC = () => {
       <Table
         columns={columns}
         dataSource={dataTable}
-        pagination={{
-          current: currentPage,
-          pageSize: 10,
-          total: totalData,
-          position: ['bottomCenter'],
-          onChange: (page) => setCurrentPage(page),
-        }}
+        pagination={false}
         onRow={(record) => {
           return {
             onClick: () => {
@@ -204,8 +214,9 @@ const CampaignsManagment: FC = () => {
             }
           }
         }}
+        onScroll={handleScroll}
         loading={isLoading}
-        scroll={{ x: 3000 }}
+        scroll={{ x: 3000, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )

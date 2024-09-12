@@ -10,7 +10,7 @@ import { formatDateTime } from "../../helper/const"
 const AdManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdsTable[]>([])
   // const [pageSize, setPageSize] = useState<number>(10);
-  const [totalData, setTotalData] = useState<number>(0);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [breadCrumbData, setBreadCrumbData] = useState<{ title: ReactNode }[]>([])
   const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
@@ -59,7 +59,7 @@ const AdManagement: FC = () => {
       }
     },
     {
-      title: 'Loại hành động quảng cáo kêu gọi người dùng thực hiện',
+      title: 'Nút kêu gọi hành động',
       dataIndex: 'adcreatives',
       key: 'call_to_action_type',
       className: styles['center-cell'],
@@ -75,63 +75,64 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'impressions',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.impressions}</span>
+      render: (insight) => insight ? <span>{insight.impressions}</span> : null
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
       dataIndex: 'insighn',
       key: 'clicks',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.clicks}</span>
+      render: (insight) => insight ? <span>{insight.clicks}</span> : null
     },
     {
       title: 'Tổng chi phí quảng cáo',
       dataIndex: 'insighn',
       key: 'spend',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.spend}</span>
+      render: (insight) => insight ? <span>{insight.spend}</span> : null
     },
     {
       title: 'Tỉ lệ nhấp chuột',
       dataIndex: 'insighn',
       key: 'ctr',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.ctr}</span>
+      render: (insight) => insight ? <span>{insight.ctr}</span> : null
+
     },
     {
       title: 'Chi phí mỗi 1000 lượt hiển thị',
       dataIndex: 'insighn',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.cpm}</span>
+      render: (insight) => insight ? <span>{insight.cpm}</span> : null
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insighn',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.cpc}</span>
+      render: (insight) => insight ? <span>{insight.cpc}</span> : null
     },
     {
       title: 'Chi phí mỗi hành động',
       dataIndex: 'insighn',
       key: 'cpp',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.cpp}</span>
+      render: (insight) => insight ? <span>{insight.cpp}</span> : null
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insighn',
       key: 'reach',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.reach}</span>
+      render: (insight) => insight ? <span>{insight.reach}</span> : null
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
       dataIndex: 'insighn',
       key: 'frequency',
       className: styles['center-cell'],
-      render: (insight) => <span>{insight.frequency}</span>
+      render: (insight) => insight ? <span>{insight.frequency}</span> : null
     },
     // {
     //   title: 'Số lần người dùng tương tác với bài viết',
@@ -173,6 +174,14 @@ const AdManagement: FC = () => {
     },
   ];
 
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = target
+    if (scrollTop + clientHeight >= scrollHeight - 10 && !isLoading && currentPage < totalPage) {
+      setCurrentPage(prevPage => prevPage + 1)
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListAd(String(param.adsetsId), currentPage, 10).then((res) => {
@@ -186,7 +195,7 @@ const AdManagement: FC = () => {
           ...item,
           key: item.id,
         }));
-        setTotalData(res.data.paging.totalCount)
+        setTotalPage(res.data.paging.totalPages)
         setDataTable(dataTableConfig)
         setIsLoading(false)
       }
@@ -194,7 +203,7 @@ const AdManagement: FC = () => {
       console.log('err', err)
       setIsLoading(false)
     })
-  }, [param.adsetsId])
+  }, [param.adsetsId, currentPage])
 
   useEffect(() => {
     setBreadCrumbData([
@@ -245,15 +254,10 @@ const AdManagement: FC = () => {
       <Table
         columns={columns}
         dataSource={dataTable}
-        pagination={{
-          current: currentPage,
-          pageSize: 10,
-          total: totalData,
-          position: ['bottomCenter'],
-          onChange: (page) => setCurrentPage(page),
-        }}
+        pagination={false}
         loading={isLoading}
-        scroll={{ x: 3500 }}
+        onScroll={handleScroll}
+        scroll={{ x: 3500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )

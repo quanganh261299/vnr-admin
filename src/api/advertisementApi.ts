@@ -6,12 +6,18 @@ const advertisementApi = {
         const url = `/adsAccount?pageIndex=${pageIndex}&pageSize=${pageSize}`;
         return axiosInstance.get(url);
     },
+    getListAdsAccountActive: (pageIndex?: number, pageSize?: number) => {
+        const url = `/adsAccount/isActive?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+        return axiosInstance.get(url);
+    },
     getListCampaigns: (
         accountId: string,
-        pageIndex?: number,
-        pageSize?: number
+        pageIndex?: number | string,
+        pageSize?: number | string
     ) => {
-        const url = `/campaign?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${accountId}`;
+        const url = `/campaign?pageIndex=${pageIndex || ""}&pageSize=${
+            pageSize || ""
+        }&adsAccountId=${accountId}`;
         return axiosInstance.get(url);
     },
     getListAdSet: (

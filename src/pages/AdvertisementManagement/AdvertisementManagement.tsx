@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import styles from './style.module.scss'
-import { Checkbox, DatePicker, Select, Spin, Table } from 'antd';
-import type { CheckboxProps, TableProps } from 'antd';
+import { DatePicker, Select, Spin, Table } from 'antd';
+import type { TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
 import { TAdvertisementTable } from '../../models/advertisement/advertisement';
@@ -171,14 +171,6 @@ const AdvertisementManagement: FC = () => {
     setSelectMemberId(value)
   };
 
-  const onChangePersonal: CheckboxProps['onChange'] = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
-
-  const onChangeBusiness: CheckboxProps['onChange'] = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
-
   const handleRangeChange = (dates: NoUndefinedRangeValueType<dayjs.Dayjs> | null) => {
     if (dates !== null && dates[0] !== null && dates[1] !== null) {
       const startTime = dates[0].toDate().getTime();
@@ -257,7 +249,7 @@ const AdvertisementManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
+    advertisementApi.getListAdsAccountActive(currentPage, 10).then((res) => {
       console.log('res', res.data.data)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -334,10 +326,6 @@ const AdvertisementManagement: FC = () => {
             value={selectMemberId || null}
             notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
           />
-          <div>
-            <Checkbox onChange={onChangePersonal}>Cá nhân</Checkbox>
-            <Checkbox onChange={onChangeBusiness}>Doanh nghiệp</Checkbox>
-          </div>
           <RangePicker
             format={"DD-MM-YYYY"}
             onChange={(dates) => handleRangeChange(dates)}
