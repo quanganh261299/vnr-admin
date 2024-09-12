@@ -30,5 +30,5 @@ export type TAdUserTable = {
     name: string;
     employee: TMemberTable;
     employeeName: string;
-    bm: string;
+    isActive?: boolean;
 };

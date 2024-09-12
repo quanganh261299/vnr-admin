@@ -7,6 +7,7 @@ import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { TSystemField, TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmModal from '../../Components/Modal/BmModal/BmModal';
+import userApi from '../../api/userApi';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -158,7 +159,7 @@ const SystemManagement: FC = () => {
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
-    organizationApi.getListOrganization(currentPage, 10).then((res) => {
+    userApi.getListBmUser(currentPage, 10).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

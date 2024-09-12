@@ -12,6 +12,12 @@ const userApi = {
         }&pageSize=${pageSize}`;
         return axiosInstance.get(url);
     },
+    getListBmUser: (pageIndex?: number, pageSize?: number) => {
+        const url = `/users/bm?pageIndex=${pageIndex || ""}&pageSize=${
+            pageSize || ""
+        }`;
+        return axiosInstance.get(url);
+    },
     createUser: (data: TSystemUser) => {
         const url = "/users";
         return axiosInstance.post(url, data);

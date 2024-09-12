@@ -1,13 +1,13 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
-import { Button, message, Space, Table, Tooltip } from 'antd';
+import { Button, message, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import AdvertisementModal from '../../Components/Modal/AdvertisementModal/AdvertisementModal';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
 import advertisementApi from '../../api/advertisementApi';
 import { TAdUserTable } from '../../models/user/user';
+import AdAccountModal from '../../Components/Modal/AdAccountModal/AdAccountModal';
 
 const AdAccount: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -45,10 +45,11 @@ const AdAccount: FC = () => {
       width: '20%',
     },
     {
-      title: 'BM',
-      dataIndex: 'bm',
-      key: 'bm',
+      title: 'Trạng thái tài khoản',
+      dataIndex: 'isActive',
+      key: 'isActive',
       width: '20%',
+      render: (isActive) => isActive ? <Tag color='green'>Đã được kích hoạt</Tag> : <Tag color='red'>Chưa được kích hoạt</Tag>
     },
     {
       title: 'Tùy chọn',
@@ -196,7 +197,7 @@ const AdAccount: FC = () => {
           }}
         />
       </div>
-      <AdvertisementModal
+      <AdAccountModal
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

@@ -24,8 +24,8 @@ interface Props {
   isLoadingBtn?: boolean
 }
 
-const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, isLoadingBtn, handleOk, handleCancel, onFinish } = props
+const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
+  const { isModalOpen, isLoadingBtn, editingData, handleOk, handleCancel, onFinish } = props
   const [selectSystemDataModal, setSelectSystemDataModal] = useState<SelectType[]>([])
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
@@ -33,6 +33,10 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [selectTeamModalId, setSelectTeamModalId] = useState<string | null>(null)
+  const [selectSystemEditingDataModal, setSelectSystemEditingDataModal] = useState<SelectType[]>([])
+  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
+  const [selectTeamEditingDataModal, setSelectTeamEditingDataModal] = useState<SelectType[]>([])
+  const [selectMemberEditingDataModal, setSelectMemberEditingDataModal] = useState<SelectType[]>([])
   const [loading, setLoading] = useState({
     isSelectSystem: false,
     isSelectAgency: false,
@@ -146,19 +150,56 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
     }
   }, [selectSystemModalId, selectAgencyModalId, selectTeamModalId])
 
-  // useEffect(() => {
-  //   if (editingData) {
-  //     form.setFieldsValue({
-  //       name: editingData.name || "",
-  //       organizationId: selectSystemData.find((item) => item.value === editingData.organizationId)?.value,
-  //       branchId: selectAgencyData.find((item) => item.value === editingData.branchId)?.value,
-  //       groupId: selectTeamData.find((item) => item.value === editingData.groupId)?.value,
-  //       employeeId: selectMemberData.find((item) => item.value === editingData.employeeId)?.value
-  //     });
-  //   } else {
-  //     form.resetFields();
-  //   }
-  // }, [editingData, form]);
+  useEffect(() => {
+    organizationApi.getListOrganization().then((res) => {
+      setSelectSystemEditingDataModal(
+        res.data.data.map((item: TSystemTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+    })
+    branchApi.getListBranch().then((res) => {
+      setSelectAgencyEditingDataModal(
+        res.data.data.map((item: TAgencyTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+    })
+    groupApi.getListGroup().then((res) => {
+      setSelectTeamEditingDataModal(
+        res.data.data.map((item: TypeTeamTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+    })
+    employeeApi.getListEmployee().then((res) => {
+      setSelectMemberEditingDataModal(
+        res.data.data.map((item: TMemberTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+    })
+  }, [])
+
+  useEffect(() => {
+    if (editingData) {
+      form.setFieldsValue({
+        name: editingData.name || "",
+        organizationId:
+          selectSystemEditingDataModal.find((item) => item.value === editingData.employee.group.branch.organizationId)?.value,
+        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.employee.group.branchId)?.value,
+        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.employee.groupId)?.value,
+        employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData.employee.id)?.value
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [editingData, form]);
+
 
   return (
     <Modal
@@ -187,7 +228,7 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
             allowClear
             showSearch
             placeholder="Chọn hệ thống"
-            options={selectSystemDataModal}
+            options={editingData ? selectSystemEditingDataModal : selectSystemDataModal}
             onClear={clearSelectSystemModalId}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
@@ -203,7 +244,7 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
             allowClear
             showSearch
             placeholder="Chọn chi nhánh"
-            options={selectAgencyDataModal}
+            options={editingData ? selectAgencyEditingDataModal : selectAgencyDataModal}
             onClear={clearSelectAgencyModalId}
             notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={loading.isSelectAgency}
@@ -219,7 +260,7 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
             allowClear
             showSearch
             placeholder="Chọn đội nhóm"
-            options={selectTeamDataModal}
+            options={editingData ? selectTeamEditingDataModal : selectTeamDataModal}
             notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
             onClear={clearSelectTeamModalId}
@@ -235,7 +276,7 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
             allowClear
             showSearch
             placeholder="Chọn thành viên"
-            options={selectMemberDataModal}
+            options={editingData ? selectMemberEditingDataModal : selectMemberDataModal}
             notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
             loading={loading.isSelectMember}
           />
@@ -252,4 +293,4 @@ const AdvertisementModal = forwardRef<{ submit: () => void; reset: () => void },
   )
 });
 
-export default AdvertisementModal;
+export default AdAccountModal;
