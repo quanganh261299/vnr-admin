@@ -143,12 +143,21 @@ const AdSetManagement: FC = () => {
       className: styles['center-cell'],
       render: (record) => {
         if (record.dailyBudget) {
-          return <span>{formatNumberWithCommas(record.dailyBudget)}</span>;
+          return (
+            <>
+              <div>Ngân sách hàng ngày:</div>
+              <span>{formatNumberWithCommas(record.dailyBudget)}</span>
+            </>
+          )
         }
         else if (record.lifetimeBudget) {
-          return <span>{formatNumberWithCommas(record.lifetimeBudget)}</span>;
+          return (
+            <>
+              <div>Ngân sách trọn đời:</div>
+              <span>{formatNumberWithCommas(record.lifetimeBudget)}</span>
+            </>
+          )
         }
-        else return <span>Ngân sách thuộc nhóm quảng cáo</span>
       },
     },
     {
