@@ -28,7 +28,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
     onFinish
   } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
-  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
+  // const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [isLoadingSelectAgency, setIsLoadingSelectAgency] = useState<boolean>(false)
   const [isLoadingModal, setIsLoadingModal] = useState<boolean>(false)
