@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
-import styles from './style.module.scss'
 import { SelectType } from "../../../models/common";
-import { TMemberField } from "../../../models/member/member";
-import branchApi from "../../../api/branchApi";
-import { TAgencyTable } from "../../../models/agency/agency";
 import groupApi from "../../../api/groupApi";
 import { TypeTeamTable } from "../../../models/team/team";
-import { EMAIL_REGEX, PHONE_REGEX } from "../../../helper/const";
+import { TBmUser, TBmUserField } from "../../../models/user/user";
+import TextArea from "antd/es/input/TextArea";
+import { TAgencyTable } from "../../../models/agency/agency";
+import branchApi from "../../../api/branchApi";
+import styles from './style.module.scss'
 
 interface Props {
   isModalOpen: boolean,
   handleOk: () => void,
   handleCancel: () => void,
-  onFinish: (values: TMemberField) => void,
-  editingData?: TMemberField | null,
+  onFinish: (values: TBmUserField) => void,
+  editingData?: TBmUser | null,
   selectSystemData: SelectType[],
   isLoadingBtn?: boolean
 }
 
-const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, editingData, selectSystemData, isLoadingBtn, handleOk, handleCancel, onFinish } = props
+const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
+  const { isModalOpen, editingData, isLoadingBtn, selectSystemData, handleOk, handleCancel, onFinish } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
@@ -40,17 +40,17 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
     },
     reset: () => {
       form.resetFields();
-    }
+    },
   }));
 
   const handleFormChange = (changedValues: any) => {
-    setSelectSystemModalId(changedValues.organizationId)
-    setSelectAgencyModalId(changedValues.branchId)
     if (changedValues.organizationId) {
+      setSelectSystemModalId(changedValues.organizationId)
       form.setFieldValue('branchId', undefined)
       form.setFieldValue('groupId', undefined)
     }
     if (changedValues.branchId) {
+      setSelectAgencyModalId(changedValues.branchId)
       form.setFieldValue('groupId', undefined)
     }
   };
@@ -66,6 +66,22 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
     form.setFieldValue('groupId', undefined)
     setSelectTeamDataModal([])
   }
+
+  useEffect(() => {
+    if (editingData) {
+      setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
+      setSelectAgencyModalId(editingData?.group?.branch.id as string)
+      form.setFieldsValue({
+        organizationId: selectSystemData.find((item) => item.value === editingData?.group?.branch?.organization.id)?.value,
+        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.group?.branch.id)?.value,
+        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.group.id)?.value,
+        email: editingData.email,
+        bmsId: editingData.pms.map((item) => item.id).join(', ')
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [editingData, form]);
 
   useEffect(() => {
     branchApi.getListBranch().then((res) => {
@@ -100,7 +116,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
       })
     }
     if (selectAgencyModalId) {
-      setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: true }))
       groupApi.getListGroup(undefined, undefined, undefined, selectAgencyModalId).then((res) => {
         setSelectTeamDataModal(
           res.data.data.map((item: TypeTeamTable) => ({
@@ -108,36 +124,14 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
             label: item.name
           }))
         )
-        setLoading((prevLoading) => ({ ...prevLoading, iseSelectTeam: false }))
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
   }, [selectSystemModalId, selectAgencyModalId])
 
-  useEffect(() => {
-    if (editingData) {
-      setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
-      setSelectAgencyModalId(editingData?.group?.branch.id as string)
-      form.setFieldsValue({
-        name: editingData.name || "",
-        email: editingData.email || "",
-        phone: editingData.phone || "",
-        description: editingData.description || "",
-        organizationId: selectSystemData.find((item) => item.value === editingData?.group?.branch?.organization.id)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.group?.branch.id)?.value,
-        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.groupId)?.value
-      });
-    } else {
-      form.resetFields();
-      setSelectSystemModalId(null)
-      setSelectAgencyModalId(null)
-      setSelectAgencyDataModal([])
-      setSelectTeamDataModal([])
-    }
-  }, [editingData, form]);
-
   return (
     <Modal
-      title={editingData ? 'Sửa đội nhóm' : 'Thêm đội nhóm'}
+      title={editingData ? 'Sửa tài khoản BM' : 'Thêm tài khoản BM'}
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -189,56 +183,39 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
           label="Chọn đội nhóm"
           name="groupId"
           rules={[{ required: true, message: 'Bạn phải chọn đội nhóm!' }]}
-          className={styles["custom-margin-form"]}
+          className={"custom-margin-form"}
         >
           <Select
             allowClear
             showSearch
             placeholder="Chọn đội nhóm"
             options={selectTeamDataModal}
-            notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+            notFoundContent={selectAgencyModalId ? 'Không có dữ liệu ' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
           />
         </Form.Item>
-        <Form.Item<TMemberField>
-          label="Tên thành viên"
-          name="name"
-          rules={[{ required: true, whitespace: true, message: 'Không được để trống tên thành viên' }]}
-          className={styles["custom-margin-form"]}
+
+        <Form.Item
+          label="Id BM (có thể nhập nhiều id, mỗi id ngăn cách nhau bởi dấu ',')"
+          name="bmsId"
+          rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
+          className='custom-margin-form'
         >
-          <Input />
+          <TextArea autoSize />
         </Form.Item>
-        <Form.Item<TMemberField>
+
+        <Form.Item
           label="Email"
           name="email"
-          rules={[
-            { required: true, whitespace: true, message: 'Không được để trống tên email' },
-            { pattern: EMAIL_REGEX, message: 'Email không hợp lệ' }
-          ]}
-          className={styles["custom-margin-form"]}
+          rules={[{ required: true, whitespace: true, message: 'Không được để trống email' }]}
+          className='custom-margin-form'
         >
           <Input />
         </Form.Item>
-        <Form.Item<TMemberField>
-          label="Số điện thoại"
-          name="phone"
-          rules={[
-            { required: true, whitespace: true, message: 'Không được để trống số điện thoại' },
-            { pattern: PHONE_REGEX, message: 'Số điện thoại không hợp lệ, bắt đầu từ 0 và có 9 - 11 số' }
-          ]}
-          className={styles["custom-margin-form"]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item<TMemberField>
-          label="Ghi chú"
-          name="description"
-        >
-          <Input.TextArea autoSize={{ minRows: 6, maxRows: 10 }} maxLength={249} />
-        </Form.Item>
+
       </Form>
     </Modal>
   )
 });
 
-export default MemberModal;
+export default BmAccountModal;

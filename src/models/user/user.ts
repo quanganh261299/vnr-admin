@@ -47,6 +47,7 @@ export type TBmUser = {
 };
 
 export type TBmUserField = {
+    id?: string;
     email: string;
     groupId: string;
     bmsId: string | string[];

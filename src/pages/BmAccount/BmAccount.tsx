@@ -4,7 +4,6 @@ import { Button, message, Select, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import BmModal from '../../Components/Modal/BmModal/BmModal';
 import userApi from '../../api/userApi';
 import { TBmUser, TBmUserField } from '../../models/user/user';
 import { SelectType } from '../../models/common';
@@ -14,6 +13,7 @@ import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
+import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -82,15 +82,22 @@ const SystemManagement: FC = () => {
   const onFinish: FormProps<TBmUserField>['onFinish'] = (values) => {
     setLoading({ ...loading, isBtn: true })
     if (dataRecord) {
-      // organizationApi.updateOrganization({ ...values, id: dataRecord?.id }).then(() => {
-      //   setIsModalOpen(false)
-      //   setIsCallbackApi(!isCallbackApi)
-      //   setLoading({ ...loading, isBtn: false })
-      //   success('Sửa hệ thống thành công!')
-      // }).catch((err) => {
-      //   setLoading({ ...loading, isBtn: false })
-      //   error(err.response.data.message)
-      // })
+      const data = {
+        id: dataRecord?.id,
+        email: values.email,
+        groupId: values.groupId,
+        bmsId: String(values.bmsId).split(',').map((id) => id.trim())
+      }
+      userApi.updateBmUser(data).then(() => {
+        setIsModalOpen(false)
+        setIsCallbackApi(!isCallbackApi)
+        setLoading({ ...loading, isBtn: false })
+        success('Sửa tài khoản BM thành công!')
+      }).catch((err) => {
+        console.log('err', err)
+        setLoading({ ...loading, isBtn: false })
+        error(err.response.data.message)
+      })
     }
     else {
       const data = {
@@ -98,7 +105,6 @@ const SystemManagement: FC = () => {
         groupId: values.groupId,
         bmsId: String(values.bmsId).split(',').map((id) => id.trim())
       }
-      console.log('data', data)
       userApi.createBmUser(data).then(() => {
         setIsModalOpen(false)
         setIsCallbackApi(!isCallbackApi)
@@ -329,13 +335,14 @@ const SystemManagement: FC = () => {
           }}
         />
       </div>
-      <BmModal
+      <BmAccountModal
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}
         handleCancel={handleCancel}
         onFinish={onFinish}
         editingData={dataRecord}
+        selectSystemData={selectSystemData}
         isLoadingBtn={loading.isBtn}
       />
       <DeleteModal

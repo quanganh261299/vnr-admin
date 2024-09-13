@@ -22,6 +22,10 @@ const userApi = {
         const url = "/users/bm";
         return axiosInstance.post(url, data);
     },
+    updateBmUser: (data: TBmUserField) => {
+        const url = "/users";
+        return axiosInstance.put(url, data);
+    },
     createSystemUser: (data: TSystemUser) => {
         const url = "/users";
         return axiosInstance.post(url, data);
