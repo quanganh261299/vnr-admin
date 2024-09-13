@@ -158,6 +158,13 @@ const AdSetManagement: FC = () => {
             </>
           )
         }
+        else {
+          return (
+            <>
+              <div>Ngân sách thuộc quảng cáo</div>
+            </>
+          )
+        }
       },
     },
     {

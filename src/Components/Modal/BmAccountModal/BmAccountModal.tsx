@@ -9,6 +9,7 @@ import TextArea from "antd/es/input/TextArea";
 import { TAgencyTable } from "../../../models/agency/agency";
 import branchApi from "../../../api/branchApi";
 import styles from './style.module.scss'
+import { EMAIL_REGEX } from "../../../helper/const";
 
 interface Props {
   isModalOpen: boolean,
@@ -207,7 +208,10 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         <Form.Item
           label="Email"
           name="email"
-          rules={[{ required: true, whitespace: true, message: 'Không được để trống email' }]}
+          rules={[
+            { required: true, whitespace: true, message: 'Không được để trống email' },
+            { pattern: EMAIL_REGEX, message: 'Email không đúng định dạng' },
+          ]}
           className='custom-margin-form'
         >
           <Input />

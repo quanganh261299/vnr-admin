@@ -134,6 +134,19 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{insight.frequency}</span> : null
     },
+    {
+      title: 'Actions',
+      dataIndex: 'insighn',
+      key: 'actions',
+      className: styles['center-cell'],
+      render: (insight) => insight && insight.actions && <span>{insight.actions}</span>
+    },
+    {
+      title: 'Tracking specs',
+      dataIndex: 'trackingSpecs',
+      key: 'trackingSpecs',
+      className: styles['center-cell'],
+    },
     // {
     //   title: 'Số lần người dùng tương tác với bài viết',
     //   dataIndex: 'post_engagement',
@@ -261,7 +274,7 @@ const AdManagement: FC = () => {
         pagination={false}
         loading={isLoading}
         onScroll={handleScroll}
-        scroll={{ x: 3500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
+        scroll={{ x: 8500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )
