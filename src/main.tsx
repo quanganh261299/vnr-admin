@@ -9,6 +9,13 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {
         console.log('Service Worker registered with scope:', registration.scope);
+        navigator.serviceWorker.ready.then(swRegistration => {
+          const token = localStorage.getItem('token');
+          if (token && swRegistration.active) {
+            swRegistration.active.postMessage({ token });
+            console.log('Token sent to Service Worker:', token);
+          }
+        });
       })
       .catch(error => {
         console.error('Service Worker registration failed:', error);
