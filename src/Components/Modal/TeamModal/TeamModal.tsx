@@ -28,10 +28,9 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
     onFinish
   } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
-  // const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
+  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [isLoadingSelectAgency, setIsLoadingSelectAgency] = useState<boolean>(false)
-  const [isLoadingModal, setIsLoadingModal] = useState<boolean>(false)
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
@@ -44,8 +43,8 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
   }));
 
   const handleFormChange = (changedValues: any) => {
-    setSelectSystemModalId(changedValues.organizationId)
     if (changedValues.organizationId) {
+      setSelectSystemModalId(changedValues.organizationId)
       form.setFieldValue('branchId', undefined)
     }
   };
@@ -55,37 +54,27 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
     setSelectAgencyDataModal([])
   }
 
-  // useEffect(() => {
-  //   branchApi.getListBranch().then((res) => {
-  //     setSelectAgencyEditingDataModal(
-  //       res.data.data.map((item: TAgencyTable) => ({
-  //         value: item.id,
-  //         label: item.name
-  //       }))
-  //     )
-  //   })
-  // }, [])
+  useEffect(() => {
+    branchApi.getListBranch().then((res) => {
+      setSelectAgencyEditingDataModal(
+        res.data.data.map((item: TAgencyTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+    })
+  }, [])
 
   useEffect(() => {
-    if (editingData) {
-      setSelectSystemModalId(editingData?.branch?.organizationId as string)
-      setIsLoadingModal(true)
-      branchApi.getListBranch().then((res) => {
+    if (selectSystemModalId) {
+      setIsLoadingSelectAgency(true)
+      branchApi.getListBranch(undefined, undefined, selectSystemModalId).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
             label: item.name
           }))
         )
-        setIsLoadingModal(false)
-      })
-    }
-  }, [editingData])
-
-  useEffect(() => {
-    if (selectSystemModalId) {
-      setIsLoadingSelectAgency(true)
-      branchApi.getListBranch(undefined, undefined, selectSystemModalId).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -103,14 +92,14 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
         name: editingData.name || "",
         description: editingData.description || "",
         organizationId: selectSystemData.find((item) => item.value === editingData.branch?.organizationId)?.value,
-        branchId: selectAgencyDataModal.find((item) => item.value === editingData.branchId)?.value
+        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.branchId)?.value
       });
     } else {
       form.resetFields();
       setSelectSystemModalId(null)
       setSelectAgencyDataModal([])
     }
-  }, [editingData, form, selectAgencyDataModal]);
+  }, [editingData, form, selectAgencyEditingDataModal]);
 
   return (
     <Modal
@@ -120,7 +109,6 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
       onCancel={handleCancel}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
-      loading={isLoadingModal}
     >
       <Form
         form={form}
@@ -155,7 +143,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
             allowClear
             showSearch
             placeholder="Chọn chi nhánh"
-            options={selectAgencyDataModal}
+            options={editingData ? selectAgencyEditingDataModal : selectAgencyDataModal}
             notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={isLoadingSelectAgency}
           />
