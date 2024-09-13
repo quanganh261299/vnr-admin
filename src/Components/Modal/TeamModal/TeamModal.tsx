@@ -50,6 +50,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
   };
 
   const clearSelectSystemModalId = () => {
+    setSelectSystemModalId(null)
     form.setFieldValue('branchId', undefined)
     setSelectAgencyDataModal([])
   }
@@ -75,12 +76,6 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
             label: item.name
           }))
         )
-        setSelectAgencyDataModal(
-          res.data.data.map((item: TAgencyTable) => ({
-            value: item.id,
-            label: item.name
-          }))
-        )
         setIsLoadingSelectAgency(false)
       })
     }
@@ -88,6 +83,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
 
   useEffect(() => {
     if (editingData) {
+      setSelectSystemModalId(String(editingData.branch?.organizationId))
       form.setFieldsValue({
         name: editingData.name || "",
         description: editingData.description || "",
@@ -143,7 +139,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
             allowClear
             showSearch
             placeholder="Chọn chi nhánh"
-            options={editingData ? selectAgencyEditingDataModal : selectAgencyDataModal}
+            options={selectAgencyDataModal}
             notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={isLoadingSelectAgency}
           />

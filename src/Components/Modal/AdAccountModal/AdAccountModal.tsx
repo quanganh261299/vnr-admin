@@ -59,15 +59,21 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     setSelectAgencyModalId(changedValues.branchId)
     setSelectTeamModalId(changedValues.groupId)
     if (changedValues.organizationId) {
+      setSelectAgencyDataModal([])
+      setSelectTeamDataModal([])
+      setSelectMemberDataModal([])
       form.setFieldValue('branchId', undefined)
       form.setFieldValue('groupId', undefined)
       form.setFieldValue('employeeId', undefined)
     }
     if (changedValues.branchId) {
+      setSelectTeamDataModal([])
+      setSelectMemberDataModal([])
       form.setFieldValue('groupId', undefined)
       form.setFieldValue('employeeId', undefined)
     }
     if (changedValues.groupId) {
+      setSelectMemberDataModal([])
       form.setFieldValue('employeeId', undefined)
     }
   };
@@ -187,6 +193,9 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
 
   useEffect(() => {
     if (editingData) {
+      setSelectSystemModalId(String(editingData.employee.group.branch.organizationId))
+      setSelectAgencyModalId(String(editingData.employee.group.branchId))
+      setSelectTeamModalId(String(editingData.employee.groupId))
       form.setFieldsValue({
         name: editingData.name || "",
         organizationId:
@@ -199,7 +208,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     } else {
       form.resetFields();
     }
-  }, [editingData, form]);
+  }, [editingData, form, selectSystemEditingDataModal, selectAgencyEditingDataModal, selectTeamEditingDataModal, selectMemberEditingDataModal]);
 
 
   return (
@@ -229,7 +238,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             allowClear
             showSearch
             placeholder="Chọn hệ thống"
-            options={editingData ? selectSystemEditingDataModal : selectSystemDataModal}
+            options={selectSystemDataModal}
             onClear={clearSelectSystemModalId}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
@@ -245,7 +254,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             allowClear
             showSearch
             placeholder="Chọn chi nhánh"
-            options={editingData ? selectAgencyEditingDataModal : selectAgencyDataModal}
+            options={selectAgencyDataModal}
             onClear={clearSelectAgencyModalId}
             notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={loading.isSelectAgency}
@@ -261,7 +270,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             allowClear
             showSearch
             placeholder="Chọn đội nhóm"
-            options={editingData ? selectTeamEditingDataModal : selectTeamDataModal}
+            options={selectTeamDataModal}
             notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
             onClear={clearSelectTeamModalId}
@@ -277,7 +286,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             allowClear
             showSearch
             placeholder="Chọn thành viên"
-            options={editingData ? selectMemberEditingDataModal : selectMemberDataModal}
+            options={selectMemberDataModal}
             notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
             loading={loading.isSelectMember}
           />

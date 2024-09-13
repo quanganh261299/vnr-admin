@@ -183,7 +183,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
               allowClear
               showSearch
               placeholder="Chọn chi nhánh"
-              options={editingData ? selectAgencyEditingDataModal : selectAgencyDataModal}
+              options={selectAgencyDataModal}
               onClear={clearSelectAgencyModalId}
               notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
@@ -200,7 +200,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
             allowClear
             showSearch
             placeholder="Chọn đội nhóm"
-            options={editingData ? selectTeamEditingDataModal : selectTeamDataModal}
+            options={selectTeamDataModal}
             notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
           />
