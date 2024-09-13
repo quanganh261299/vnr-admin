@@ -31,6 +31,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
   const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [isLoadingSelectAgency, setIsLoadingSelectAgency] = useState<boolean>(false)
+  const [isLoadingModal, setIsLoadingModal] = useState<boolean>(false)
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
@@ -54,20 +55,30 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
     setSelectAgencyDataModal([])
   }
 
-  useEffect(() => {
-    branchApi.getListBranch().then((res) => {
-      setSelectAgencyEditingDataModal(
-        res.data.data.map((item: TAgencyTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-  }, [])
+  // useEffect(() => {
+  //   branchApi.getListBranch().then((res) => {
+  //     setSelectAgencyEditingDataModal(
+  //       res.data.data.map((item: TAgencyTable) => ({
+  //         value: item.id,
+  //         label: item.name
+  //       }))
+  //     )
+  //   })
+  // }, [])
 
   useEffect(() => {
     if (editingData) {
       setSelectSystemModalId(editingData?.branch?.organizationId as string)
+      setIsLoadingModal(true)
+      branchApi.getListBranch().then((res) => {
+        setSelectAgencyDataModal(
+          res.data.data.map((item: TAgencyTable) => ({
+            value: item.id,
+            label: item.name
+          }))
+        )
+        setIsLoadingModal(false)
+      })
     }
   }, [editingData])
 
@@ -92,14 +103,14 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
         name: editingData.name || "",
         description: editingData.description || "",
         organizationId: selectSystemData.find((item) => item.value === editingData.branch?.organizationId)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.branchId)?.value
+        branchId: selectAgencyDataModal.find((item) => item.value === editingData.branchId)?.value
       });
     } else {
       form.resetFields();
       setSelectSystemModalId(null)
       setSelectAgencyDataModal([])
     }
-  }, [editingData, form, selectAgencyEditingDataModal]);
+  }, [editingData, form, selectAgencyDataModal]);
 
   return (
     <Modal
@@ -109,6 +120,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
       onCancel={handleCancel}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
+      loading={isLoadingModal}
     >
       <Form
         form={form}
@@ -143,7 +155,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
             allowClear
             showSearch
             placeholder="Chọn chi nhánh"
-            options={editingData ? selectAgencyEditingDataModal : selectAgencyDataModal}
+            options={selectAgencyDataModal}
             notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={isLoadingSelectAgency}
           />

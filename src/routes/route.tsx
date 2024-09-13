@@ -11,10 +11,12 @@ import TeamManagement from "../pages/TeamManagement/TeamManagement";
 import { getAuthStatus } from "../helper/authStatus";
 import ManagementLayout from "../Layout/AdminLayout/ManagementLayout";
 import ProtectedRoute from "./ProtectedRoute";
-import LoginBM from "../pages/LoginBM/LoginPM";
+import LoginBM from "../pages/LoginBM/LoginBM";
 import SystemAccount from "../pages/SystemAccount/SystemAccount";
 import AdAccount from "../pages/AdAccount/AdAccount";
 import BmAccount from "../pages/BmAccount/BmAccount";
+import BMLayout from "../Layout/BMLayout/BMLayout";
+import BmHomePage from "../pages/BmHomepage/BmHomePage";
 
 
 export const route = [
@@ -78,12 +80,13 @@ export const route = [
     ]
   },
   {
-    path: "/advertisement-account?isBM=true",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['bm']} userRole="bm" />,
+    path: "/bm-homepage",
+    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={BMLayout} roles={['bm']} userRole="bm" />,
     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
+        element: <BmHomePage />
       }
     ]
   }

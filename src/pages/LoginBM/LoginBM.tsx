@@ -53,7 +53,7 @@ const LoginBM = () => {
             authApi.loginFB(response.accessToken).then((res) => {
               storeAuthStatus(res.data.data.accessToken)
               setIsLoading(false)
-              window.location.href = '/advertisement-account?isBM=true'
+              window.location.href = '/bm-homepage'
             })
           }}
           onFail={(error) => {

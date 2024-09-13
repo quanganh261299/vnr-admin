@@ -1,12 +1,19 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
-import { Button, message, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, message, Select, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import BmModal from '../../Components/Modal/BmModal/BmModal';
 import userApi from '../../api/userApi';
 import { TBmUser, TBmUserField } from '../../models/user/user';
+import { SelectType } from '../../models/common';
+import { TypeTeamTable } from '../../models/team/team';
+import groupApi from '../../api/groupApi';
+import branchApi from '../../api/branchApi';
+import { TAgencyTable } from '../../models/agency/agency';
+import { TSystemTable } from '../../models/system/system';
+import organizationApi from '../../api/organizationApi';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -15,11 +22,20 @@ const SystemManagement: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
+    isSelectSystem: false,
+    isSelectAgency: false,
+    isSelectTeam: false
   })
   // const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
+  const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
+  const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
+  const [selectTeamData, setSelectTeamData] = useState<SelectType[]>([])
+  const [selectTeamId, setSelectTeamId] = useState<string | null>(null)
+  const [selectSystemId, setSelectSystemId] = useState<string | null>(null)
+  const [selectAgencyId, setSelectAgencyId] = useState<string | null>(null)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
   const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
@@ -139,6 +155,33 @@ const SystemManagement: FC = () => {
     })
   }
 
+  const onChangeSystem = (value: string) => {
+    setSelectSystemId(value)
+    setSelectAgencyId(null)
+    setSelectTeamId(null)
+  };
+
+  const onSearchSystem = (value: string) => {
+    console.log('search:', value);
+  };
+
+  const onChangeAgency = (value: string) => {
+    setSelectAgencyId(value)
+    setSelectTeamId(null)
+  };
+
+  const onSearchAgency = (value: string) => {
+    console.log('search:', value);
+  };
+
+  const onChangeTeam = (value: string) => {
+    setSelectTeamId(value)
+  };
+
+  const onSearchTeam = (value: string) => {
+    console.log('search:', value);
+  };
+
   const handleCancelDelete = () => {
     setIsDeleteConfirm(false)
   }
@@ -156,6 +199,45 @@ const SystemManagement: FC = () => {
       content: message,
     });
   };
+
+  useEffect(() => {
+    setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
+    setSelectAgencyData([])
+    setSelectTeamData([])
+    organizationApi.getListOrganization().then((res) => {
+      setSelectSystemData(
+        res.data.data.map((item: TSystemTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
+    })
+    if (selectSystemId) {
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
+      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+        setSelectAgencyData(
+          res.data.data.map((item: TAgencyTable) => ({
+            value: item.id,
+            label: item.name
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
+      })
+    }
+    if (selectAgencyId) {
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
+      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyId).then((res) => {
+        setSelectTeamData(
+          res.data.data.map((item: TypeTeamTable) => ({
+            value: item.id,
+            label: item.name
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
+      })
+    }
+  }, [selectSystemId, selectAgencyId])
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
@@ -184,16 +266,56 @@ const SystemManagement: FC = () => {
     <>
       {contextHolder}
       <div className={styles["container"]}>
-        <Tooltip title='Thêm tài khoản BM'>
-          <Button
-            icon={<PlusOutlined />}
-            type="primary"
-            className={styles['btn']}
-            onClick={() => handleShowModal()}
-          >
-            Thêm tài khoản BM
-          </Button>
-        </Tooltip>
+        <div className={styles["bm-container"]}>
+          <Tooltip title='Thêm tài khoản BM'>
+            <Button
+              icon={<PlusOutlined />}
+              type="primary"
+              className={styles['btn']}
+              onClick={() => handleShowModal()}
+            >
+              Thêm tài khoản BM
+            </Button>
+          </Tooltip>
+          <Select
+            allowClear
+            showSearch
+            placeholder="Chọn hệ thống"
+            optionFilterProp="label"
+            onChange={onChangeSystem}
+            onSearch={onSearchSystem}
+            options={selectSystemData}
+            className={styles["select-system-item"]}
+            notFoundContent={'Không có dữ liệu'}
+            loading={loading.isSelectSystem}
+          />
+          <Select
+            allowClear
+            showSearch
+            placeholder="Chọn chi nhánh"
+            optionFilterProp="label"
+            onChange={onChangeAgency}
+            onSearch={onSearchAgency}
+            options={selectAgencyData}
+            value={selectAgencyId || null}
+            className={styles["select-system-item"]}
+            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+            loading={loading.isSelectAgency}
+          />
+          <Select
+            allowClear
+            showSearch
+            placeholder="Chọn đội nhóm"
+            optionFilterProp="label"
+            onChange={onChangeTeam}
+            onSearch={onSearchTeam}
+            options={selectTeamData}
+            value={selectTeamId || null}
+            className={styles["select-system-item"]}
+            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+            loading={loading.isSelectTeam}
+          />
+        </div>
         <Table
           columns={columns}
           dataSource={dataTable}
