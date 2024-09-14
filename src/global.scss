@@ -20,3 +20,11 @@
 .ant-table-wrapper .ant-table-tbody .ant-table-row > .ant-table-cell-row-hover {
     background: #f2f2f2 !important;
 }
+
+.ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

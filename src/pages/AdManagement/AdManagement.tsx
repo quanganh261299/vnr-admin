@@ -1,11 +1,11 @@
-import { Breadcrumb, Table, TableProps } from "antd"
+import { Breadcrumb, Table, TableProps, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useParams } from "react-router-dom"
 import { TAdsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, NotificationOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime } from "../../helper/const"
+import { convertArrayToObject, formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
 
 const AdManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdsTable[]>([])
@@ -21,6 +21,23 @@ const AdManagement: FC = () => {
   const campaignsUrl = location.pathname.split('/').slice(1, 4).join('/')
   const adsetUrl = location.pathname.split('/').slice(1, 6).join('/')
 
+  const handleCallToActionType = (value: string) => {
+    switch (value) {
+      case "BUY_NOW": return "Mua ngay"
+      case "CONTACT_US": return "Liên hệ với chúng tôi"
+      case "DOWNLOAD": return "Tải xuống"
+      case "LEARN_MORE": return "Tìm hiểu thêm"
+      case "MESSAGE_PAGE": return "Gửi tin nhắn đến trang"
+      case "NO_BUTTON": return "Không có nút"
+      case "ORDER_NOW": return "Đặt hàng ngay"
+      case "PLAY_GAME": return "Chơi game"
+      case "SHOP_NOW": return "Mua sắm ngay"
+      case "SIGN_UP": return "Đăng ký"
+      case "WATCH_MORE": return "Xem thêm"
+      case "GET_DIRECTIONS": return "Xem chỉ đường"
+    }
+  }
+
   const columns: TableProps<TAdsTable>['columns'] = [
     {
       title: 'Tên quảng cáo',
@@ -29,22 +46,11 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
     },
     {
-      title: 'Trạng thái được cấu hình cho quảng cáo',
-      dataIndex: 'configuredStatus',
-      key: 'configuredStatus',
-      className: styles['center-cell'],
-    },
-    {
       title: 'Trạng thái quảng cáo',
-      dataIndex: 'status',
-      key: 'status',
-      className: styles['center-cell'],
-    },
-    {
-      title: 'Trạng thái quảng cáo sau khi áp dụng qui tắc phân phối',
       dataIndex: 'effectiveStatus',
       key: 'effectiveStatus',
       className: styles['center-cell'],
+      render: (value) => handleEffectiveStatus(value)
     },
     {
       title: 'Nội dung quảng cáo',
@@ -54,9 +60,15 @@ const AdManagement: FC = () => {
       render: (adcreatives) => {
         const adcreativesData = JSON.parse(adcreatives).data[0]
         return (
-          <span>{adcreativesData.body}</span>
+          <Tooltip
+            title={adcreativesData.body}
+            placement="bottom"
+          >
+            <div className="ellipsis">{adcreativesData.body}</div>
+          </Tooltip>
         )
-      }
+      },
+      width: 400
     },
     {
       title: 'Nút kêu gọi hành động',
@@ -66,9 +78,9 @@ const AdManagement: FC = () => {
       render: (adcreatives) => {
         const adcreativesData = JSON.parse(adcreatives).data[0]
         return (
-          <span>{adcreativesData.call_to_action_type}</span>
+          <span>{handleCallToActionType(adcreativesData.call_to_action_type)}</span>
         )
-      }
+      },
     },
     {
       title: 'Tổng số lần hiển thị',
@@ -85,11 +97,11 @@ const AdManagement: FC = () => {
       render: (insight) => insight ? <span>{insight.clicks}</span> : null
     },
     {
-      title: 'Tổng chi phí quảng cáo',
+      title: 'Số tiền đã chi tiêu',
       dataIndex: 'insighn',
       key: 'spend',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.spend}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(insight.spend)}</span> : null
     },
     {
       title: 'Tỉ lệ nhấp chuột',
@@ -104,21 +116,21 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.cpm}</span> : null
+      render: (insight) => insight ? <span>{Math.round(insight.cpm)}</span> : null
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insighn',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.cpc}</span> : null
+      render: (insight) => insight ? <span>{Math.round(insight.cpc)}</span> : null
     },
     {
       title: 'Chi phí mỗi hành động',
       dataIndex: 'insighn',
       key: 'cpp',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.cpp}</span> : null
+      render: (insight) => insight ? <span>{Math.round(insight.cpp)}</span> : null
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
@@ -132,51 +144,144 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'frequency',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.frequency}</span> : null
+      render: (insight) => {
+        const insightFrequency = parseFloat(insight.frequency);
+        return (
+          insight ? <span>{insightFrequency.toFixed(1)}</span> : null
+        )
+      }
     },
     {
-      title: 'Actions',
+      title: 'Kết quả tin nhắn',
       dataIndex: 'insighn',
-      key: 'actions',
+      key: 'totalMessagingConnection',
       className: styles['center-cell'],
-      render: (insight) => insight && insight.actions && <span>{insight.actions}</span>
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["onsite_conversion.total_messaging_connection"]}</span>
+        )
+      }
     },
-    // {
-    //   title: 'Tracking specs',
-    //   dataIndex: 'trackingSpecs',
-    //   key: 'trackingSpecs',
-    //   className: styles['center-cell'],
-    // },
-    // {
-    //   title: 'Số lần người dùng tương tác với bài viết',
-    //   dataIndex: 'post_engagement',
-    //   key: 'post_engagement',
-    //   className: styles['center-cell'],
-    // },
-    // {
-    //   title: 'Số lần người dùng tương tác với trang',
-    //   dataIndex: 'page_engagement',
-    //   key: 'page_engagement',
-    //   className: styles['center-cell'],
-    // },
-    // {
-    //   title: 'Số lần người dùng xem ảnh từ quảng cáo',
-    //   dataIndex: 'photo_view',
-    //   key: 'photo_view',
-    //   className: styles['center-cell'],
-    // },
-    // {
-    //   title: 'Số lần người dùng nhấp vào liên kết trong quảng cáo',
-    //   dataIndex: 'link_click',
-    //   key: 'link_click',
-    //   className: styles['center-cell'],
-    // },
     {
-      title: 'Thời gian tạo quảng cáo',
-      dataIndex: 'createdTime',
-      key: 'created_time',
+      title: 'Số người nhắn tin',
+      dataIndex: 'insighn',
+      key: 'messagingFirstReply',
       className: styles['center-cell'],
-      render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["onsite_conversion.messaging_first_reply"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Lượt tương tác với bài viết',
+      dataIndex: 'insighn',
+      key: 'postEngagement',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["post_engagement"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Lượt tương tác với trang',
+      dataIndex: 'insighn',
+      key: 'pageEngagement',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["page_engagement"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Lượt xem hình ảnh',
+      dataIndex: 'insighn',
+      key: 'photoView',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["photo_view"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Số lần phát video',
+      dataIndex: 'insighn',
+      key: 'videoPlay',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["video_play"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Số lần video được xem ít nhất 3 giây',
+      dataIndex: 'insighn',
+      key: 'videoView',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["video_view"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Số lần video được xem ít nhất 10 giây',
+      dataIndex: 'insighn',
+      key: 'videoView10s',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["video_10s_view"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Số lần video được xem ít nhất 30 giây',
+      dataIndex: 'insighn',
+      key: 'videoView30s',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["video_30s_view"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Số lần video được xem đầy đủ',
+      dataIndex: 'insighn',
+      key: 'videoCompleteView',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["video_complete_view"]}</span>
+        )
+      }
+    },
+    {
+      title: 'Người dùng nhắn tin sau 7 ngày',
+      dataIndex: 'insighn',
+      key: 'conversationStarted7d',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        return (
+          insight && insight.actions && <span>{actionData["onsite_conversion.messaging_conversation_started_7d"]}</span>
+        )
+      }
     },
     {
       title: 'Thời gian chạy quảng cáo',
@@ -185,6 +290,12 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
       render: (startTime) => <span>{formatDateTime(startTime)}</span>
     },
+    // {
+    //   title: 'Tracking specs',
+    //   dataIndex: 'trackingSpecs',
+    //   key: 'trackingSpecs',
+    //   className: styles['center-cell'],
+    // },
   ];
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
@@ -274,7 +385,7 @@ const AdManagement: FC = () => {
         pagination={false}
         loading={isLoading}
         onScroll={handleScroll}
-        scroll={{ x: 8500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
+        scroll={{ x: 4200, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )

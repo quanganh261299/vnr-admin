@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime, formatNumberWithCommas } from "../../helper/const"
+import { formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
 
 const AdSetManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdSetsTable[]>([])
@@ -21,6 +21,26 @@ const AdSetManagement: FC = () => {
 
   const navigate = useNavigate()
 
+  const handleFacebookPosition = (value: string) => {
+    switch (value) {
+      case 'feed': return 'Bảng tin'
+      case 'facebook_reels': return 'Reels (video ngắn)'
+      case 'facebook_reels_overlay': return 'Chồng lên video Reels'
+      case 'video_feeds': return 'Video'
+      case 'instream_video': return 'Video giữa chừng'
+      case 'marketplace': return 'Marketplace'
+      case 'story': return 'Story của người dùng'
+      case 'search': return 'Kết quả tìm kiếm'
+    }
+  }
+
+  const handleDevice = (value: string) => {
+    switch (value) {
+      case 'mobile': return 'Thiết bị di động'
+      case 'desktop': return 'Máy tính'
+    }
+  }
+
   const columns: TableProps<TAdSetsTable>['columns'] = [
     {
       title: 'Tên nhóm quảng cáo',
@@ -28,6 +48,14 @@ const AdSetManagement: FC = () => {
       key: 'name',
       className: styles['center-cell'],
       fixed: 'left'
+    },
+    {
+      title: 'Trạng thái nhóm quảng cáo',
+      dataIndex: 'effectiveStatus',
+      key: 'effectiveStatus',
+      className: styles['center-cell'],
+      render: (value) => handleEffectiveStatus(value),
+      width: 210
     },
     {
       title: 'Giới hạn độ tuổi',
@@ -39,22 +67,8 @@ const AdSetManagement: FC = () => {
         return (
           <span>{targetingData.age_min} - {targetingData.age_max}</span>
         )
-      }
-    },
-    {
-      title: 'Tự động hóa nhắm mục tiêu',
-      dataIndex: 'targeting',
-      key: 'age',
-      className: styles['center-cell'],
-      render: (targeting) => {
-        const targetingData = JSON.parse(targeting)
-        console.log('data', targetingData)
-        return (
-          targetingData && targetingData.targeting_automation && targetingData.targeting_automation.advantage_audience ? (
-            <span>{targetingData.targeting_automation.advantage_audience}</span>
-          ) : null
-        )
-      }
+      },
+      width: 150
     },
     {
       title: 'Địa điểm mục tiêu quảng cáo',
@@ -63,16 +77,16 @@ const AdSetManagement: FC = () => {
       className: styles['center-cell'],
       render: (targeting) => {
         const targetingData = JSON.parse(targeting)
-        console.log('data', targetingData)
         return (
           targetingData.geo_locations.countries ? (
             <span>{targetingData.geo_locations.countries.join(', ')}</span>
           ) : null
         )
-      }
+      },
+      width: 220
     },
     {
-      title: 'Nền tảng quảng cáo sẽ hiển thị',
+      title: 'Nền tảng',
       dataIndex: 'targeting',
       key: 'publisher_platforms',
       className: styles['center-cell'],
@@ -83,7 +97,8 @@ const AdSetManagement: FC = () => {
             <span>{targetingData.publisher_platforms.join(', ')}</span>
           ) : null
         )
-      }
+      },
+      width: 200
     },
     {
       title: 'Vị trí hiển thị trên facebook',
@@ -92,50 +107,35 @@ const AdSetManagement: FC = () => {
       className: styles['center-cell'],
       render: (targeting) => {
         const targetingData = JSON.parse(targeting)
+        const facebookPositionData = targetingData.facebook_positions.map((item: string) => handleFacebookPosition(item))
         return (
           targetingData.facebook_positions ? (
-            <span>{targetingData.facebook_positions.join(', ')}</span>
+            <span>{facebookPositionData.join(', ')}</span>
           ) : null
         )
       }
     },
     {
-      title: 'Nền tảng thiết bị quảng cáo hiển thị',
+      title: 'Nền tảng hiển thị',
       dataIndex: 'targeting',
       key: 'device_platforms',
       className: styles['center-cell'],
       render: (targeting) => {
-        const targetingData = JSON.parse(targeting)
-        return (
-          targetingData.device_platforms ? (
-            <span>{targetingData.device_platforms.join(', ')}</span>
-          ) : null
-        )
-      }
-    },
-    {
-      title: 'Trạng thái nhóm quảng cáo sau khi áp dụng qui tắc phân phối',
-      dataIndex: 'effectiveStatus',
-      key: 'effectiveStatus',
-      className: styles['center-cell'],
-    },
-    {
-      title: 'Trạng thái được cấu hình cho nhóm quảng cáo',
-      dataIndex: 'configuredStatus',
-      key: 'configuredStatus',
-      className: styles['center-cell'],
-    },
-    {
-      title: 'Trạng thái nhóm quảng cáo',
-      dataIndex: 'status',
-      key: 'status',
-      className: styles['center-cell'],
+        const targetingData = targeting ? JSON.parse(targeting) : null;
+        const deviceData = targetingData?.device_platforms?.map((item: string) => handleDevice(item));
+
+        return deviceData ? (
+          <span>{deviceData.join(', ')}</span>
+        ) : null;
+      },
+      width: 200
     },
     {
       title: 'Id Fanpage',
       dataIndex: 'promoteObjectPageId',
       key: 'page_id',
       className: styles['center-cell'],
+      width: 200
     },
     {
       title: 'Ngân sách',
@@ -166,20 +166,15 @@ const AdSetManagement: FC = () => {
           )
         }
       },
+      width: 200
     },
     {
       title: 'Ngân sách còn lại của nhóm quảng cáo',
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
-      render: (value) => <span>{formatNumberWithCommas(value)}</span>
-    },
-    {
-      title: 'Thời gian tạo nhóm quảng cáo',
-      dataIndex: 'createdTime',
-      key: 'createdTime',
-      className: styles['center-cell'],
-      render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
+      render: (value) => <span>{formatNumberWithCommas(value)}</span>,
+      width: 200
     },
     {
       title: 'Thời gian chạy nhóm quảng cáo',
@@ -282,7 +277,7 @@ const AdSetManagement: FC = () => {
         }}
         loading={isLoading}
         onScroll={handleScroll}
-        scroll={{ x: 3500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
+        scroll={{ x: 2500, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )

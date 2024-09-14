@@ -1,11 +1,11 @@
-import { Breadcrumb, Table, TableProps } from "antd"
+import { Breadcrumb, Table, TableProps, Tag } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
-import { DollarOutlined, ProjectOutlined } from "@ant-design/icons"
+import { DollarOutlined, ProjectOutlined, PushpinOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime, formatNumberWithCommas } from "../../helper/const"
+import { formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
@@ -21,6 +21,32 @@ const CampaignsManagment: FC = () => {
 
   const navigate = useNavigate()
 
+  const handleBuyingType = (value: string) => {
+    switch (value) {
+      case "AUCTION": return <Tag color="green" icon={<DollarOutlined />}>Đấu giá</Tag>
+      case "RESERVED": return <Tag color="gold" icon={<PushpinOutlined />}>RESERVED - Đặt chỗ</Tag>
+    }
+  }
+
+  const handleObjective = (value: string) => {
+    switch (value) {
+      case "BRAND_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
+      case "REACH": return <span>Tối ưu hóa lượng người dùng tiếp cận quảng cáo</span>
+      case "TRAFFIC": return <span>Tăng lượng truy cập</span>
+      case "ENGAGEMENT": return <span>Tăng lượt tương tác</span>
+      case "APP_INSTALLS": return <span>Tăng số lượng cài đặt ứng dụng</span>
+      case "VIDEO_VIEWS": return <span>Tăng lượt xem video</span>
+      case "LEAD_GENERATION": return <span>Thu thập thông tin người dùng</span>
+      case "MESSAGES": return <span>Thúc đẩy người dùng gửi tin nhắn tới doanh nghiệp</span>
+      case "CONVERSIONS": return <span>Tối ưu hóa hành động chuyển đổi</span>
+      case "CATALOG_SALES": return <span>Tự động hiển thị sản phẩm cho người có khả năng mua cao nhất</span>
+      case "STORE_VISITS": return <span>Tăng lượng khách hàng ghé thăm cửa hàng</span>
+      case "OUTCOME_ENGAGEMENT": return <span>Tăng chất lượng tương tác</span>
+      case "OUTCOME_LEADS": return <span>Thu thập thông tin khách hàng tiềm năng</span>
+      case "OUTCOME_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
+    }
+  }
+
   const columns: TableProps<TCampaignTable>['columns'] = [
     {
       title: 'Tên chiến dịch',
@@ -31,50 +57,20 @@ const CampaignsManagment: FC = () => {
       width: 200
     },
     {
-      title: 'Tự động cân bằng ngân sách chiến dịch',
-      dataIndex: 'budgetRebalanceFlag',
-      key: 'budgetRebalanceFlag',
-      className: styles['center-cell'],
-      render: (value) => value ? <span>Có</span> : <span>Không</span>,
-      width: 200,
-    },
-    {
       title: 'Loại mua',
       dataIndex: 'buyingType',
       key: 'buyingType',
       className: styles['center-cell'],
+      render: (value) => handleBuyingType(value),
+      width: 200,
     },
     {
-      title: 'Thời gian tạo chiến dịch',
-      dataIndex: 'createdTime',
-      key: 'createdTime',
-      className: styles['center-cell'],
-      render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
-    },
-    {
-      title: 'Thời gian chạy chiến dịch',
-      dataIndex: 'startTime',
-      key: 'startTime',
-      className: styles['center-cell'],
-      render: (startTime) => <span>{formatDateTime(startTime)}</span>
-    },
-    {
-      title: 'Trạng thái khởi tạo chiến dịch',
-      dataIndex: 'status',
-      key: 'status',
-      className: styles['center-cell'],
-    },
-    {
-      title: 'Trạng thái thực tế của chiến dịch',
+      title: 'Trạng thái chiến dịch',
       dataIndex: 'effectiveStatus',
       key: 'effectiveStatus',
       className: styles['center-cell'],
-    },
-    {
-      title: 'Trạng thái cấu hình của chiến dịch',
-      dataIndex: 'configuredStatus',
-      key: 'configuredStatus',
-      className: styles['center-cell'],
+      render: (value) => handleEffectiveStatus(value),
+      width: 180
     },
     {
       title: 'Ngân sách',
@@ -99,13 +95,15 @@ const CampaignsManagment: FC = () => {
         }
         else return <span>Ngân sách thuộc nhóm quảng cáo</span>
       },
+      width: 250
     },
     {
       title: 'Ngân sách còn lại của chiến dịch',
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
-      render: (value) => formatNumberWithCommas(value)
+      render: (value) => formatNumberWithCommas(value),
+      width: 250
     },
     {
       title: 'Các quốc gia áp dụng quảng cáo',
@@ -118,26 +116,22 @@ const CampaignsManagment: FC = () => {
             <span>{JSON.parse(countries)}</span>
           )
         )
-      }
-    },
-    {
-      title: 'Đối tượng quảng cáo',
-      dataIndex: 'specialAdCategory',
-      key: 'specialAdCategoryCountry',
-      className: styles['center-cell'],
-      render: (people) => {
-        return (
-          people !== 'null' && (
-            <span>{JSON.parse(people).join(', ')}</span>
-          )
-        )
-      }
+      },
+      width: 250
     },
     {
       title: 'Mục tiêu chiến dịch',
       dataIndex: 'objective',
       key: 'objective',
       className: styles['center-cell'],
+      render: (value) => handleObjective(value)
+    },
+    {
+      title: 'Thời gian chạy chiến dịch',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      className: styles['center-cell'],
+      render: (startTime) => <span>{formatDateTime(startTime)}</span>
     },
     {
       title: 'Thời gian cập nhật dữ liệu',
@@ -226,7 +220,7 @@ const CampaignsManagment: FC = () => {
         }}
         onScroll={handleScroll}
         loading={isLoading}
-        scroll={{ x: 3000, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
+        scroll={{ x: 2000, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )
