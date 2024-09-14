@@ -141,12 +141,12 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
       render: (insight) => insight && insight.actions && <span>{insight.actions}</span>
     },
-    {
-      title: 'Tracking specs',
-      dataIndex: 'trackingSpecs',
-      key: 'trackingSpecs',
-      className: styles['center-cell'],
-    },
+    // {
+    //   title: 'Tracking specs',
+    //   dataIndex: 'trackingSpecs',
+    //   key: 'trackingSpecs',
+    //   className: styles['center-cell'],
+    // },
     // {
     //   title: 'Số lần người dùng tương tác với bài viết',
     //   dataIndex: 'post_engagement',
@@ -198,7 +198,7 @@ const AdManagement: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListAd(String(param.adsetsId), currentPage, 10).then((res) => {
-      console.log('res', res.data.data)
+      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
