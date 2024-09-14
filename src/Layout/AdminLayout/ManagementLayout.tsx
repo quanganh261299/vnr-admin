@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   ApartmentOutlined,
+  AppstoreOutlined,
   CaretDownOutlined,
   CrownOutlined,
   DollarOutlined,
@@ -92,28 +93,36 @@ const ManagementLayout: React.FC = () => {
         <Menu
           theme="dark"
           mode="inline"
+          defaultOpenKeys={['system-nav']}
           selectedKeys={[current]}
           className='menu'
           items={[
             {
-              key: 'system',
-              icon: <SettingOutlined />,
-              label: <Link to='/'>Quản lí hệ thống</Link>,
-            },
-            {
-              key: 'agency',
-              icon: <ApartmentOutlined />,
-              label: <Link to='/agency'>Quản lí chi nhánh</Link>,
-            },
-            {
-              key: 'team',
-              icon: <TeamOutlined />,
-              label: <Link to='/team'>Quản lí đội nhóm</Link>,
-            },
-            {
-              key: 'member',
-              icon: <UserOutlined />,
-              label: <Link to='/member'>Quản lí thành viên</Link>,
+              key: 'system-nav',
+              icon: <AppstoreOutlined />,
+              label: 'Hệ thống',
+              children: [
+                {
+                  key: 'system',
+                  icon: <SettingOutlined />,
+                  label: <Link to='/'>Quản lí hệ thống</Link>,
+                },
+                {
+                  key: 'agency',
+                  icon: <ApartmentOutlined />,
+                  label: <Link to='/agency'>Quản lí chi nhánh</Link>,
+                },
+                {
+                  key: 'team',
+                  icon: <TeamOutlined />,
+                  label: <Link to='/team'>Quản lí đội nhóm</Link>,
+                },
+                {
+                  key: 'member',
+                  icon: <UserOutlined />,
+                  label: <Link to='/member'>Quản lí thành viên</Link>,
+                },
+              ]
             },
             {
               key: 'advertisement-account',

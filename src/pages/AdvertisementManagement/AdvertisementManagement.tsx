@@ -81,12 +81,11 @@ const AdvertisementManagement: FC = () => {
 
   const columns: TableProps<TAdvertisementTable>['columns'] = [
     {
-      title: 'Tên đội nhóm',
-      dataIndex: 'employee',
-      key: 'groupName',
+      title: 'Tên tài khoản quảng cáo',
+      dataIndex: 'name',
+      key: 'name',
       className: styles['center-cell'],
-      render: (employee) => <span>{employee.group.name}</span>,
-      width: 200,
+      fixed: 'left'
     },
     {
       title: 'Tên thành viên',
@@ -97,11 +96,12 @@ const AdvertisementManagement: FC = () => {
       width: 180,
     },
     {
-      title: 'Tên tài khoản quảng cáo',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Tên đội nhóm',
+      dataIndex: 'employee',
+      key: 'groupName',
       className: styles['center-cell'],
-      fixed: 'left'
+      render: (employee) => <span>{employee.group.name}</span>,
+      width: 200,
     },
     {
       title: 'Trạng thái tài khoản quảng cáo',

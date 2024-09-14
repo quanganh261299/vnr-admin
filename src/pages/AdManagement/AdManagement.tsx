@@ -109,9 +109,9 @@ const AdManagement: FC = () => {
       key: 'ctr',
       className: styles['center-cell'],
       render: (insight) => {
-        const ctr = parseFloat(insight.ctr);
+        const ctr = insight?.ctr ? parseFloat(insight.ctr) : null;
         return (
-          insight ? <span>{ctr.toFixed(1)}</span> : null
+          ctr ? <span>{ctr.toFixed(1)}</span> : null
         )
       }
     },
@@ -149,9 +149,9 @@ const AdManagement: FC = () => {
       key: 'frequency',
       className: styles['center-cell'],
       render: (insight) => {
-        const insightFrequency = parseFloat(insight.frequency);
+        const insightFrequency = insight?.frequency ? parseFloat(insight.frequency) : null;
         return (
-          insight ? <span>{insightFrequency.toFixed(1)}</span> : null
+          insightFrequency ? <span>{insightFrequency.toFixed(1)}</span> : null
         )
       }
     },
@@ -161,7 +161,7 @@ const AdManagement: FC = () => {
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["onsite_conversion.total_messaging_connection"]}</span>
         )
@@ -173,7 +173,7 @@ const AdManagement: FC = () => {
       key: 'messagingFirstReply',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["onsite_conversion.messaging_first_reply"]}</span>
         )
@@ -185,7 +185,7 @@ const AdManagement: FC = () => {
       key: 'postEngagement',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["post_engagement"]}</span>
         )
@@ -197,7 +197,7 @@ const AdManagement: FC = () => {
       key: 'pageEngagement',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["page_engagement"]}</span>
         )
@@ -209,7 +209,7 @@ const AdManagement: FC = () => {
       key: 'photoView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["photo_view"]}</span>
         )
@@ -221,7 +221,7 @@ const AdManagement: FC = () => {
       key: 'videoPlay',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_play"]}</span>
         )
@@ -233,7 +233,7 @@ const AdManagement: FC = () => {
       key: 'videoView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_view"]}</span>
         )
@@ -245,7 +245,7 @@ const AdManagement: FC = () => {
       key: 'videoView10s',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_10s_view"]}</span>
         )
@@ -257,7 +257,7 @@ const AdManagement: FC = () => {
       key: 'videoView30s',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_30s_view"]}</span>
         )
@@ -269,7 +269,7 @@ const AdManagement: FC = () => {
       key: 'videoCompleteView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_complete_view"]}</span>
         )
@@ -281,7 +281,7 @@ const AdManagement: FC = () => {
       key: 'conversationStarted7d',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = convertArrayToObject(JSON.parse(insight.actions))
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["onsite_conversion.messaging_conversation_started_7d"]}</span>
         )

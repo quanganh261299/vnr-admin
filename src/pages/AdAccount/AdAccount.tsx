@@ -28,29 +28,37 @@ const AdAccount: FC = () => {
 
   const columns: TableProps<TAdUserTable>['columns'] = [
     {
-      title: 'Tên nhân viên',
-      dataIndex: 'employee',
-      key: 'name',
-      width: '20%',
-      render: (employee) => <span>{employee.name}</span>
-    },
-    {
       title: 'Tên tài khoản quảng cáo',
       dataIndex: 'name',
       key: 'name',
-      width: '20%',
+      width: '15%',
+    },
+    {
+      title: 'Tên thành viên',
+      dataIndex: 'employee',
+      key: 'name',
+      width: '15%',
+      render: (employee) => <span>{employee.name}</span>
+    },
+    {
+      title: 'Tên đội nhóm',
+      dataIndex: 'employee',
+      key: 'groupName',
+      className: styles['center-cell'],
+      render: (employee) => <span>{employee.group.name}</span>,
+      width: '15%',
     },
     {
       title: 'Id tài khoản quảng cáo',
       dataIndex: 'accountId',
       key: 'accountId',
-      width: '20%',
+      width: '15%',
     },
     {
       title: 'Trạng thái tài khoản',
       dataIndex: 'isActive',
       key: 'isActive',
-      width: '20%',
+      width: '15%',
       render: (isActive) => isActive ? <Tag color='green'>Đã được kích hoạt</Tag> : <Tag color='red'>Chưa được kích hoạt</Tag>
     },
     {
@@ -68,7 +76,7 @@ const AdAccount: FC = () => {
           </Space>
         </>
       ),
-      width: '20%',
+      width: '12%',
     },
   ];
 
