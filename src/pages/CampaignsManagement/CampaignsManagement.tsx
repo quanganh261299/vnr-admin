@@ -44,6 +44,7 @@ const CampaignsManagment: FC = () => {
       case "OUTCOME_ENGAGEMENT": return <span>Tăng chất lượng tương tác</span>
       case "OUTCOME_LEADS": return <span>Thu thập thông tin khách hàng tiềm năng</span>
       case "OUTCOME_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
+      case "OUTCOME_SALES": return <span>Tăng doanh số</span>
     }
   }
 
@@ -113,7 +114,7 @@ const CampaignsManagment: FC = () => {
       render: (countries) => {
         return (
           countries !== 'null' && (
-            <span>{JSON.parse(countries)}</span>
+            <span>{JSON.parse(countries).join(',')}</span>
           )
         )
       },

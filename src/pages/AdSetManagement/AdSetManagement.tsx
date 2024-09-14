@@ -25,11 +25,11 @@ const AdSetManagement: FC = () => {
     switch (value) {
       case 'feed': return 'Bảng tin'
       case 'facebook_reels': return 'Reels (video ngắn)'
-      case 'facebook_reels_overlay': return 'Chồng lên video Reels'
+      case 'facebook_reels_overlay': return 'Quảng cáo trên Facebook Reels'
       case 'video_feeds': return 'Video'
-      case 'instream_video': return 'Video giữa chừng'
+      case 'instream_video': return 'Video trong luồng trên Facebook'
       case 'marketplace': return 'Marketplace'
-      case 'story': return 'Story của người dùng'
+      case 'story': return 'Facebook Stories'
       case 'search': return 'Kết quả tìm kiếm'
     }
   }

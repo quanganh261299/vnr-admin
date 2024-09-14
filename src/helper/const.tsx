@@ -25,7 +25,7 @@ export const formatNumberWithCommas = (number: number | string) => {
 
 export const handleEffectiveStatus = (value: string) => {
     switch (value) {
-        case "ACTIVE": return <Tag color="green">Đang chạy bình thường</Tag>
+        case "ACTIVE": return <Tag color="green">Đang hoạt động</Tag>
         case "PAUSED": return <Tag color="gray">Đã tạm dừng</Tag>
         case "IN_PROCESS": return <Tag color="lightblue">Đang xử lí</Tag>
         case "WITH_ISSUES": return <Tag color="orange">Có vấn đề</Tag>
