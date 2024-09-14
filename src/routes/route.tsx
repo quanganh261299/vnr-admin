@@ -30,7 +30,7 @@ export const route = [
   },
   {
     path: "/",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['bm']} userRole="bm" />,
+    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['admin']} userRole="admin" />,
     errorElement: <ErrorPage />,
     children: [
       {

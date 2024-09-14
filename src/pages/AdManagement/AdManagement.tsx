@@ -108,8 +108,12 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'ctr',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.ctr}</span> : null
-
+      render: (insight) => {
+        const ctr = parseFloat(insight.ctr);
+        return (
+          insight ? <span>{ctr.toFixed(1)}</span> : null
+        )
+      }
     },
     {
       title: 'Chi phí mỗi 1000 lượt hiển thị',
