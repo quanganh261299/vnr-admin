@@ -63,6 +63,7 @@ const AdManagement: FC = () => {
           <Tooltip
             title={adcreativesData.body}
             placement="bottom"
+            overlayStyle={{ maxWidth: '85%' }}
           >
             <div className="ellipsis">{adcreativesData.body}</div>
           </Tooltip>
