@@ -193,17 +193,17 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
 
   useEffect(() => {
     if (editingData) {
-      setSelectSystemModalId(String(editingData.employee.group.branch.organizationId))
-      setSelectAgencyModalId(String(editingData.employee.group.branchId))
-      setSelectTeamModalId(String(editingData.employee.groupId))
+      setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
+      setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
+      setSelectTeamModalId(String(editingData.employee?.groupId))
       form.setFieldsValue({
-        name: editingData.name || "",
+        name: editingData?.name || "",
         organizationId:
-          selectSystemEditingDataModal.find((item) => item.value === editingData.employee.group.branch.organizationId)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.employee.group.branchId)?.value,
-        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.employee.groupId)?.value,
-        employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData.employee.id)?.value,
-        id: editingData.accountId
+          selectSystemEditingDataModal.find((item) => item.value === editingData?.employee?.group?.branch?.organizationId)?.value,
+        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData?.employee?.group?.branchId)?.value,
+        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData?.employee?.groupId)?.value,
+        employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData?.employee?.id)?.value,
+        id: editingData?.accountId
       });
     } else {
       form.resetFields();
