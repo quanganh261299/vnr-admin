@@ -170,6 +170,20 @@ const AdManagement: FC = () => {
       }
     },
     {
+      title: 'Chi phí trên mỗi kết quả',
+      dataIndex: 'insighn',
+      key: 'costPerResult',
+      className: styles['center-cell'],
+      render: (insight) => {
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const costPerResult = insight?.spend && actionData["onsite_conversion.total_messaging_connection"] && insight?.spend / actionData["onsite_conversion.total_messaging_connection"];
+        return (
+          costPerResult
+          && <span>{formatNumberWithCommas(Math.round(costPerResult))}</span>
+        )
+      }
+    },
+    {
       title: 'Số người nhắn tin',
       dataIndex: 'insighn',
       key: 'messagingFirstReply',
