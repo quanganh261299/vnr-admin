@@ -38,8 +38,6 @@ const AdManagement: FC = () => {
     }
   }
 
-  console.log('test')
-
   const columns: TableProps<TAdsTable>['columns'] = [
     {
       title: 'Tên quảng cáo',
