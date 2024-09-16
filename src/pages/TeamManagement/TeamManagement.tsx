@@ -55,7 +55,7 @@ const TeamManagement: FC = () => {
       dataIndex: 'branch',
       key: 'organizationName',
       width: '20%',
-      render: (branch) => <span>{branch?.organization.name}</span>,
+      render: (branch) => <span>{branch?.organization?.name}</span>,
     },
     {
       title: 'Ghi chú',

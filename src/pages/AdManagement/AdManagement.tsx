@@ -58,14 +58,14 @@ const AdManagement: FC = () => {
       key: 'body',
       className: styles['center-cell'],
       render: (adcreatives) => {
-        const adcreativesData = JSON.parse(adcreatives).data[0]
+        const adcreativesData = adcreatives ? JSON.parse(adcreatives).data[0] : null
         return (
           <Tooltip
             title={adcreativesData.body}
             placement="bottom"
             overlayStyle={{ maxWidth: '85%' }}
           >
-            <div className="ellipsis">{adcreativesData.body}</div>
+            <div className="ellipsis">{adcreativesData?.body}</div>
           </Tooltip>
         )
       },
@@ -77,9 +77,9 @@ const AdManagement: FC = () => {
       key: 'call_to_action_type',
       className: styles['center-cell'],
       render: (adcreatives) => {
-        const adcreativesData = JSON.parse(adcreatives).data[0]
+        const adcreativesData = adcreatives ? JSON.parse(adcreatives).data[0] : null
         return (
-          <span>{handleCallToActionType(adcreativesData.call_to_action_type)}</span>
+          <span>{handleCallToActionType(adcreativesData?.call_to_action_type)}</span>
         )
       },
     },
@@ -88,21 +88,21 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'impressions',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.impressions}</span> : null
+      render: (insight) => insight ? <span>{insight?.impressions}</span> : null
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
       dataIndex: 'insighn',
       key: 'clicks',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.clicks}</span> : null
+      render: (insight) => insight ? <span>{insight?.clicks}</span> : null
     },
     {
       title: 'Số tiền đã chi tiêu',
       dataIndex: 'insighn',
       key: 'spend',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(insight.spend)}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.spend)}</span> : null
     },
     {
       title: 'Tỉ lệ nhấp chuột',
@@ -110,7 +110,7 @@ const AdManagement: FC = () => {
       key: 'ctr',
       className: styles['center-cell'],
       render: (insight) => {
-        const ctr = insight?.ctr ? parseFloat(insight.ctr) : null;
+        const ctr = insight?.ctr ? parseFloat(insight?.ctr) : null;
         return (
           ctr ? <span>{ctr.toFixed(1)}</span> : null
         )
@@ -121,28 +121,28 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{Math.round(insight.cpm)}</span> : null
+      render: (insight) => insight ? <span>{Math.round(insight?.cpm)}</span> : null
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insighn',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{Math.round(insight.cpc)}</span> : null
+      render: (insight) => insight ? <span>{Math.round(insight?.cpc)}</span> : null
     },
     {
       title: 'Chi phí mỗi hành động',
       dataIndex: 'insighn',
       key: 'cpp',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{Math.round(insight.cpp)}</span> : null
+      render: (insight) => insight ? <span>{Math.round(insight?.cpp)}</span> : null
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insighn',
       key: 'reach',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight.reach}</span> : null
+      render: (insight) => insight ? <span>{insight?.reach}</span> : null
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
@@ -150,7 +150,7 @@ const AdManagement: FC = () => {
       key: 'frequency',
       className: styles['center-cell'],
       render: (insight) => {
-        const insightFrequency = insight?.frequency ? parseFloat(insight.frequency) : null;
+        const insightFrequency = insight?.frequency ? parseFloat(insight?.frequency) : null;
         return (
           insightFrequency ? <span>{insightFrequency.toFixed(1)}</span> : null
         )
@@ -162,7 +162,7 @@ const AdManagement: FC = () => {
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["onsite_conversion.total_messaging_connection"]}</span>
         )
@@ -174,7 +174,7 @@ const AdManagement: FC = () => {
       key: 'messagingFirstReply',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["onsite_conversion.messaging_first_reply"]}</span>
         )
@@ -186,7 +186,7 @@ const AdManagement: FC = () => {
       key: 'postEngagement',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["post_engagement"]}</span>
         )
@@ -198,7 +198,7 @@ const AdManagement: FC = () => {
       key: 'pageEngagement',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["page_engagement"]}</span>
         )
@@ -210,7 +210,7 @@ const AdManagement: FC = () => {
       key: 'photoView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["photo_view"]}</span>
         )
@@ -222,7 +222,7 @@ const AdManagement: FC = () => {
       key: 'videoPlay',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_play"]}</span>
         )
@@ -234,7 +234,7 @@ const AdManagement: FC = () => {
       key: 'videoView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_view"]}</span>
         )
@@ -246,7 +246,7 @@ const AdManagement: FC = () => {
       key: 'videoView10s',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_10s_view"]}</span>
         )
@@ -258,7 +258,7 @@ const AdManagement: FC = () => {
       key: 'videoView30s',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_30s_view"]}</span>
         )
@@ -270,7 +270,7 @@ const AdManagement: FC = () => {
       key: 'videoCompleteView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["video_complete_view"]}</span>
         )
@@ -282,7 +282,7 @@ const AdManagement: FC = () => {
       key: 'conversationStarted7d',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight.actions)) : {};
+        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
           insight && insight.actions && <span>{actionData["onsite_conversion.messaging_conversation_started_7d"]}</span>
         )

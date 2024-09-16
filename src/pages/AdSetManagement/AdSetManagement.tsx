@@ -63,9 +63,9 @@ const AdSetManagement: FC = () => {
       key: 'age',
       className: styles['center-cell'],
       render: (targeting) => {
-        const targetingData = JSON.parse(targeting)
+        const targetingData = targeting ? JSON.parse(targeting) : null
         return (
-          <span>{targetingData.age_min} - {targetingData.age_max}</span>
+          <span>{targetingData?.age_min} - {targetingData?.age_max}</span>
         )
       },
       width: 150
@@ -76,10 +76,10 @@ const AdSetManagement: FC = () => {
       key: 'countries',
       className: styles['center-cell'],
       render: (targeting) => {
-        const targetingData = JSON.parse(targeting)
+        const targetingData = targeting ? JSON.parse(targeting) : null
         return (
-          targetingData.geo_locations.countries ? (
-            <span>{targetingData.geo_locations.countries.join(', ')}</span>
+          targetingData?.geo_locations?.countries ? (
+            <span>{targetingData?.geo_locations?.countries.join(', ')}</span>
           ) : null
         )
       },
@@ -91,10 +91,10 @@ const AdSetManagement: FC = () => {
       key: 'publisher_platforms',
       className: styles['center-cell'],
       render: (targeting) => {
-        const targetingData = JSON.parse(targeting)
+        const targetingData = targeting ? JSON.parse(targeting) : null
         return (
           targetingData.publisher_platforms ? (
-            <span>{targetingData.publisher_platforms.join(', ')}</span>
+            <span>{targetingData?.publisher_platforms?.join(', ')}</span>
           ) : null
         )
       },
@@ -106,11 +106,11 @@ const AdSetManagement: FC = () => {
       key: 'facebook_positions',
       className: styles['center-cell'],
       render: (targeting) => {
-        const targetingData = JSON.parse(targeting)
-        const facebookPositionData = targetingData.facebook_positions.map((item: string) => handleFacebookPosition(item))
+        const targetingData = targeting ? JSON.parse(targeting) : null
+        const facebookPositionData = targetingData?.facebook_positions?.map((item: string) => handleFacebookPosition(item))
         return (
           targetingData.facebook_positions ? (
-            <span>{facebookPositionData.join(', ')}</span>
+            <span>{facebookPositionData?.join(', ')}</span>
           ) : null
         )
       }
@@ -146,7 +146,7 @@ const AdSetManagement: FC = () => {
           return (
             <>
               <div>Ngân sách hàng ngày:</div>
-              <span>{formatNumberWithCommas(record.dailyBudget)}</span>
+              <span>{formatNumberWithCommas(record?.dailyBudget)}</span>
             </>
           )
         }
@@ -154,7 +154,7 @@ const AdSetManagement: FC = () => {
           return (
             <>
               <div>Ngân sách trọn đời:</div>
-              <span>{formatNumberWithCommas(record.lifetimeBudget)}</span>
+              <span>{formatNumberWithCommas(record?.lifetimeBudget)}</span>
             </>
           )
         }

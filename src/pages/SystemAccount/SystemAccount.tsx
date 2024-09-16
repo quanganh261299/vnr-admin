@@ -37,7 +37,7 @@ const SystemAccount: FC = () => {
       title: 'Vai trò',
       dataIndex: 'role',
       key: 'roleName',
-      render: (role) => <span>{role.name}</span>,
+      render: (role) => <span>{role?.name}</span>,
       width: '40%'
     },
     {

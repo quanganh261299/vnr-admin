@@ -44,7 +44,7 @@ const SystemManagement: FC = () => {
     {
       title: 'Đội nhóm',
       key: 'idBM',
-      render: (record) => <span>{record.group.name}</span>,
+      render: (record) => <span>{record?.group?.name}</span>,
       width: '25%'
     },
     {
@@ -57,7 +57,7 @@ const SystemManagement: FC = () => {
       title: 'Danh sách id BM',
       dataIndex: 'pms',
       key: 'pms',
-      render: (value) => value.map((item: { id: string; userId: string }) => <Tag>{item.id}</Tag>),
+      render: (value) => value.map((item: { id: string; userId: string }) => <Tag>{item?.id}</Tag>),
       width: '25%'
     },
     {

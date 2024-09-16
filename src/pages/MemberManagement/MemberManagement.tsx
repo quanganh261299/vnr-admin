@@ -62,7 +62,7 @@ const MemberManagement: FC = () => {
       title: 'Tên chi nhánh',
       dataIndex: 'group',
       key: 'branchName',
-      render: (group) => <span>{group?.branch.name}</span>,
+      render: (group) => <span>{group?.branch?.name}</span>,
       width: 150,
       className: styles['center-cell']
     },
@@ -70,7 +70,7 @@ const MemberManagement: FC = () => {
       title: 'Tên hệ thống',
       dataIndex: 'group',
       key: 'organizationName',
-      render: (group) => <span>{group?.branch.organization.name}</span>,
+      render: (group) => <span>{group?.branch?.organization?.name}</span>,
       width: 150,
       className: styles['center-cell']
     },
