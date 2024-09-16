@@ -12,6 +12,14 @@ const userApi = {
         }&pageSize=${pageSize}`;
         return axiosInstance.get(url);
     },
+    createSystemUser: (data: TSystemUser) => {
+        const url = "/users";
+        return axiosInstance.post(url, data);
+    },
+    updateSystemUser: (data: TSystemUser) => {
+        const url = "/users/system";
+        return axiosInstance.put(url, data);
+    },
     getListBmUser: (pageIndex?: number, pageSize?: number) => {
         const url = `/users/bm?pageIndex=${pageIndex || ""}&pageSize=${
             pageSize || ""
@@ -25,10 +33,6 @@ const userApi = {
     updateBmUser: (data: TBmUserField) => {
         const url = "/users";
         return axiosInstance.put(url, data);
-    },
-    createSystemUser: (data: TSystemUser) => {
-        const url = "/users";
-        return axiosInstance.post(url, data);
     },
     deleteUser: (id: string) => {
         const url = `/users/${id}`;

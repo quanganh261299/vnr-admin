@@ -62,15 +62,15 @@ const SystemAccount: FC = () => {
   const onFinish: FormProps<TSystemUser>['onFinish'] = (values) => {
     setLoading({ ...loading, isBtn: true })
     if (dataRecord) {
-      // organizationApi.updateOrganization({ ...values, id: dataRecord?.id }).then(() => {
-      //   setIsModalOpen(false)
-      //   setIsCallbackApi(!isCallbackApi)
-      //   setLoading({ ...loading, isBtn: false })
-      //   success('Sửa hệ thống thành công!')
-      // }).catch((err) => {
-      //   setLoading({ ...loading, isBtn: false })
-      //   error(err.response.data.message)
-      // })
+      userApi.updateSystemUser({ ...values, id: dataRecord?.id }).then(() => {
+        setIsModalOpen(false)
+        setIsCallbackApi(!isCallbackApi)
+        setLoading({ ...loading, isBtn: false })
+        success('Sửa tài khoản hệ thống thành công!')
+      }).catch((err) => {
+        setLoading({ ...loading, isBtn: false })
+        error(err.response.data.message)
+      })
     }
     else {
       userApi.createSystemUser(values).then(() => {

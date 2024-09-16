@@ -176,7 +176,13 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
-        const costPerResult = insight?.spend && actionData["onsite_conversion.total_messaging_connection"] && insight?.spend / actionData["onsite_conversion.total_messaging_connection"];
+        const costPerResult = insight?.spend
+          && actionData["onsite_conversion.total_messaging_connection"]
+          && (
+            actionData["onsite_conversion.total_messaging_connection"] >= 2
+              ? insight?.spend / actionData["onsite_conversion.total_messaging_connection"]
+              : insight?.spend
+          )
         return (
           costPerResult
           && <span>{formatNumberWithCommas(Math.round(costPerResult))}</span>

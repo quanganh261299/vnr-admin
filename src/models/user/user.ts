@@ -16,6 +16,7 @@ export type TUserOption = {
 };
 
 export type TSystemUser = {
+    id?: string;
     email: string;
     password?: string;
     roleId?: string;
