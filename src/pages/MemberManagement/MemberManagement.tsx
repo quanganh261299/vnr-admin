@@ -314,16 +314,16 @@ const MemberManagement: FC = () => {
     <>
       {contextHolder}
       <div className={styles["container"]}>
+        <Tooltip title="Thêm thành viên">
+          <Button
+            icon={<PlusOutlined />}
+            type="primary" className={styles['btn']}
+            onClick={() => handleShowModal()}
+          >
+            Thêm thành viên
+          </Button>
+        </Tooltip>
         <div className={styles['member-container']}>
-          <Tooltip title="Thêm thành viên">
-            <Button
-              icon={<PlusOutlined />}
-              type="primary" className={styles['btn']}
-              onClick={() => handleShowModal()}
-            >
-              Thêm thành viên
-            </Button>
-          </Tooltip>
           <Select
             allowClear
             showSearch

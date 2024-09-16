@@ -272,17 +272,17 @@ const SystemManagement: FC = () => {
     <>
       {contextHolder}
       <div className={styles["container"]}>
+        <Tooltip title='Thêm tài khoản BM'>
+          <Button
+            icon={<PlusOutlined />}
+            type="primary"
+            className={styles['btn']}
+            onClick={() => handleShowModal()}
+          >
+            Thêm tài khoản BM
+          </Button>
+        </Tooltip>
         <div className={styles["bm-container"]}>
-          <Tooltip title='Thêm tài khoản BM'>
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              className={styles['btn']}
-              onClick={() => handleShowModal()}
-            >
-              Thêm tài khoản BM
-            </Button>
-          </Tooltip>
           <Select
             allowClear
             showSearch

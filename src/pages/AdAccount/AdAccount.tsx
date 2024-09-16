@@ -197,17 +197,17 @@ const AdAccount: FC = () => {
   return (
     <>
       {contextHolder}
+      <Tooltip title='Thêm tài khoản hệ thống'>
+        <Button
+          icon={<PlusOutlined />}
+          type="primary"
+          className={styles['btn']}
+          onClick={() => handleShowModal()}
+        >
+          Thêm tài khoản quảng cáo
+        </Button>
+      </Tooltip>
       <div className={styles["container"]}>
-        <Tooltip title='Thêm tài khoản hệ thống'>
-          <Button
-            icon={<PlusOutlined />}
-            type="primary"
-            className={styles['btn']}
-            onClick={() => handleShowModal()}
-          >
-            Thêm tài khoản quảng cáo
-          </Button>
-        </Tooltip>
         <Table
           columns={columns}
           dataSource={dataTable}

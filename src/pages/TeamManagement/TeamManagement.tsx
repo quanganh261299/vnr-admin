@@ -247,16 +247,16 @@ const TeamManagement: FC = () => {
     <>
       {contextHolder}
       <div className={styles["container"]}>
+        <Tooltip title="Thêm đội nhóm">
+          <Button
+            icon={<PlusOutlined />}
+            type="primary" className={styles['btn']}
+            onClick={() => handleShowModal()}
+          >
+            Thêm đội nhóm
+          </Button>
+        </Tooltip>
         <div className={styles['team-container']}>
-          <Tooltip title="Thêm đội nhóm">
-            <Button
-              icon={<PlusOutlined />}
-              type="primary" className={styles['btn']}
-              onClick={() => handleShowModal()}
-            >
-              Thêm đội nhóm
-            </Button>
-          </Tooltip>
           <Select
             allowClear
             showSearch

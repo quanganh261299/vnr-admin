@@ -88,14 +88,14 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'impressions',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight?.impressions}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.impressions)}</span> : null
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
       dataIndex: 'insighn',
       key: 'clicks',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight?.clicks}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.clicks)}</span> : null
     },
     {
       title: 'Số tiền đã chi tiêu',
@@ -121,28 +121,28 @@ const AdManagement: FC = () => {
       dataIndex: 'insighn',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{Math.round(insight?.cpm)}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpm))}</span> : null
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insighn',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{Math.round(insight?.cpc)}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpc))}</span> : null
     },
     {
       title: 'Chi phí mỗi hành động',
       dataIndex: 'insighn',
       key: 'cpp',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{Math.round(insight?.cpp)}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpp))}</span> : null
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insighn',
       key: 'reach',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{insight?.reach}</span> : null
+      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.reach)}</span> : null
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
@@ -164,7 +164,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["onsite_conversion.total_messaging_connection"]}</span>
+          actionData["onsite_conversion.total_messaging_connection"]
+          && <span>{formatNumberWithCommas(actionData["onsite_conversion.total_messaging_connection"])}</span>
         )
       }
     },
@@ -176,7 +177,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["onsite_conversion.messaging_first_reply"]}</span>
+          actionData["onsite_conversion.messaging_first_reply"]
+          && <span>{formatNumberWithCommas(actionData["onsite_conversion.messaging_first_reply"])}</span>
         )
       }
     },
@@ -188,7 +190,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["post_engagement"]}</span>
+          actionData["post_engagement"]
+          && <span>{formatNumberWithCommas(actionData["post_engagement"])}</span>
         )
       }
     },
@@ -200,7 +203,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["page_engagement"]}</span>
+          actionData["page_engagement"]
+          && <span>{formatNumberWithCommas(actionData["page_engagement"])}</span>
         )
       }
     },
@@ -212,7 +216,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["photo_view"]}</span>
+          actionData["photo_view"]
+          && <span>{formatNumberWithCommas(actionData["photo_view"])}</span>
         )
       }
     },
@@ -224,7 +229,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["video_play"]}</span>
+          actionData["video_play"]
+          && <span>{formatNumberWithCommas(actionData["video_play"])}</span>
         )
       }
     },
@@ -236,7 +242,7 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["video_view"]}</span>
+          actionData["video_view"] && <span>{formatNumberWithCommas(actionData["video_view"])}</span>
         )
       }
     },
@@ -248,7 +254,7 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["video_10s_view"]}</span>
+          actionData["video_10s_view"] && <span>{formatNumberWithCommas(actionData["video_10s_view"])}</span>
         )
       }
     },
@@ -260,7 +266,7 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["video_30s_view"]}</span>
+          actionData["video_30s_view"] && <span>{formatNumberWithCommas(actionData["video_30s_view"])}</span>
         )
       }
     },
@@ -272,7 +278,7 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["video_complete_view"]}</span>
+          actionData["video_complete_view"] && <span>{formatNumberWithCommas(actionData["video_complete_view"])}</span>
         )
       }
     },
@@ -284,7 +290,8 @@ const AdManagement: FC = () => {
       render: (insight) => {
         const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
         return (
-          insight && insight.actions && <span>{actionData["onsite_conversion.messaging_conversation_started_7d"]}</span>
+          actionData["onsite_conversion.messaging_conversation_started_7d"]
+          && <span>{formatNumberWithCommas(actionData["onsite_conversion.messaging_conversation_started_7d"])}</span>
         )
       }
     },

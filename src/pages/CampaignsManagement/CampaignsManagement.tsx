@@ -107,20 +107,6 @@ const CampaignsManagment: FC = () => {
       width: 250
     },
     {
-      title: 'Các quốc gia áp dụng quảng cáo',
-      dataIndex: 'specialAdCategoryCountry',
-      key: 'specialAdCategoryCountry',
-      className: styles['center-cell'],
-      render: (countries) => {
-        return (
-          countries !== 'null' && (
-            <span>{JSON.parse(countries).join(',')}</span>
-          )
-        )
-      },
-      width: 250
-    },
-    {
       title: 'Mục tiêu chiến dịch',
       dataIndex: 'objective',
       key: 'objective',
@@ -132,15 +118,31 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'startTime',
       key: 'startTime',
       className: styles['center-cell'],
-      render: (startTime) => <span>{formatDateTime(startTime)}</span>
+      render: (startTime) => <span>{formatDateTime(startTime)}</span>,
+      width: 250,
     },
     {
       title: 'Thời gian cập nhật dữ liệu',
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
       className: styles['center-cell'],
-      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>
+      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>,
+      width: 250,
     },
+    // {
+    //   title: 'Các quốc gia áp dụng quảng cáo',
+    //   dataIndex: 'specialAdCategoryCountry',
+    //   key: 'specialAdCategoryCountry',
+    //   className: styles['center-cell'],
+    //   render: (countries) => {
+    //     return (
+    //       countries !== 'null' && (
+    //         <span>{JSON.parse(countries).join(',')}</span>
+    //       )
+    //     )
+    //   },
+    //   width: 250
+    // },
   ];
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {

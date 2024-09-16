@@ -182,17 +182,17 @@ const SystemAccount: FC = () => {
   return (
     <>
       {contextHolder}
+      <Tooltip title='Thêm tài khoản hệ thống'>
+        <Button
+          icon={<PlusOutlined />}
+          type="primary"
+          className={styles['btn']}
+          onClick={() => handleShowModal()}
+        >
+          Thêm tài khoản hệ thống
+        </Button>
+      </Tooltip>
       <div className={styles["container"]}>
-        <Tooltip title='Thêm tài khoản hệ thống'>
-          <Button
-            icon={<PlusOutlined />}
-            type="primary"
-            className={styles['btn']}
-            onClick={() => handleShowModal()}
-          >
-            Thêm tài khoản hệ thống
-          </Button>
-        </Tooltip>
         <Table
           columns={columns}
           dataSource={dataTable}

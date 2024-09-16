@@ -47,22 +47,42 @@ const AdvertisementManagement: FC = () => {
 
   const handleAccountStatus = (value: number) => {
     switch (value) {
-      case 1: return <Tag color='green'>Tài khoản đang hoạt động</Tag>
-      case 2: return <Tag color='orange'>Tài khoản bị tạm dừng</Tag>
-      case 3: return <Tag color='red'>Tài khoản bị vô hiệu hóa</Tag>
-      case 7: return <Tag color='gold'>Tài khoản đang trong quá trình xem xét</Tag>
-      case 100: return <Tag color='red'>Tài khoản bị khóa do vi phạm chính sách</Tag>
+      case 1: return <Tag color='green' className='text-wrap'>Tài khoản đang hoạt động</Tag>
+      case 2: return <Tag color='orange' className='text-wrap'>Tài khoản bị tạm dừng</Tag>
+      case 3: return <Tag color='red' className='text-wrap'>Tài khoản bị vô hiệu hóa</Tag>
+      case 7: return <Tag color='gold' className='text-wrap'>Tài khoản đang trong quá trình xem xét</Tag>
+      case 100: return <Tag color='red' className='text-wrap'>Tài khoản bị khóa do vi phạm chính sách</Tag>
     }
   }
 
   const handleDisableReason = (value: number) => {
     switch (value) {
-      case 0: return <Tag color='darkgrey'>Không có lí do</Tag>
-      case 1: return <Tag color='red'>Tài khoản bị vô hiệu hóa do vi phạm chính sách quảng cáo Facebook</Tag>
-      case 2: return <Tag color='red'>Tài khoản bị vô hiệu hóa do nghi ngờ hoạt động gian lận</Tag>
-      case 3: return <Tag color='red'>Tài khoản bị vô hiệu hóa do không thanh toán hoặc vấn đề liên quan đến thanh toán</Tag>
-      case 4: return <Tag color='red'>Tài khoản bị vô hiệu hóa do yêu cầu của chủ tài khoản </Tag>
-      case 5: return <Tag color='red'>Tài khoản bị vô hiệu hóa với các lý do khác</Tag>
+      case 0: return <Tag color='darkgrey' className='text-wrap'>Không có lí do</Tag>
+      case 1: return (
+        <Tag color='red' className='text-wrap'>
+          Tài khoản bị vô hiệu hóa do vi phạm chính sách quảng cáo Facebook
+        </Tag>
+      )
+      case 2: return (
+        <Tag color='red' className='text-wrap'>
+          Tài khoản bị vô hiệu hóa do nghi ngờ hoạt động gian lận
+        </Tag>
+      )
+      case 3: return (
+        <Tag color='red' className='text-wrap'>
+          Tài khoản bị vô hiệu hóa do không thanh toán hoặc vấn đề liên quan đến thanh toán
+        </Tag>
+      )
+      case 4: return (
+        <Tag color='red' className='text-wrap'>
+          Tài khoản bị vô hiệu hóa do yêu cầu của chủ tài khoản
+        </Tag>
+      )
+      case 5: return (
+        <Tag color='red' className='text-wrap'>
+          Tài khoản bị vô hiệu hóa với các lý do khác
+        </Tag>
+      )
     }
   }
 
@@ -115,7 +135,7 @@ const AdvertisementManagement: FC = () => {
       dataIndex: 'disableReason',
       key: 'disableReason',
       className: styles['center-cell'],
-      render: (value) => handleDisableReason(value)
+      render: (value) => handleDisableReason(value),
     },
     {
       title: 'Loại giao dịch',
@@ -434,7 +454,7 @@ const AdvertisementManagement: FC = () => {
               }
             }
           }}
-          scroll={{ x: 3300 }}
+          scroll={{ x: 3200 }}
           loading={loading.isTable}
         />
       </div>

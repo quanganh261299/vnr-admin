@@ -1,4 +1,4 @@
-import { Breadcrumb, Table, TableProps } from "antd"
+import { Breadcrumb, Table, TableProps, Tag } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
@@ -76,12 +76,14 @@ const AdSetManagement: FC = () => {
       key: 'countries',
       className: styles['center-cell'],
       render: (targeting) => {
-        const targetingData = targeting ? JSON.parse(targeting) : null
-        return (
-          targetingData?.geo_locations?.countries ? (
-            <span>{targetingData?.geo_locations?.countries.join(', ')}</span>
-          ) : null
-        )
+        const targetingData = targeting ? JSON.parse(targeting) : null;
+        return targetingData?.geo_locations?.countries ? (
+          <>
+            {targetingData.geo_locations.countries.map((item: string, index: number) => (
+              <Tag key={index}>{item}</Tag>
+            ))}
+          </>
+        ) : null;
       },
       width: 220
     },
@@ -94,7 +96,9 @@ const AdSetManagement: FC = () => {
         const targetingData = targeting ? JSON.parse(targeting) : null
         return (
           targetingData.publisher_platforms ? (
-            <span>{targetingData?.publisher_platforms?.join(', ')}</span>
+            <>
+              {targetingData?.publisher_platforms?.map((item: string) => <Tag>{item}</Tag>)}
+            </>
           ) : null
         )
       },
@@ -109,8 +113,12 @@ const AdSetManagement: FC = () => {
         const targetingData = targeting ? JSON.parse(targeting) : null
         const facebookPositionData = targetingData?.facebook_positions?.map((item: string) => handleFacebookPosition(item))
         return (
-          targetingData.facebook_positions ? (
-            <span>{facebookPositionData?.join(', ')}</span>
+          facebookPositionData ? (
+            <>
+              {facebookPositionData.map((item: string, index: number) => (
+                <Tag key={index}>{item}</Tag>
+              ))}
+            </>
           ) : null
         )
       }
@@ -125,7 +133,9 @@ const AdSetManagement: FC = () => {
         const deviceData = targetingData?.device_platforms?.map((item: string) => handleDevice(item));
 
         return deviceData ? (
-          <span>{deviceData.join(', ')}</span>
+          <>
+            {deviceData.map((item: string, index: number) => (<Tag key={index}>{item}</Tag>))}
+          </>
         ) : null;
       },
       width: 200
