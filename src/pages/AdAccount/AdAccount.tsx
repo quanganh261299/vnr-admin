@@ -38,14 +38,14 @@ const AdAccount: FC = () => {
       dataIndex: 'employee',
       key: 'name',
       width: '15%',
-      render: (employee) => <span>{employee.name}</span>
+      render: (employee) => <span>{employee?.name}</span>
     },
     {
       title: 'Tên đội nhóm',
       dataIndex: 'employee',
       key: 'groupName',
       className: styles['center-cell'],
-      render: (employee) => <span>{employee.group.name}</span>,
+      render: (employee) => <span>{employee?.group?.name}</span>,
       width: '15%',
     },
     {

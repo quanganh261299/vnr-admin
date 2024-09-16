@@ -92,7 +92,7 @@ const AdvertisementManagement: FC = () => {
       dataIndex: 'employee',
       key: 'employeeName',
       className: styles['center-cell'],
-      render: (employee) => <span>{employee.name}</span>,
+      render: (employee) => <span>{employee?.name}</span>,
       width: 180,
     },
     {
@@ -100,7 +100,7 @@ const AdvertisementManagement: FC = () => {
       dataIndex: 'employee',
       key: 'groupName',
       className: styles['center-cell'],
-      render: (employee) => <span>{employee.group.name}</span>,
+      render: (employee) => <span>{employee?.group?.name}</span>,
       width: 200,
     },
     {
