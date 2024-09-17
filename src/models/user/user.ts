@@ -33,6 +33,7 @@ export type TAdUserTable = {
     employee: TMemberTable;
     employeeName: string;
     isActive?: boolean;
+    pms?: string[] | { id: string }[];
 };
 
 type TBmList = {

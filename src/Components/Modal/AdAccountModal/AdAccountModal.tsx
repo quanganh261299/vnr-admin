@@ -13,6 +13,7 @@ import { TMemberTable } from "../../../models/member/member";
 import organizationApi from "../../../api/organizationApi";
 import { TSystemTable } from "../../../models/system/system";
 import { TAdUserTable } from "../../../models/user/user";
+import advertisementApi from "../../../api/advertisementApi";
 
 
 interface Props {
@@ -30,6 +31,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
   const [selectMemberDataModal, setSelectMemberDataModal] = useState<SelectType[]>([])
+  const [selectBmDataModal, setSelectBmDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [selectTeamModalId, setSelectTeamModalId] = useState<string | null>(null)
@@ -37,11 +39,13 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
   const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectTeamEditingDataModal, setSelectTeamEditingDataModal] = useState<SelectType[]>([])
   const [selectMemberEditingDataModal, setSelectMemberEditingDataModal] = useState<SelectType[]>([])
+  const [selectBmEditingDataModal, setSelectBmEditingDataModal] = useState<SelectType[]>([])
   const [loading, setLoading] = useState({
     isSelectSystem: false,
     isSelectAgency: false,
     isSelectTeam: false,
-    isSelectMember: false
+    isSelectMember: false,
+    isSelectBM: false
   })
   const [form] = Form.useForm();
 
@@ -142,7 +146,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         ...prevLoading,
         isSelectAgency: false,
         isSelectTeam: false,
-        isSelectMember: true
+        isSelectMember: true,
+        isSelectBM: true,
       }))
       employeeApi.getListEmployee(undefined, undefined, undefined, undefined, selectTeamModalId).then((res) => {
         setSelectMemberDataModal(
@@ -152,6 +157,15 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           }))
         )
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
+      })
+      advertisementApi.getListBm(selectTeamModalId).then((res) => {
+        setSelectBmDataModal(
+          res.data.data.map((item: TMemberTable) => ({
+            value: item.id,
+            label: item.id
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectBM: false }))
       })
     }
   }, [selectSystemModalId, selectAgencyModalId, selectTeamModalId])
@@ -189,10 +203,21 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         }))
       )
     })
+    advertisementApi.getListBm().then((res) => {
+      setSelectBmEditingDataModal(
+        res.data.data.map((item: { id: string }) => ({
+          value: item.id,
+          label: item.id
+        }))
+      )
+    })
   }, [])
+
+  console.log('selectBmEditingDataModal', selectBmEditingDataModal)
 
   useEffect(() => {
     if (editingData) {
+      console.log('edit', editingData)
       setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
       setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
       setSelectTeamModalId(String(editingData.employee?.groupId))
@@ -203,10 +228,22 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData?.employee?.group?.branchId)?.value,
         groupId: selectTeamEditingDataModal.find((item) => item.value === editingData?.employee?.groupId)?.value,
         employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData?.employee?.id)?.value,
-        id: editingData?.accountId
+        pms: editingData?.pms?.map((pms) => {
+          if (typeof pms === 'object' && 'id' in pms) {
+            return selectBmEditingDataModal.find((item) => item.value === pms.id);
+          }
+        }).filter(Boolean),
+        id: editingData?.accountId,
       });
     } else {
       form.resetFields();
+      setSelectSystemModalId(null)
+      setSelectAgencyModalId(null)
+      setSelectTeamModalId(null)
+      setSelectAgencyDataModal([])
+      setSelectTeamDataModal([])
+      setSelectMemberDataModal([])
+      setSelectBmDataModal([])
     }
   }, [editingData, form, selectSystemEditingDataModal, selectAgencyEditingDataModal, selectTeamEditingDataModal, selectMemberEditingDataModal]);
 
@@ -291,10 +328,26 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             loading={loading.isSelectMember}
           />
         </Form.Item>
+        <Form.Item
+          label="Chọn BM"
+          name="pms"
+          rules={[{ required: true, message: 'Bạn phải chọn ít nhất một id BM!' }]}
+          className={"custom-margin-form"}
+        >
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            placeholder="Chọn ít nhất một id BM"
+            options={selectBmDataModal}
+            notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            loading={loading.isSelectBM}
+          />
+        </Form.Item>
         <Form.Item<TAdvertisementField>
           label="Id tài khoản quảng cáo"
           name="id"
-          rules={[{ required: true, message: 'Không được để trống tên tài khoản quảng cáo' }]}
+          rules={[{ required: true, message: 'Không được để trống Id tài khoản quảng cáo' }]}
         >
           <Input disabled={editingData ? true : false} />
         </Form.Item>

@@ -28,10 +28,17 @@ const AdAccount: FC = () => {
 
   const columns: TableProps<TAdUserTable>['columns'] = [
     {
-      title: 'Tên tài khoản quảng cáo',
+      title: 'Tên tài khoản QC',
       dataIndex: 'name',
       key: 'name',
       width: '15%',
+    },
+    {
+      title: 'Danh sách BM',
+      dataIndex: 'pms',
+      key: 'pms',
+      width: '15%',
+      render: (arr) => arr.length > 0 ? arr.map((item: { id: string }) => (<Tag>{item.id}</Tag>)) : null
     },
     {
       title: 'Tên thành viên',
@@ -49,7 +56,7 @@ const AdAccount: FC = () => {
       width: '15%',
     },
     {
-      title: 'Id tài khoản quảng cáo',
+      title: 'Id tài khoản QC',
       dataIndex: 'accountId',
       key: 'accountId',
       width: '15%',
@@ -76,7 +83,7 @@ const AdAccount: FC = () => {
           </Space>
         </>
       ),
-      width: '12%',
+      width: '10%',
     },
   ];
 
@@ -85,6 +92,7 @@ const AdAccount: FC = () => {
     const data = {
       accountID: String(values.id),
       employeeID: String(values.employeeId),
+      pmsId: values.pms
     }
     if (dataRecord) {
       advertisementApi.updateAdsAccount(data).then(() => {
@@ -174,7 +182,6 @@ const AdAccount: FC = () => {
     setLoading({ ...loading, isTable: true })
     advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
       const data = res.data.data
-      console.log('res', res.data.data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }

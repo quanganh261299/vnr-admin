@@ -43,6 +43,10 @@ const advertisementApi = {
         const url = `/Ads?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${adSetId}`;
         return axiosInstance.get(url);
     },
+    getListBm: (groupId?: string) => {
+        const url = `/bm?groupId=${groupId || ""}`;
+        return axiosInstance.get(url);
+    },
     createAdsAccount: (data: TCreateAdsAccount) => {
         const url = "/adsAccount";
         return axiosInstance.post(url, data);
@@ -53,8 +57,8 @@ const advertisementApi = {
     },
     deleteAdsAccount: (id: string) => {
         const url = `/adsAccount/${id}`;
-        return axiosInstance.delete(url)
-    }
+        return axiosInstance.delete(url);
+    },
 };
 
 export default advertisementApi;
