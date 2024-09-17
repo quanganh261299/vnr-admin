@@ -117,7 +117,6 @@ const AgencyManagement: FC = () => {
     if (modalRef.current) {
       modalRef.current.submit();
     }
-    console.log('OK')
   }
 
   const handleCancel = () => {

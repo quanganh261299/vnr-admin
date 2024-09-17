@@ -138,7 +138,6 @@ const TeamManagement: FC = () => {
     if (modalRef.current) {
       modalRef.current.submit();
     }
-    console.log('OK')
   }
 
   const handleCancel = () => {
