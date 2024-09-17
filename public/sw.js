@@ -52,10 +52,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.token) {
-    self.token = event.data.token;
-    console.log('Token received in Service Worker:', self.token);
+    console.log('Token received!');
     if (resolveTokenPromise) {
-      resolveTokenPromise(self.token); // Giải quyết Promise với token
+      resolveTokenPromise(event.data.token); // Giải quyết Promise với token
       resolveTokenPromise = null; // Đảm bảo Promise chỉ được giải quyết một lần
     }
   }

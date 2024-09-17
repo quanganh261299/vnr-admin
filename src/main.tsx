@@ -13,7 +13,7 @@ if ('serviceWorker' in navigator) {
           const token = localStorage.getItem('BmToken');
           if (token && swRegistration.active) {
             swRegistration.active.postMessage({ token });
-            console.log('Token sent to Service Worker:', token);
+            console.log('Token sent to Service Worker!');
           }
         });
       })
