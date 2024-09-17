@@ -1,3 +1,6 @@
+let tokenPromise;
+let resolveTokenPromise;
+
 self.addEventListener('install', (event) => {
   console.log('Service Worker installed.');
   self.skipWaiting();
@@ -7,32 +10,54 @@ self.addEventListener('activate', (event) => {
   console.log('Service Worker activated.');
   self.clients.claim();
 
-  // Hàm để lấy dữ liệu từ Facebook API, sử dụng token từ biến toàn cục
+  // Tạo Promise để theo dõi token
+  tokenPromise = new Promise((resolve) => {
+    resolveTokenPromise = resolve;
+  });
+
   const getDataFromFacebook = () => {
-    const token = self.token; // Sử dụng token đã lưu trong Service Worker
-    console.log('Fetching data from Facebook API');
-    fetch('https://ads.versethin.net/api/datafacebook', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : '',
+    tokenPromise.then(token => {
+      if (!token) {
+        console.error('No token available.');
+        setTimeout(getDataFromFacebook, 10 * 1000);
+        return;
       }
-    })
-      .then(res => console.log('Fetch successfully!'))
-      .catch(error => {
-        console.error('Error fetching data from Facebook:', error);
-      });
-    setTimeout(getDataFromFacebook, 60 * 10 * 1000);
+
+      console.log('token', token);
+      console.log('Fetching data from Facebook API');
+      fetch('https://ads.versethin.net/api/datafacebook', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log('Fetch Successfully!');
+          } else {
+            console.log('Error fetching data from Facebook:', res.status);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data from Facebook:', error);
+        });
+
+      setTimeout(getDataFromFacebook, 60 * 10 * 1000);
+    });
   };
 
   getDataFromFacebook();
-  self.clients.claim();
 });
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.token) {
     self.token = event.data.token;
     console.log('Token received in Service Worker:', self.token);
+    if (resolveTokenPromise) {
+      resolveTokenPromise(self.token); // Giải quyết Promise với token
+      resolveTokenPromise = null; // Đảm bảo Promise chỉ được giải quyết một lần
+    }
   }
 });
 

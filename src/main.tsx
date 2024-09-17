@@ -10,7 +10,7 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('Service Worker registered with scope:', registration.scope);
         navigator.serviceWorker.ready.then(swRegistration => {
-          const token = localStorage.getItem('token');
+          const token = localStorage.getItem('BmToken');
           if (token && swRegistration.active) {
             swRegistration.active.postMessage({ token });
             console.log('Token sent to Service Worker:', token);

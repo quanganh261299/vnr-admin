@@ -5,7 +5,7 @@ import { Button, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FacebookOutlined, RollbackOutlined } from '@ant-design/icons';
 import loginImg from '../../assets/images/login.png'
-import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
+import { getAuthFbStatus, storeAuthFBStatus } from '../../helper/authStatus';
 import { useEffect, useState } from 'react';
 
 const LoginBM = () => {
@@ -18,8 +18,8 @@ const LoginBM = () => {
   }
 
   useEffect(() => {
-    if (getAuthStatus()) {
-      navigate('/', { replace: true })
+    if (getAuthFbStatus()) {
+      navigate('/bm-homepage', { replace: true })
     }
   }, [localStorage.getItem('isAllowed'), localStorage.getItem('token')])
 
@@ -51,7 +51,8 @@ const LoginBM = () => {
           onSuccess={(response) => {
             console.log('Login Success!', response);
             authApi.loginFB(response.accessToken).then((res) => {
-              storeAuthStatus(res.data.data.accessToken)
+              console.log('res', res)
+              storeAuthFBStatus(res.data.data.accessToken)
               setIsLoading(false)
               window.location.href = '/bm-homepage'
             })

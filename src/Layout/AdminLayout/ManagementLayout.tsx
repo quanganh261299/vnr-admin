@@ -6,6 +6,7 @@ import {
   CrownOutlined,
   DollarOutlined,
   IdcardOutlined,
+  LoginOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -143,6 +144,11 @@ const ManagementLayout: React.FC = () => {
               key: 'bm-account',
               icon: <IdcardOutlined />,
               label: <Link to='/bm-account'>Tài khoản BM</Link>,
+            },
+            {
+              key: 'login-bm',
+              icon: <LoginOutlined />,
+              label: <div onClick={() => window.open('/loginBM')}>Login tài khoản BM</div>,
             },
           ]}
         />

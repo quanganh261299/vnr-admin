@@ -18,7 +18,8 @@ const Login = () => {
     setIsLoading(true)
     authApi.login(values)
       .then((res) => {
-        storeAuthStatus(res.data.data.accessToken)
+        console.log('res', res)
+        storeAuthStatus(res.data.data.accessToken, res.data.data.role)
         setIsLoading(false)
         window.location.href = '/'
       })
