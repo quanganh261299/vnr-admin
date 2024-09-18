@@ -183,7 +183,6 @@ const StatisticManagement: FC = () => {
   const [optionBarChart, setOptionBarChart] = useState<any>(totalAmountSpent)
 
   const handleChangeBarChartType = (value: number) => {
-    setSelectSystemData([])
     setSelectAgencyData([])
     setSelectTeamData([])
     setSelectSystemId(null)
