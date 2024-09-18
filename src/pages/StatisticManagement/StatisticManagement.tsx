@@ -3,8 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import styles from './style.module.scss'
 import { DatePicker, Select, Spin } from "antd";
 import { formatDateYMD, statisticType } from "../../helper/const";
-import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { TBarChartData } from "../../models/statistic/statistic";
 import { SelectType } from "../../models/common";
 import organizationApi from "../../api/organizationApi";
@@ -18,6 +17,7 @@ import statisticApi from "../../api/statisticApi";
 const StatisticManagement: FC = () => {
   const [totalAmountSpentData, setTotalAmountSpentData] = useState<TBarChartData>({ x: [], y: [] })
   const [highestEmployeeResultData, setHighestEmployeeResultData] = useState<TBarChartData>({ x: [], y: [] })
+  const [totalCostPerResultData, setTotalCostPerResultData] = useState<TBarChartData>({ x: [], y: [] })
   const [totalResultCampaignData, setTotalResultCampaignData] = useState<TBarChartData>({ x: [], y: [] })
   const [title, setTitle] = useState<string>('Thống kê tổng tiền chi tiêu cho Facebook cá nhân')
   const [barChartType, setBarChartType] = useState<number>(1)
@@ -41,6 +41,10 @@ const StatisticManagement: FC = () => {
   oneMonthBeforeFromYesterday.setMonth(yesterday.getMonth() - 1);
   const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeFromYesterday))
   const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
+    dayjs(oneMonthBeforeFromYesterday),
+    dayjs(yesterday),
+  ]);
 
 
   const totalAmountSpent = {
@@ -107,6 +111,40 @@ const StatisticManagement: FC = () => {
         type: 'bar',
         // barWidth: '60%',
         data: highestEmployeeResultData?.y?.length ? highestEmployeeResultData.y : []
+      }
+    ]
+  };
+
+  const totalCostPerResult = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    legend: {
+
+    },
+    xAxis: [
+      {
+        type: 'category',
+        data: totalCostPerResultData?.x?.length ? totalCostPerResultData.x : [],
+        axisTick: {
+          alignWithLabel: true
+        }
+      }
+    ],
+    yAxis: [
+      {
+        name: 'VND',
+        type: 'value'
+      }
+    ],
+    series: [
+      {
+        type: 'bar',
+        // barWidth: '60%',
+        data: totalCostPerResultData?.y?.length ? totalCostPerResultData.y : []
       }
     ]
   };
@@ -188,6 +226,9 @@ const StatisticManagement: FC = () => {
     setSelectSystemId(null)
     setSelectAgencyId(null)
     setSelectTeamId(null)
+    setDateRange([dayjs(oneMonthBeforeFromYesterday), dayjs(yesterday)])
+    setStartTime(formatDateYMD(oneMonthBeforeFromYesterday))
+    setEndTime(formatDateYMD(yesterday))
     switch (value) {
       case 1: {
         setBarChartType(1)
@@ -198,17 +239,23 @@ const StatisticManagement: FC = () => {
       case 2: {
         setBarChartType(2)
         setOptionBarChart(highestResultEmployee)
-        setTitle('Thống kê nhân sự có số lượng kết quả cao nhất')
+        setTitle('Thống kê kết quả tin nhắn')
         break;
       }
       case 3: {
         setBarChartType(3)
-        setOptionBarChart(totalResultCampaign)
-        setTitle('Thống kê tổng chiến dịch')
+        setOptionBarChart(totalCostPerResult)
+        setTitle('Thống kê chi phí / kết quả')
         break;
       }
       case 4: {
         setBarChartType(4)
+        setOptionBarChart(totalResultCampaign)
+        setTitle('Thống kê tổng số lượng chiến dịch')
+        break;
+      }
+      case 5: {
+        setBarChartType(5)
         setOptionBarChart(spendingThresholdLeft)
         setTitle('Thống kê ngưỡng chi tiêu còn lại')
         break;
@@ -243,12 +290,15 @@ const StatisticManagement: FC = () => {
     console.log('search:', value);
   };
 
-  const handleRangeChange = (dates: NoUndefinedRangeValueType<dayjs.Dayjs> | null) => {
-    if (dates !== null && dates[0] !== null && dates[1] !== null) {
-      const startTime = formatDateYMD(dates[0].toDate());
-      const endTime = formatDateYMD(dates[1].toDate());
-      setStartTime(startTime)
-      setEndTime(endTime)
+  const handleRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (dates !== null) {
+      setDateRange(dates);
+      if (dates[0] !== null && dates[1] !== null) {
+        const startTime = formatDateYMD(dates[0].toDate());
+        const endTime = formatDateYMD(dates[1].toDate());
+        setStartTime(startTime);
+        setEndTime(endTime);
+      }
     }
   };
 
@@ -323,6 +373,20 @@ const StatisticManagement: FC = () => {
         break;
       }
       case 3: {
+        statisticApi.getTotalCostPerResult(
+          startTime,
+          endTime,
+          selectSystemId as string,
+          selectAgencyId as string,
+          selectTeamId as string
+        )
+          .then((res) => {
+            setTotalCostPerResultData(res.data.data.data)
+            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+          })
+        break;
+      }
+      case 4: {
         statisticApi.getTotalResultCampaign(
           startTime,
           endTime,
@@ -342,9 +406,10 @@ const StatisticManagement: FC = () => {
     switch (barChartType) {
       case 1: return setOptionBarChart(totalAmountSpent);
       case 2: return setOptionBarChart(highestResultEmployee);
-      case 3: return setOptionBarChart(totalResultCampaign);
+      case 3: return setOptionBarChart(totalCostPerResult)
+      case 4: return setOptionBarChart(totalResultCampaign);
     }
-  }, [totalAmountSpentData, highestEmployeeResultData, totalResultCampaignData, barChartType]);
+  }, [totalAmountSpentData, highestEmployeeResultData, totalResultCampaignData, totalCostPerResultData, barChartType]);
 
   return (
     <>
@@ -366,6 +431,7 @@ const StatisticManagement: FC = () => {
             onChange={onChangeSystem}
             onSearch={onSearchSystem}
             options={selectSystemData}
+            value={selectSystemId}
             className={styles["select-system-item"]}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
@@ -401,7 +467,7 @@ const StatisticManagement: FC = () => {
             format={"DD-MM-YYYY"}
             onChange={(dates) => handleRangeChange(dates)}
             placeholder={["Bắt đầu", "Kết thúc"]}
-            defaultValue={[dayjs(oneMonthBeforeFromYesterday), dayjs(yesterday)]}
+            value={dateRange}
           />
         </div>
       </div>

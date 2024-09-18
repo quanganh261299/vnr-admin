@@ -25,6 +25,18 @@ const statisticApi = {
         }&branchId=${branchId || ""}&groupId=${groupId || ""}`;
         return axiosInstance.get(url);
     },
+    getTotalCostPerResult: (
+        startTime: string,
+        endTime: string,
+        organizationId?: string,
+        branchId?: string,
+        groupId?: string
+    ) => {
+        const url = `Dashboard/costPerResult?start=${startTime}T01:00:00&end=${endTime}T23:59:59&organizationId=${
+            organizationId || ""
+        }&branchId=${branchId || ""}&groupId=${groupId || ""}`;
+        return axiosInstance.get(url);
+    },
     getTotalResultCampaign: (
         startTime: string,
         endTime: string,

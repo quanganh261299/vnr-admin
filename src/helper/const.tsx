@@ -12,35 +12,20 @@ export const statisticType = [
     },
     {
         value: 2,
-        label: 'Thống kê nhân sự có số lượng kết quả cao nhất'
+        label: 'Thống kê kết quả tin nhắn'
     },
     {
         value: 3,
-        label: 'Thống kê tổng chiến dịch'
+        label: 'Thống kê chi phí / kết quả'
     },
     {
         value: 4,
+        label: 'Thống kê tổng số lượng chiến dịch'
+    },
+    {
+        value: 5,
         label: 'Thống kê ngưỡng chi tiêu còn lại'
     }
-]
-
-export const systemStatisticType = [
-    {
-        value: 0,
-        label: 'Hệ thống'
-    },
-    {
-        value: 1,
-        label: 'Chi nhánh'
-    },
-    {
-        value: 2,
-        label: 'Đội nhóm'
-    },
-    {
-        value: 3,
-        label: 'Thành viên'
-    },
 ]
 
 export const formatDateTime = (dateTime: string) => {
