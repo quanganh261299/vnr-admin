@@ -1,5 +1,5 @@
 import styles from './style.module.scss'
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/login-admin.png'
 import { Button, Form, FormProps, Input, message, Spin, Typography } from 'antd';
 import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
 import { useNavigate } from 'react-router-dom';
