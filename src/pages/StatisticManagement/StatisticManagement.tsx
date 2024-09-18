@@ -17,6 +17,8 @@ import statisticApi from "../../api/statisticApi";
 
 const StatisticManagement: FC = () => {
   const [totalAmountSpentData, setTotalAmountSpentData] = useState<TBarChartData>({ x: [], y: [] })
+  const [highestEmployeeResultData, setHighestEmployeeResultData] = useState<TBarChartData>({ x: [], y: [] })
+  const [totalResultCampaignData, setTotalResultCampaignData] = useState<TBarChartData>({ x: [], y: [] })
   const [title, setTitle] = useState<string>('Thống kê tổng tiền chi tiêu cho Facebook cá nhân')
   const [barChartType, setBarChartType] = useState<number>(1)
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
@@ -35,9 +37,9 @@ const StatisticManagement: FC = () => {
   const currentDate = new Date();
   const yesterday = new Date(currentDate);
   yesterday.setDate(currentDate.getDate() - 1);
-  const oneMonthFromYesterday = new Date(yesterday);
-  oneMonthFromYesterday.setMonth(yesterday.getMonth() - 1);
-  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthFromYesterday))
+  const oneMonthBeforeFromYesterday = new Date(yesterday);
+  oneMonthBeforeFromYesterday.setMonth(yesterday.getMonth() - 1);
+  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeFromYesterday))
   const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
 
 
@@ -88,7 +90,7 @@ const StatisticManagement: FC = () => {
     xAxis: [
       {
         type: 'category',
-        data: ['Test', 'Tue2', 'Wed2', 'Thu2', 'Fri2', 'Sat2', 'Sun2', 'r12'],
+        data: highestEmployeeResultData?.x?.length ? highestEmployeeResultData.x : [],
         axisTick: {
           alignWithLabel: true
         }
@@ -96,7 +98,7 @@ const StatisticManagement: FC = () => {
     ],
     yAxis: [
       {
-        name: 'Budget (million USD)',
+        name: 'Kết quả',
         type: 'value'
       }
     ],
@@ -104,12 +106,12 @@ const StatisticManagement: FC = () => {
       {
         type: 'bar',
         // barWidth: '60%',
-        data: [1321, 5212, 2200, 3234, 3190, 1330, 220]
+        data: highestEmployeeResultData?.y?.length ? highestEmployeeResultData.y : []
       }
     ]
   };
 
-  const highestResultCampaign = {
+  const totalResultCampaign = {
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -122,7 +124,7 @@ const StatisticManagement: FC = () => {
     xAxis: [
       {
         type: 'category',
-        data: ['Test', 'Tue2', 'Wed2', 'Thu2', 'Fri2', 'Sat2', 'Sun2', 'r12'],
+        data: totalResultCampaignData?.x?.length ? totalResultCampaignData.x : [],
         axisTick: {
           alignWithLabel: true
         }
@@ -130,7 +132,7 @@ const StatisticManagement: FC = () => {
     ],
     yAxis: [
       {
-        name: 'Budget (million USD)',
+        name: 'Chiến dịch',
         type: 'value'
       }
     ],
@@ -138,7 +140,7 @@ const StatisticManagement: FC = () => {
       {
         type: 'bar',
         // barWidth: '60%',
-        data: [1321, 5212, 2200, 3234, 3190, 1330, 220]
+        data: totalResultCampaignData?.y?.length ? totalResultCampaignData.y : [],
       }
     ]
   };
@@ -181,6 +183,12 @@ const StatisticManagement: FC = () => {
   const [optionBarChart, setOptionBarChart] = useState<any>(totalAmountSpent)
 
   const handleChangeBarChartType = (value: number) => {
+    setSelectSystemData([])
+    setSelectAgencyData([])
+    setSelectTeamData([])
+    setSelectSystemId(null)
+    setSelectAgencyId(null)
+    setSelectTeamId(null)
     switch (value) {
       case 1: {
         setBarChartType(1)
@@ -196,7 +204,7 @@ const StatisticManagement: FC = () => {
       }
       case 3: {
         setBarChartType(3)
-        setOptionBarChart(highestResultCampaign)
+        setOptionBarChart(totalResultCampaign)
         setTitle('Thống kê tổng chiến dịch')
         break;
       }
@@ -293,25 +301,56 @@ const StatisticManagement: FC = () => {
           endTime,
           selectSystemId as string,
           selectAgencyId as string,
-          selectTeamId as string)
+          selectTeamId as string
+        )
           .then((res) => {
             setTotalAmountSpentData(res.data.data.data)
             setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
           })
         break;
       }
+      case 2: {
+        statisticApi.getHighestResultEmployee(
+          startTime,
+          endTime,
+          selectSystemId as string,
+          selectAgencyId as string,
+          selectTeamId as string
+        )
+          .then((res) => {
+            setHighestEmployeeResultData(res.data.data.data)
+            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+          })
+        break;
+      }
+      case 3: {
+        statisticApi.getTotalResultCampaign(
+          startTime,
+          endTime,
+          selectSystemId as string,
+          selectAgencyId as string,
+          selectTeamId as string
+        )
+          .then((res) => {
+            setTotalResultCampaignData(res.data.data.data)
+            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+          })
+      }
     }
   }, [startTime, endTime, selectSystemId, selectAgencyId, selectTeamId, barChartType])
 
   useEffect(() => {
-    setOptionBarChart(totalAmountSpent);
-  }, [totalAmountSpentData]);
+    switch (barChartType) {
+      case 1: return setOptionBarChart(totalAmountSpent);
+      case 2: return setOptionBarChart(highestResultEmployee);
+      case 3: return setOptionBarChart(totalResultCampaign);
+    }
+  }, [totalAmountSpentData, highestEmployeeResultData, totalResultCampaignData, barChartType]);
 
   return (
     <>
       <div className={styles['statistic-filter']}>
         <Select
-          allowClear
           showSearch
           placeholder="Chọn loại biểu đồ"
           options={statisticType}
@@ -359,10 +398,11 @@ const StatisticManagement: FC = () => {
             loading={loading.isSelectTeam}
           />
           <RangePicker
+            allowClear={false}
             format={"DD-MM-YYYY"}
             onChange={(dates) => handleRangeChange(dates)}
             placeholder={["Bắt đầu", "Kết thúc"]}
-            defaultValue={[dayjs(oneMonthFromYesterday), dayjs(yesterday)]}
+            defaultValue={[dayjs(oneMonthBeforeFromYesterday), dayjs(yesterday)]}
           />
         </div>
       </div>

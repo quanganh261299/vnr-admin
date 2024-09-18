@@ -11,7 +11,7 @@
 }
 
 .statistic-type {
-    min-width: 350px;
+    min-width: 340px;
 }
 
 .system-statistic-type {
@@ -21,6 +21,6 @@
 .statistic-filter-system {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr) 1.1fr;
     gap: 10px;
 }
