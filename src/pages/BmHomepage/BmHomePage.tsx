@@ -75,7 +75,7 @@ const BmHomePage: React.FC = () => {
             onClick={() => Logout()}
             icon={<LogoutOutlined />}
           >
-            Login
+            Logout
           </Button>
         </div>
       </div>
