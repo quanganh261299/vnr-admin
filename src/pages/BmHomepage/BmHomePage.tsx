@@ -15,25 +15,23 @@ const BmHomePage: React.FC = () => {
   const currentDate = new Date();
   const yesterday = new Date(currentDate);
   yesterday.setDate(currentDate.getDate() - 1);
-  const oneMonthBeforeFromYesterday = new Date(yesterday);
-  oneMonthBeforeFromYesterday.setMonth(yesterday.getMonth() - 1);
-  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeFromYesterday))
+  const [startTime, setStartTime] = useState<string>(formatDateYMD(currentDate))
   const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    dayjs(oneMonthBeforeFromYesterday),
     dayjs(yesterday),
+    dayjs(currentDate),
   ]);
 
 
   const getDataFromFacebook = () => {
     setIsLoading(true)
-    // BmApi.getDataFromFacebook().then(() => {
-    //   alert('Thành công!')
-    //   setIsLoading(false)
-    // }).catch(() => {
-    //   alert('Thất bại!')
-    //   setIsLoading(false)
-    // })
+    BmApi.getDataFromFacebook(startTime, endTime).then(() => {
+      alert('Thành công!')
+      setIsLoading(false)
+    }).catch(() => {
+      alert('Thất bại!')
+      setIsLoading(false)
+    })
   }
 
   const Logout = () => {
