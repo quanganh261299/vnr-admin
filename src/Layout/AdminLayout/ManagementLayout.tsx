@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ApartmentOutlined,
   AppstoreOutlined,
+  BarChartOutlined,
   CaretDownOutlined,
   CrownOutlined,
   DollarOutlined,
@@ -82,6 +83,10 @@ const ManagementLayout: React.FC = () => {
       setHeaderName('Tài khoản BM')
       setCurrent('bm-account')
     }
+    else if (location.pathname.includes('/statistic')) {
+      setHeaderName('Thống kê')
+      setCurrent('statistic')
+    }
     else setCurrent('')
   }, [location])
 
@@ -139,6 +144,11 @@ const ManagementLayout: React.FC = () => {
               key: 'ad-account',
               icon: <TagOutlined />,
               label: <Link to='/ad-account'>Tài khoản quảng cáo</Link>,
+            },
+            {
+              key: 'statistic',
+              icon: <BarChartOutlined />,
+              label: <Link to='/statistic'>Thống kê</Link>
             },
             {
               key: 'bm-account',

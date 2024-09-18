@@ -5,6 +5,44 @@ export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const PHONE_REGEX = /^0\d{8,10}$/;
 
+export const statisticType = [
+    {
+        value: 1,
+        label: 'Thống kê tổng tiền chi tiêu cho Facebook'
+    },
+    {
+        value: 2,
+        label: 'Thống kê nhân sự có số lượng kết quả cao nhất'
+    },
+    {
+        value: 3,
+        label: 'Thống kê tổng chiến dịch'
+    },
+    {
+        value: 4,
+        label: 'Thống kê ngưỡng chi tiêu còn lại'
+    }
+]
+
+export const systemStatisticType = [
+    {
+        value: 0,
+        label: 'Hệ thống'
+    },
+    {
+        value: 1,
+        label: 'Chi nhánh'
+    },
+    {
+        value: 2,
+        label: 'Đội nhóm'
+    },
+    {
+        value: 3,
+        label: 'Thành viên'
+    },
+]
+
 export const formatDateTime = (dateTime: string) => {
     if (dateTime) {
         const date = new Date(dateTime);
@@ -36,6 +74,13 @@ export const handleEffectiveStatus = (value: string) => {
     }
 }
 
+export const formatDateYMD = (date: Date) => {
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
 export const convertArrayToObject = (dataArray: any) => {
     if (!Array.isArray(dataArray)) {
         throw new TypeError('Input phải là một mảng.');
@@ -47,3 +92,4 @@ export const convertArrayToObject = (dataArray: any) => {
         return acc;
     }, {});
 }
+

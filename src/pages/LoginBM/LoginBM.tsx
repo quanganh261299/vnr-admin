@@ -19,9 +19,10 @@ const LoginBM = () => {
 
   useEffect(() => {
     if (getAuthFbStatus()) {
+      console.log('vào')
       navigate('/bm-homepage', { replace: true })
     }
-  }, [localStorage.getItem('isAllowed'), localStorage.getItem('token')])
+  }, [localStorage.getItem('isAllowed'), localStorage.getItem('BmToken')])
 
   return (
     <>

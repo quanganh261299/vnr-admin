@@ -1,0 +1,26 @@
+.title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.statistic-filter {
+    display: flex;
+    column-gap: 15px;
+    margin-bottom: 20px;
+}
+
+.statistic-type {
+    min-width: 350px;
+}
+
+.system-statistic-type {
+    min-width: 180px;
+}
+
+.statistic-filter-system {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}

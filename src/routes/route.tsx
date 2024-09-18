@@ -17,6 +17,7 @@ import AdAccount from "../pages/AdAccount/AdAccount";
 import BmAccount from "../pages/BmAccount/BmAccount";
 import BMLayout from "../Layout/BMLayout/BMLayout";
 import BmHomePage from "../pages/BmHomepage/BmHomePage";
+import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
 
 
 export const route = [
@@ -76,6 +77,10 @@ export const route = [
       {
         path: '/bm-account',
         element: <BmAccount />
+      },
+      {
+        path: '/statistic',
+        element: <StatisticManagement />
       }
     ]
   },

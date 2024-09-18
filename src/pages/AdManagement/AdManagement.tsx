@@ -131,13 +131,6 @@ const AdManagement: FC = () => {
       render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpc))}</span> : null
     },
     {
-      title: 'Chi phí mỗi hành động',
-      dataIndex: 'insighn',
-      key: 'cpp',
-      className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpp))}</span> : null
-    },
-    {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insighn',
       key: 'reach',
