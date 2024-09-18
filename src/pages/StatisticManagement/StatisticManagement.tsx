@@ -341,6 +341,8 @@ const StatisticManagement: FC = () => {
     }
   }, [selectSystemId, selectAgencyId])
 
+  console.log('total', totalCostPerResultData)
+
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isBarChart: true }))
     switch (barChartType) {
@@ -381,7 +383,7 @@ const StatisticManagement: FC = () => {
           selectTeamId as string
         )
           .then((res) => {
-            setTotalCostPerResultData(res.data.data.data)
+            setTotalCostPerResultData(res.data.data)
             setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
           })
         break;

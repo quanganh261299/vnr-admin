@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-height: calc(100vh - 126px);
+    padding: 20px 20px 4px 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    padding: 0 24px 0 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 600;
+    font-size: 20px;
+    text-align: center;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1677ff;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5fa2ff;
+}
