@@ -8,7 +8,7 @@ import Login from "../pages/Login/Login";
 import MemberManagement from "../pages/MemberManagement/MemberManagement";
 import SystemManagement from "../pages/SystemManagement/SystemManagement";
 import TeamManagement from "../pages/TeamManagement/TeamManagement";
-import { getAuthStatus } from "../helper/authStatus";
+import { getAuthFbStatus, getAuthStatus } from "../helper/authStatus";
 import ManagementLayout from "../Layout/AdminLayout/ManagementLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import LoginBM from "../pages/LoginBM/LoginBM";
@@ -86,7 +86,7 @@ export const route = [
   },
   {
     path: "/bm-homepage",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={BMLayout} roles={['bm']} userRole="bm" />,
+    element: <ProtectedRoute isAllowed={getAuthFbStatus()} layout={BMLayout} roles={['bm']} userRole="bm" />,
     errorElement: <ErrorPage />,
     children: [
       {
