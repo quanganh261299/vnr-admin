@@ -28,7 +28,7 @@ export type TAdvertisementField = {
     groupId?: string;
     employeeId?: string;
     id?: string;
-    pms?: string[];
+    pms?: string[] | { value: string; label: string }[];
 };
 
 export type TCampaignTable = {

@@ -92,8 +92,13 @@ const AdAccount: FC = () => {
     const data = {
       accountID: String(values.id),
       employeeID: String(values.employeeId),
-      pmsId: values.pms
+      pmsId: dataRecord
+        ? values.pms?.map((item: string | { value: string; label: string }) =>
+          typeof item === 'string' ? item : item.value
+        )
+        : values.pms
     }
+    console.log('data', data)
     if (dataRecord) {
       advertisementApi.updateAdsAccount(data).then(() => {
         setIsModalOpen(false)
@@ -101,6 +106,7 @@ const AdAccount: FC = () => {
         setLoading({ ...loading, isBtn: false })
         success('Sửa tài khoản quảng cáo thành công!')
       }).catch((err) => {
+        console.log('err', err)
         setLoading({ ...loading, isBtn: false })
         error(err.response.data.message)
       })
