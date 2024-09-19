@@ -1,5 +1,6 @@
 let tokenPromise;
 let resolveTokenPromise;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 self.addEventListener('install', (event) => {
   console.log('Service Worker installed.');
@@ -25,7 +26,7 @@ self.addEventListener('activate', (event) => {
       }
 
       console.log('Fetching data from Facebook API!');
-      fetch('https://ads.versethin.net/api/datafacebook', {
+      fetch(baseUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ self.addEventListener('activate', (event) => {
         });
 
       // Lặp lại quá trình fetch sau 10 giây
-      setInterval(getDataFromFacebook, 60 * 10 * 1000);
+      setTimeout(getDataFromFacebook, 60 * 10 * 1000);
     }).catch((err) => console.log('Error in token promise:', err));
   };
 
@@ -63,4 +64,8 @@ self.addEventListener('message', (event) => {
       resolveTokenPromise = null; // Đảm bảo Promise chỉ được giải quyết một lần
     }
   }
+});
+
+self.addEventListener('fetch', (event) => {
+  // Xử lý các request fetch nếu cần thiết
 });
