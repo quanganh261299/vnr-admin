@@ -15,7 +15,7 @@ self.addEventListener('activate', (event) => {
   const getDataFromFacebook = (token, baseUrl) => {
     console.log('Starting...');
     console.log('Fetching data from Facebook API!');
-    fetch(`${baseUrl}/datafacebook`, {
+    fetch(`${baseUrl}datafacebook`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +51,6 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.token && event.data.baseUrl) {
     console.log('Token and BaseUrl received!');
     if (resolveTokenAndBaseUrlPromise) {
-      console.log('Resolving with token and baseUrl:', event.data.token, event.data.baseUrl);
       resolveTokenAndBaseUrlPromise({ token: event.data.token, baseUrl: event.data.baseUrl });
       resolveTokenAndBaseUrlPromise = null;
     }
