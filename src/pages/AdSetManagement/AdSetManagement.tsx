@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
 
 const AdSetManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdSetsTable[]>([])
@@ -83,7 +83,7 @@ const AdSetManagement: FC = () => {
               <Tag key={index}>{item}</Tag>
             ))}
           </>
-        ) : null;
+        ) : '-';
       },
       width: 220
     },
@@ -99,7 +99,7 @@ const AdSetManagement: FC = () => {
             <>
               {targetingData?.publisher_platforms?.map((item: string) => <Tag>{item}</Tag>)}
             </>
-          ) : null
+          ) : '-'
         )
       },
       width: 200
@@ -119,7 +119,7 @@ const AdSetManagement: FC = () => {
                 <Tag key={index}>{item}</Tag>
               ))}
             </>
-          ) : null
+          ) : '-'
         )
       }
     },
@@ -136,7 +136,7 @@ const AdSetManagement: FC = () => {
           <>
             {deviceData.map((item: string, index: number) => (<Tag key={index}>{item}</Tag>))}
           </>
-        ) : null;
+        ) : '-';
       },
       width: 200
     },
@@ -183,7 +183,7 @@ const AdSetManagement: FC = () => {
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
-      render: (value) => <span>{formatNumberWithCommas(value)}</span>,
+      render: (value) => Number(formatNumberWithCommas(convertStringToRoundNumber(value))),
       width: 200
     },
     {
@@ -191,14 +191,14 @@ const AdSetManagement: FC = () => {
       dataIndex: 'startTime',
       key: 'startTime',
       className: styles['center-cell'],
-      render: (startTime) => <span>{formatDateTime(startTime)}</span>
+      render: (startTime) => <span>{formatDateTime(startTime) || '-'}</span>
     },
     {
       title: 'Thời gian cập nhật dữ liệu',
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
       className: styles['center-cell'],
-      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>
+      render: (updateDataTime) => <span>{formatDateTime(updateDataTime) || '-'}</span>
     },
   ];
 

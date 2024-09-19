@@ -43,8 +43,17 @@ export const formatDateTime = (dateTime: string) => {
 };
 
 export const formatNumberWithCommas = (number: number | string) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    if (number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 };
+
+export const convertStringToRoundNumber = (number: string) => {
+    if (number) {
+        return Math.round(Number(number))
+    }
+    else return 0
+}
 
 export const handleEffectiveStatus = (value: string) => {
     switch (value) {
@@ -57,6 +66,7 @@ export const handleEffectiveStatus = (value: string) => {
         case "ARCHIVED": return <Tag color="gray">Đã lưu trữ</Tag>
         case "DELETE": return <Tag color="black">Đã bị xóa</Tag>
     }
+    return '-'
 }
 
 export const formatDateYMD = (date: Date) => {

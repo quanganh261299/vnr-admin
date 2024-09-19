@@ -5,7 +5,7 @@ import { Link, useLocation, useParams } from "react-router-dom"
 import { TAdsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, NotificationOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertArrayToObject, formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
 
 const AdManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdsTable[]>([])
@@ -36,6 +36,7 @@ const AdManagement: FC = () => {
       case "WATCH_MORE": return "Xem thêm"
       case "GET_DIRECTIONS": return "Xem chỉ đường"
     }
+    return '-'
   }
 
   const columns: TableProps<TAdsTable>['columns'] = [
@@ -65,7 +66,7 @@ const AdManagement: FC = () => {
             placement="bottom"
             overlayStyle={{ maxWidth: '85%' }}
           >
-            <div className="ellipsis">{adcreativesData?.body}</div>
+            <div className="ellipsis">{adcreativesData?.body || '-'}</div>
           </Tooltip>
         )
       },
@@ -88,169 +89,149 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'impressions',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.impressions) ? <span>{formatNumberWithCommas(insight?.impressions)}</span> : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.impressions))) || '-'
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
       dataIndex: 'insight',
       key: 'clicks',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.clicks) ? <span>{formatNumberWithCommas(insight?.clicks)}</span> : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.clicks))) || '-'
     },
     {
       title: 'Số tiền đã chi tiêu',
       dataIndex: 'insight',
       key: 'spend',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.spend) ? <span>{formatNumberWithCommas(insight?.spend)}</span> : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.spend))) || '-'
     },
     {
       title: 'Tỉ lệ nhấp chuột',
       dataIndex: 'insight',
       key: 'ctr',
       className: styles['center-cell'],
-      render: (insight) => {
-        const ctr = Number(insight?.ctr) ? parseFloat(insight?.ctr) : null;
-        return (
-          ctr ? <span>{ctr.toFixed(1)}</span> : null
-        )
-      }
+      render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(1) : '-'
     },
     {
       title: 'Chi phí mỗi 1000 lượt hiển thị',
       dataIndex: 'insight',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.cpm) ? <span>{formatNumberWithCommas(Math.round(insight?.cpm))}</span> : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.cpm))) || '-'
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insight',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.cpc) ? <span>{formatNumberWithCommas(Math.round(insight?.cpc))}</span> : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.cpc))) || '-'
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insight',
       key: 'reach',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.reach) ? <span>{formatNumberWithCommas(insight?.reach)}</span> : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.reach))) || '-'
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
       dataIndex: 'insight',
       key: 'frequency',
       className: styles['center-cell'],
-      render: (insight) => {
-        const insightFrequency = Number(insight?.frequency) ? parseFloat(insight?.frequency) : null;
-        return (
-          insightFrequency ? <span>{insightFrequency.toFixed(1)}</span> : null
-        )
-      }
+      render: (insight) => Number(insight?.frequency) ? Number(insight?.frequency).toFixed(1) : '-'
     },
     {
       title: 'Kết quả tin nhắn',
       dataIndex: 'insight',
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
-      render: (insight) => {
-        return (
-          Number(insight?.onsiteConversionTotalMessagingConnection)
-            ?
-            formatNumberWithCommas(insight?.onsiteConversionTotalMessagingConnection)
-            :
-            null
-        )
-      }
+      render: (insight) =>
+        Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.onsiteConversionTotalMessagingConnection))) || '-'
     },
     {
       title: 'Chi phí trên mỗi kết quả',
       dataIndex: 'insight',
       key: 'costPerResult',
       className: styles['center-cell'],
-      render: (insight) => {
-        return Number(insight?.costPerAction) ? formatNumberWithCommas(Math.round(insight?.costPerAction)) : null;
-      }
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.costPerAction))) || '-'
     },
     {
       title: 'Số người nhắn tin',
       dataIndex: 'insight',
       key: 'messagingFirstReply',
       className: styles['center-cell'],
-      render: (insight) => {
-        return Number(insight?.onsiteConversionMessagingFirstReply) ? formatNumberWithCommas(insight?.onsiteConversionMessagingFirstReply) : null
-      }
+      render: (insight) =>
+        Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply))) || '-'
     },
     {
       title: 'Lượt tương tác với bài viết',
       dataIndex: 'insight',
       key: 'postEngagement',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.postEngagement) ? formatNumberWithCommas(insight?.postEngagement) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.postEngagement))) || '-'
     },
     {
       title: 'Lượt tương tác với trang',
       dataIndex: 'insight',
       key: 'pageEngagement',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.pageEngagement) ? formatNumberWithCommas(insight?.pageEngagement) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.pageEngagement))) || '-'
     },
     {
       title: 'Lượt xem hình ảnh',
       dataIndex: 'insight',
       key: 'photoView',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.photoView) ? formatNumberWithCommas(insight?.photoView) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.photoView))) || '-'
     },
     {
       title: 'Số lần phát video',
       dataIndex: 'insight',
       key: 'videoPlay',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.videoPlay) ? formatNumberWithCommas(insight?.videoPlay) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.videoPlay))) || '-'
     },
     {
       title: 'Số lần video được xem ít nhất 3 giây',
       dataIndex: 'insight',
       key: 'videoView',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.videoView) ? formatNumberWithCommas(insight?.videoView) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.videoView))) || '-'
     },
     {
       title: 'Số lần video được xem ít nhất 10 giây',
       dataIndex: 'insight',
       key: 'videoView10s',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.video10sView) ? formatNumberWithCommas(insight?.video10sView) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.video10sView))) || '-'
     },
     {
       title: 'Số lần video được xem ít nhất 30 giây',
       dataIndex: 'insight',
       key: 'videoView30s',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.video30sView) ? formatNumberWithCommas(insight?.video30sView) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.video30sView))) || '-'
     },
     {
       title: 'Số lần video được xem đầy đủ',
       dataIndex: 'insight',
       key: 'videoCompleteView',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.videoCompleteView) ? formatNumberWithCommas(insight?.videoCompleteView) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.videoCompleteView))) || '-'
     },
     {
       title: 'Người dùng nhắn tin sau 7 ngày',
       dataIndex: 'insight',
       key: 'conversationStarted7d',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.onsiteConversionMessagingConversationStarted7d) ? formatNumberWithCommas(insight?.onsiteConversionMessagingConversationStarted7d) : null
+      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.onsiteConversionMessagingConversationStarted7d))) || '-'
     },
     {
       title: 'Thời gian chạy quảng cáo',
       dataIndex: 'startTime',
       key: 'start_time',
       className: styles['center-cell'],
-      render: (startTime) => <span>{formatDateTime(startTime)}</span>
+      render: (startTime) => <span>{formatDateTime(startTime) || '-'}</span>
     },
     // {
     //   title: 'Tracking specs',
