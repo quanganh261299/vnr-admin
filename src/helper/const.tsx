@@ -22,10 +22,10 @@ export const statisticType = [
         value: 4,
         label: 'Thống kê tổng số lượng chiến dịch'
     },
-    {
-        value: 5,
-        label: 'Thống kê ngưỡng chi tiêu còn lại'
-    }
+    // {
+    //     value: 5,
+    //     label: 'Thống kê ngưỡng chi tiêu còn lại'
+    // }
 ]
 
 export const formatDateTime = (dateTime: string) => {

@@ -46,7 +46,6 @@ const StatisticManagement: FC = () => {
     dayjs(yesterday),
   ]);
 
-
   const totalAmountSpent = {
     tooltip: {
       trigger: 'axis',
@@ -69,13 +68,16 @@ const StatisticManagement: FC = () => {
     yAxis: [
       {
         name: 'VND',
-        type: 'value'
+        type: 'value',
+        nameTextStyle: {
+          fontFamily: "sans-serif"
+        }
       }
     ],
     series: [
       {
         type: 'bar',
-        // barWidth: '60%',
+        barMaxWidth: 50,
         data: totalAmountSpentData?.y?.length ? totalAmountSpentData.y : []
       }
     ]
@@ -103,13 +105,16 @@ const StatisticManagement: FC = () => {
     yAxis: [
       {
         name: 'Kết quả',
-        type: 'value'
+        type: 'value',
+        nameTextStyle: {
+          fontFamily: "sans-serif"
+        }
       }
     ],
     series: [
       {
         type: 'bar',
-        // barWidth: '60%',
+        barMaxWidth: 50,
         data: highestEmployeeResultData?.y?.length ? highestEmployeeResultData.y : []
       }
     ]
@@ -137,13 +142,16 @@ const StatisticManagement: FC = () => {
     yAxis: [
       {
         name: 'VND',
-        type: 'value'
+        type: 'value',
+        nameTextStyle: {
+          fontFamily: "sans-serif"
+        }
       }
     ],
     series: [
       {
         type: 'bar',
-        // barWidth: '60%',
+        barMaxWidth: 50,
         data: totalCostPerResultData?.y?.length ? totalCostPerResultData.y : []
       }
     ]
@@ -171,13 +179,16 @@ const StatisticManagement: FC = () => {
     yAxis: [
       {
         name: 'Chiến dịch',
-        type: 'value'
+        type: 'value',
+        nameTextStyle: {
+          fontFamily: "sans-serif"
+        }
       }
     ],
     series: [
       {
         type: 'bar',
-        // barWidth: '60%',
+        barMaxWidth: 50,
         data: totalResultCampaignData?.y?.length ? totalResultCampaignData.y : [],
       }
     ]
