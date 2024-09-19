@@ -144,22 +144,26 @@ export type TAdsTable = {
     updatedTime: string; // thời gian cập nhật dữ liệu facebook
     updateDataTime: string; // thời gian cập nhật dữ liệu database
     insight: {
-        id: string; // id của insight
-        impressions: string; // Số lần quảng cáo được hiển thị
-        clicks: string; // số lần người dùng nhấp vào quảng cáo
-        spend: string; // tổng chi phí quảng cáo
-        reach: string; // số lượng người dùng quảng cáo đã tiếp cận
-        ctr: string; // tỉ lệ nhấp chuột
-        cpm: string; // chi phí mỗi 1000 lượt hiển thị
-        cpc: string; // chi phí mỗi lần nhấp chuột
-        cpp: string; // chi phí mỗi hành động
-        frequency: string; // tần suất trung bình mà mỗi người dùng thấy quảng cáo
-        actions: string | null;
-        dateAt: string | null;
-        updateDataTime: string | null;
-        adsId: string; // id quảng cáo
-        ads?: null; // để sau
-        costPerAction: string | null;
+        clicks: string;
+        costPerAction: string;
+        cpc: string;
+        cpm: string;
+        ctr: string;
+        frequency: string;
+        impressions: string;
+        onsiteConversionMessagingConversationStarted7d: string;
+        onsiteConversionMessagingFirstReply: string;
+        onsiteConversionTotalMessagingConnection: string;
+        pageEngagement: string;
+        photoView: string;
+        postEngagement: string;
+        reach: string;
+        spend: string;
+        video10sView: string;
+        video30sView: string;
+        videoCompleteView: string;
+        videoPlay: string;
+        videoView: string;
     };
 };
 

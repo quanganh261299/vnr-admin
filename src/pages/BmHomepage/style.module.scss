@@ -6,12 +6,23 @@
 
 .container {
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
     gap: 30px;
 }
 
 .img {
-    width: 400px;
+    width: 50px;
+    height: auto;
+    border-radius: 50%;
+    border: 3px solid #1877f2;
+    height: auto;
+    object-fit: cover;
+}
+
+.img-logo {
+    width: 250px;
     height: auto;
     object-fit: cover;
 }

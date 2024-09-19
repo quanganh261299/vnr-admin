@@ -1,9 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import styles from './style.module.scss'
-import { DatePicker, Select, Spin, Table, Tag } from 'antd';
+import { Select, Spin, Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
-import dayjs from 'dayjs';
-import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
 import { TAdvertisementTable } from '../../models/advertisement/advertisement';
 import { SelectType } from '../../models/common';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -20,7 +18,6 @@ import { formatDateTime, formatNumberWithCommas } from '../../helper/const';
 import { AppstoreAddOutlined, BankOutlined, CloseCircleOutlined, CreditCardOutlined, GiftOutlined, PayCircleOutlined } from '@ant-design/icons';
 
 const AdvertisementManagement: FC = () => {
-  const { RangePicker } = DatePicker;
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
   const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
@@ -263,15 +260,6 @@ const AdvertisementManagement: FC = () => {
     setSelectMemberId(value)
   };
 
-  const handleRangeChange = (dates: NoUndefinedRangeValueType<dayjs.Dayjs> | null) => {
-    if (dates !== null && dates[0] !== null && dates[1] !== null) {
-      const startTime = dates[0].toDate().getTime();
-      const endTime = dates[1].toDate().getTime();
-      console.log('Start Time:', startTime);
-      console.log('End Time:', endTime);
-    }
-  };
-
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
     setSelectAgencyData([])
@@ -424,11 +412,6 @@ const AdvertisementManagement: FC = () => {
             loading={loading.isSelectMember}
             value={selectMemberId || null}
             notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
-          />
-          <RangePicker
-            format={"DD-MM-YYYY"}
-            onChange={(dates) => handleRangeChange(dates)}
-            placeholder={["Ngày tạo", "Ngày tạo"]}
           />
         </div>
         <Table

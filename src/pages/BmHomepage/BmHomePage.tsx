@@ -54,8 +54,11 @@ const BmHomePage: React.FC = () => {
 
   return (
     <>
+      <div>
+
+      </div>
       <div className={styles["container"]}>
-        <img src={logo} alt="VINARA" className={styles["img"]} />
+        <img src={logo} alt="VINARA" className={styles["img-logo"]} />
         <RangePicker
           allowClear={false}
           format={"DD-MM-YYYY"}

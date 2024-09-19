@@ -62,6 +62,7 @@ const LoginBM = () => {
           }}
           onProfileSuccess={(response) => {
             console.log('Get Profile Success!', response);
+            localStorage.setItem('profileFacebook', JSON.stringify(response));
           }}
         />
       </div>

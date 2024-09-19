@@ -88,21 +88,21 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'impressions',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.impressions)}</span> : null
+      render: (insight) => Number(insight?.impressions) ? <span>{formatNumberWithCommas(insight?.impressions)}</span> : null
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
       dataIndex: 'insight',
       key: 'clicks',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.clicks)}</span> : null
+      render: (insight) => Number(insight?.clicks) ? <span>{formatNumberWithCommas(insight?.clicks)}</span> : null
     },
     {
       title: 'Số tiền đã chi tiêu',
       dataIndex: 'insight',
       key: 'spend',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.spend)}</span> : null
+      render: (insight) => Number(insight?.spend) ? <span>{formatNumberWithCommas(insight?.spend)}</span> : null
     },
     {
       title: 'Tỉ lệ nhấp chuột',
@@ -110,7 +110,7 @@ const AdManagement: FC = () => {
       key: 'ctr',
       className: styles['center-cell'],
       render: (insight) => {
-        const ctr = insight?.ctr ? parseFloat(insight?.ctr) : null;
+        const ctr = Number(insight?.ctr) ? parseFloat(insight?.ctr) : null;
         return (
           ctr ? <span>{ctr.toFixed(1)}</span> : null
         )
@@ -121,21 +121,21 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpm))}</span> : null
+      render: (insight) => Number(insight?.cpm) ? <span>{formatNumberWithCommas(Math.round(insight?.cpm))}</span> : null
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insight',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpc))}</span> : null
+      render: (insight) => Number(insight?.cpc) ? <span>{formatNumberWithCommas(Math.round(insight?.cpc))}</span> : null
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insight',
       key: 'reach',
       className: styles['center-cell'],
-      render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.reach)}</span> : null
+      render: (insight) => Number(insight?.reach) ? <span>{formatNumberWithCommas(insight?.reach)}</span> : null
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
@@ -143,7 +143,7 @@ const AdManagement: FC = () => {
       key: 'frequency',
       className: styles['center-cell'],
       render: (insight) => {
-        const insightFrequency = insight?.frequency ? parseFloat(insight?.frequency) : null;
+        const insightFrequency = Number(insight?.frequency) ? parseFloat(insight?.frequency) : null;
         return (
           insightFrequency ? <span>{insightFrequency.toFixed(1)}</span> : null
         )
@@ -155,12 +155,12 @@ const AdManagement: FC = () => {
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
         return (
-          actionData["onsite_conversion.total_messaging_connection"]
-          && <span>{formatNumberWithCommas(actionData["onsite_conversion.total_messaging_connection"])}</span>
+          Number(insight?.onsiteConversionTotalMessagingConnection)
+            ?
+            formatNumberWithCommas(insight?.onsiteConversionTotalMessagingConnection)
+            :
+            null
         )
       }
     },
@@ -170,10 +170,7 @@ const AdManagement: FC = () => {
       key: 'costPerResult',
       className: styles['center-cell'],
       render: (insight) => {
-        const costPerAction = insight?.costPerAction;
-        return costPerAction != null
-          ? <span>{formatNumberWithCommas(Math.round(costPerAction))}</span>
-          : null;
+        return Number(insight?.costPerAction) ? formatNumberWithCommas(Math.round(insight?.costPerAction)) : null;
       }
     },
     {
@@ -182,13 +179,7 @@ const AdManagement: FC = () => {
       key: 'messagingFirstReply',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["onsite_conversion.messaging_first_reply"]
-          && <span>{formatNumberWithCommas(actionData["onsite_conversion.messaging_first_reply"])}</span>
-        )
+        return Number(insight?.onsiteConversionMessagingFirstReply) ? formatNumberWithCommas(insight?.onsiteConversionMessagingFirstReply) : null
       }
     },
     {
@@ -196,131 +187,63 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'postEngagement',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["post_engagement"]
-          && <span>{formatNumberWithCommas(actionData["post_engagement"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.postEngagement) ? formatNumberWithCommas(insight?.postEngagement) : null
     },
     {
       title: 'Lượt tương tác với trang',
       dataIndex: 'insight',
       key: 'pageEngagement',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["page_engagement"]
-          && <span>{formatNumberWithCommas(actionData["page_engagement"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.pageEngagement) ? formatNumberWithCommas(insight?.pageEngagement) : null
     },
     {
       title: 'Lượt xem hình ảnh',
       dataIndex: 'insight',
       key: 'photoView',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["photo_view"]
-          && <span>{formatNumberWithCommas(actionData["photo_view"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.photoView) ? formatNumberWithCommas(insight?.photoView) : null
     },
     {
       title: 'Số lần phát video',
       dataIndex: 'insight',
       key: 'videoPlay',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["video_play"]
-          && <span>{formatNumberWithCommas(actionData["video_play"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.videoPlay) ? formatNumberWithCommas(insight?.videoPlay) : null
     },
     {
       title: 'Số lần video được xem ít nhất 3 giây',
       dataIndex: 'insight',
       key: 'videoView',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["video_view"] && <span>{formatNumberWithCommas(actionData["video_view"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.videoView) ? formatNumberWithCommas(insight?.videoView) : null
     },
     {
       title: 'Số lần video được xem ít nhất 10 giây',
       dataIndex: 'insight',
       key: 'videoView10s',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["video_10s_view"] && <span>{formatNumberWithCommas(actionData["video_10s_view"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.video10sView) ? formatNumberWithCommas(insight?.video10sView) : null
     },
     {
       title: 'Số lần video được xem ít nhất 30 giây',
       dataIndex: 'insight',
       key: 'videoView30s',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["video_30s_view"] && <span>{formatNumberWithCommas(actionData["video_30s_view"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.video30sView) ? formatNumberWithCommas(insight?.video30sView) : null
     },
     {
       title: 'Số lần video được xem đầy đủ',
       dataIndex: 'insight',
       key: 'videoCompleteView',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["video_complete_view"] && <span>{formatNumberWithCommas(actionData["video_complete_view"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.videoCompleteView) ? formatNumberWithCommas(insight?.videoCompleteView) : null
     },
     {
       title: 'Người dùng nhắn tin sau 7 ngày',
       dataIndex: 'insight',
       key: 'conversationStarted7d',
       className: styles['center-cell'],
-      render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        return (
-          actionData["onsite_conversion.messaging_conversation_started_7d"]
-          && <span>{formatNumberWithCommas(actionData["onsite_conversion.messaging_conversation_started_7d"])}</span>
-        )
-      }
+      render: (insight) => Number(insight?.onsiteConversionMessagingConversationStarted7d) ? formatNumberWithCommas(insight?.onsiteConversionMessagingConversationStarted7d) : null
     },
     {
       title: 'Thời gian chạy quảng cáo',
@@ -389,7 +312,9 @@ const AdManagement: FC = () => {
           <>
             <Link to={`/${campaignsUrl}`}>
               <ProjectOutlined />
-              <span className={styles["breadcrumb-item"]}>Chiến dịch tài khoản {breadCrumbName.accountName}</span>
+              <Tooltip title={`Chiến dịch tài khoản: ${breadCrumbName.accountName}`} placement="bottom">
+                <span className={styles["breadcrumb-item"]}>Chiến dịch</span>
+              </Tooltip>
             </Link>
           </>
         )
@@ -399,7 +324,9 @@ const AdManagement: FC = () => {
           <>
             <Link to={`/${adsetUrl}`}>
               <ClusterOutlined />
-              <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo chiến dịch {breadCrumbName.campaignName}</span>
+              <Tooltip title={`Nhóm quảng cáo chiến dịch: ${breadCrumbName.campaignName}`} placement="bottom">
+                <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo</span>
+              </Tooltip>
             </Link>
           </>
         )
@@ -408,7 +335,9 @@ const AdManagement: FC = () => {
         title: (
           <>
             <NotificationOutlined />
-            <span className={styles["breadcrumb-item"]}>Quảng cáo thuộc nhóm quảng cáo {breadCrumbName.groupName}</span>
+            <Tooltip title={`Quảng cáo thuộc nhóm quảng cáo: ${breadCrumbName.groupName}`} placement="bottom">
+              <span className={styles["breadcrumb-item"]}>Quảng cáo</span>
+            </Tooltip>
           </>
         )
       }

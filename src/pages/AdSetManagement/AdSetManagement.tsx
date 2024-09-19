@@ -1,4 +1,4 @@
-import { Breadcrumb, Table, TableProps, Tag } from "antd"
+import { Breadcrumb, Table, TableProps, Tag, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
@@ -253,7 +253,9 @@ const AdSetManagement: FC = () => {
           <>
             <Link to={`/${campaignsUrl}`}>
               <ProjectOutlined />
-              <span className={styles["breadcrumb-item"]}>Chiến dịch tài khoản {breadCrumbName.accountName}</span>
+              <Tooltip title={`Chiến dịch tài khoản: ${breadCrumbName.accountName}`} placement="bottom">
+                <span className={styles["breadcrumb-item"]}>Chiến dịch</span>
+              </Tooltip>
             </Link>
           </>
         )
@@ -262,7 +264,9 @@ const AdSetManagement: FC = () => {
         title: (
           <>
             <ClusterOutlined />
-            <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo chiến dịch {breadCrumbName.campaignName}</span>
+            <Tooltip title={`Nhóm quảng cáo chiến dịch: ${breadCrumbName.campaignName}`} placement="bottom">
+              <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo</span>
+            </Tooltip>
           </>
         )
       }
