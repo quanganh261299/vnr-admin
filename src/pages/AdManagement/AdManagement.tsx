@@ -85,28 +85,28 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Tổng số lần hiển thị',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'impressions',
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.impressions)}</span> : null
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'clicks',
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.clicks)}</span> : null
     },
     {
       title: 'Số tiền đã chi tiêu',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'spend',
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.spend)}</span> : null
     },
     {
       title: 'Tỉ lệ nhấp chuột',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'ctr',
       className: styles['center-cell'],
       render: (insight) => {
@@ -118,28 +118,28 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Chi phí mỗi 1000 lượt hiển thị',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'cpm',
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpm))}</span> : null
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'cpc',
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{formatNumberWithCommas(Math.round(insight?.cpc))}</span> : null
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'reach',
       className: styles['center-cell'],
       render: (insight) => insight ? <span>{formatNumberWithCommas(insight?.reach)}</span> : null
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'frequency',
       className: styles['center-cell'],
       render: (insight) => {
@@ -151,7 +151,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Kết quả tin nhắn',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
       render: (insight) => {
@@ -166,29 +166,19 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Chi phí trên mỗi kết quả',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'costPerResult',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionsString = insight?.actions || '[]';
-        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
-        const actionData = convertArrayToObject(actionsArray);
-        const costPerResult = insight?.spend
-          && actionData["onsite_conversion.total_messaging_connection"]
-          && (
-            actionData["onsite_conversion.total_messaging_connection"] >= 2
-              ? insight?.spend / actionData["onsite_conversion.total_messaging_connection"]
-              : insight?.spend
-          )
-        return (
-          costPerResult
-          && <span>{formatNumberWithCommas(Math.round(costPerResult))}</span>
-        )
+        const costPerAction = insight?.costPerAction;
+        return costPerAction != null
+          ? <span>{formatNumberWithCommas(Math.round(costPerAction))}</span>
+          : null;
       }
     },
     {
       title: 'Số người nhắn tin',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'messagingFirstReply',
       className: styles['center-cell'],
       render: (insight) => {
@@ -203,7 +193,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Lượt tương tác với bài viết',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'postEngagement',
       className: styles['center-cell'],
       render: (insight) => {
@@ -218,7 +208,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Lượt tương tác với trang',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'pageEngagement',
       className: styles['center-cell'],
       render: (insight) => {
@@ -233,7 +223,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Lượt xem hình ảnh',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'photoView',
       className: styles['center-cell'],
       render: (insight) => {
@@ -248,7 +238,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Số lần phát video',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'videoPlay',
       className: styles['center-cell'],
       render: (insight) => {
@@ -263,7 +253,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Số lần video được xem ít nhất 3 giây',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'videoView',
       className: styles['center-cell'],
       render: (insight) => {
@@ -277,7 +267,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Số lần video được xem ít nhất 10 giây',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'videoView10s',
       className: styles['center-cell'],
       render: (insight) => {
@@ -291,7 +281,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Số lần video được xem ít nhất 30 giây',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'videoView30s',
       className: styles['center-cell'],
       render: (insight) => {
@@ -305,7 +295,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Số lần video được xem đầy đủ',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'videoCompleteView',
       className: styles['center-cell'],
       render: (insight) => {
@@ -319,7 +309,7 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Người dùng nhắn tin sau 7 ngày',
-      dataIndex: 'insighn',
+      dataIndex: 'insight',
       key: 'conversationStarted7d',
       className: styles['center-cell'],
       render: (insight) => {
@@ -358,8 +348,8 @@ const AdManagement: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListAd(String(param.adsetsId), currentPage, 10).then((res) => {
-      console.log('res', res)
       const data = res.data.data
+      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }

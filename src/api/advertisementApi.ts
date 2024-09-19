@@ -40,7 +40,7 @@ const advertisementApi = {
         return axiosInstance.get(url);
     },
     getListAd: (adSetId: string, pageIndex?: number, pageSize?: number) => {
-        const url = `/Ads?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${adSetId}`;
+        const url = `/Ads?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${adSetId}&start=2024-06-01&end=2024-10-01`;
         return axiosInstance.get(url);
     },
     getListBm: (groupId?: string) => {

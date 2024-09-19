@@ -143,7 +143,7 @@ export type TAdsTable = {
     startTime: string; // thời gian chạy quảng cáo
     updatedTime: string; // thời gian cập nhật dữ liệu facebook
     updateDataTime: string; // thời gian cập nhật dữ liệu database
-    insighn: {
+    insight: {
         id: string; // id của insight
         impressions: string; // Số lần quảng cáo được hiển thị
         clicks: string; // số lần người dùng nhấp vào quảng cáo
@@ -159,6 +159,7 @@ export type TAdsTable = {
         updateDataTime: string | null;
         adsId: string; // id quảng cáo
         ads?: null; // để sau
+        costPerAction: string | null;
     };
 };
 
