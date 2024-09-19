@@ -15,7 +15,7 @@ self.addEventListener('activate', (event) => {
   const getDataFromFacebook = (token, baseUrl) => {
     console.log('Starting...');
     console.log('Fetching data from Facebook API!');
-    fetch(`${baseUrl}datafacebook`, {
+    fetch(`${baseUrl}/datafacebook`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
