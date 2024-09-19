@@ -2,8 +2,6 @@ import { createRoot } from 'react-dom/client'
 import './reset.scss'
 import './global.scss'
 import App from './App'
-const baseUrl = import.meta.env.VITE_BASE_URL;
-
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -12,13 +10,14 @@ if ('serviceWorker' in navigator) {
         console.log('Service Worker registered with scope:', registration.scope);
         navigator.serviceWorker.ready.then(swRegistration => {
           const token = localStorage.getItem('BmToken');
+          const baseUrl = import.meta.env.VITE_BASE_URL;
           if (token && swRegistration.active) {
-            swRegistration.active.postMessage({ token });
+            swRegistration.active.postMessage({ token, baseUrl });
             console.log('Token sent to Service Worker!');
           }
           const getDataFromFaceBook = () => {
             console.log('Fetching data from Facebook API!');
-            fetch(baseUrl, {
+            fetch(`${baseUrl}/datafacebook`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
