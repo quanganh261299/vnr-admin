@@ -44,7 +44,7 @@ self.addEventListener('activate', (event) => {
         });
 
       // Lặp lại quá trình fetch sau 10 giây
-      setTimeout(getDataFromFacebook, 60 * 10 * 1000);
+      setInterval(getDataFromFacebook, 60 * 10 * 1000);
     }).catch((err) => console.log('Error in token promise:', err));
   };
 

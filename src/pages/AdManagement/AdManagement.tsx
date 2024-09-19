@@ -155,7 +155,9 @@ const AdManagement: FC = () => {
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["onsite_conversion.total_messaging_connection"]
           && <span>{formatNumberWithCommas(actionData["onsite_conversion.total_messaging_connection"])}</span>
@@ -168,7 +170,9 @@ const AdManagement: FC = () => {
       key: 'costPerResult',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         const costPerResult = insight?.spend
           && actionData["onsite_conversion.total_messaging_connection"]
           && (
@@ -188,7 +192,9 @@ const AdManagement: FC = () => {
       key: 'messagingFirstReply',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["onsite_conversion.messaging_first_reply"]
           && <span>{formatNumberWithCommas(actionData["onsite_conversion.messaging_first_reply"])}</span>
@@ -201,7 +207,9 @@ const AdManagement: FC = () => {
       key: 'postEngagement',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["post_engagement"]
           && <span>{formatNumberWithCommas(actionData["post_engagement"])}</span>
@@ -214,7 +222,9 @@ const AdManagement: FC = () => {
       key: 'pageEngagement',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["page_engagement"]
           && <span>{formatNumberWithCommas(actionData["page_engagement"])}</span>
@@ -227,7 +237,9 @@ const AdManagement: FC = () => {
       key: 'photoView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["photo_view"]
           && <span>{formatNumberWithCommas(actionData["photo_view"])}</span>
@@ -240,7 +252,9 @@ const AdManagement: FC = () => {
       key: 'videoPlay',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["video_play"]
           && <span>{formatNumberWithCommas(actionData["video_play"])}</span>
@@ -253,7 +267,9 @@ const AdManagement: FC = () => {
       key: 'videoView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["video_view"] && <span>{formatNumberWithCommas(actionData["video_view"])}</span>
         )
@@ -265,7 +281,9 @@ const AdManagement: FC = () => {
       key: 'videoView10s',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["video_10s_view"] && <span>{formatNumberWithCommas(actionData["video_10s_view"])}</span>
         )
@@ -277,7 +295,9 @@ const AdManagement: FC = () => {
       key: 'videoView30s',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["video_30s_view"] && <span>{formatNumberWithCommas(actionData["video_30s_view"])}</span>
         )
@@ -289,7 +309,9 @@ const AdManagement: FC = () => {
       key: 'videoCompleteView',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["video_complete_view"] && <span>{formatNumberWithCommas(actionData["video_complete_view"])}</span>
         )
@@ -301,7 +323,9 @@ const AdManagement: FC = () => {
       key: 'conversationStarted7d',
       className: styles['center-cell'],
       render: (insight) => {
-        const actionData = insight?.actions ? convertArrayToObject(JSON.parse(insight?.actions)) : {};
+        const actionsString = insight?.actions || '[]';
+        const actionsArray = Array.isArray(JSON.parse(actionsString)) ? JSON.parse(actionsString) : [];
+        const actionData = convertArrayToObject(actionsArray);
         return (
           actionData["onsite_conversion.messaging_conversation_started_7d"]
           && <span>{formatNumberWithCommas(actionData["onsite_conversion.messaging_conversation_started_7d"])}</span>
