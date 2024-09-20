@@ -24,12 +24,9 @@ const AdManagement: FC = () => {
   const adsetUrl = location.pathname.split('/').slice(1, 6).join('/')
 
   const { RangePicker } = DatePicker;
-  const currentDate = new Date();
-  const oneMonthBeforeToday = new Date(currentDate);
-  oneMonthBeforeToday.setMonth(currentDate.getMonth() - 1);
-  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeToday))
-  const [endTime, setEndTime] = useState<string>(formatDateYMD(currentDate))
   const { dateRange, setDateRange } = useDateRangeStore();
+  const [startTime, setStartTime] = useState<string>(dateRange[0] ? formatDateYMD(dateRange[0].toDate()) : '');
+  const [endTime, setEndTime] = useState<string>(dateRange[1] ? formatDateYMD(dateRange[1].toDate()) : '');
 
   const columns: TableProps<TAdsTable>['columns'] = [
     {
