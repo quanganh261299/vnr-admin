@@ -1,11 +1,13 @@
-import { Breadcrumb, Table, TableProps, Tooltip } from "antd"
+import { Breadcrumb, DatePicker, Table, TableProps, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
 import { DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
+import { formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
+import dayjs, { Dayjs } from "dayjs"
+import useDateRangeStore from "../../store/dateRangeStore"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
@@ -18,6 +20,13 @@ const CampaignsManagment: FC = () => {
   const location = useLocation();
   const advertisementUrl = location.pathname.split('/')[1]
   const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
+  const { RangePicker } = DatePicker;
+  const currentDate = new Date();
+  const oneMonthBeforeToday = new Date(currentDate);
+  oneMonthBeforeToday.setMonth(currentDate.getMonth() - 1);
+  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeToday))
+  const [endTime, setEndTime] = useState<string>(formatDateYMD(currentDate))
+  const { dateRange, setDateRange } = useDateRangeStore();
 
   const navigate = useNavigate()
 
@@ -126,9 +135,21 @@ const CampaignsManagment: FC = () => {
     }
   }
 
+  const handleRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (dates !== null) {
+      setDateRange(dates);
+      if (dates[0] !== null && dates[1] !== null) {
+        const startTime = formatDateYMD(dates[0].toDate());
+        const endTime = formatDateYMD(dates[1].toDate());
+        setStartTime(startTime);
+        setEndTime(endTime);
+      }
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true)
-    advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10).then((res) => {
+    advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10, startTime, endTime).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -139,17 +160,24 @@ const CampaignsManagment: FC = () => {
           key: item.id,
         }));
         setTotalPage(res.data.paging.totalPages)
-        setDataTable((prevData) => {
-          const prevDataIds = new Set(prevData.map(item => item.id));
-          const newData = dataTableConfig.filter((item: TCampaignTable) => !prevDataIds.has(item.id));
-          return [...prevData, ...newData];
+        setDataTable(prevData => {
+          const updatedData = [...prevData];
+          dataTableConfig.forEach((newItem: TCampaignTable) => {
+            const existingIndex = updatedData.findIndex(item => item.id === newItem.id);
+            if (existingIndex >= 0) {
+              updatedData[existingIndex] = newItem;
+            } else {
+              updatedData.push(newItem);
+            }
+          });
+          return updatedData;
         });
         setIsLoading(false)
       }
     }).catch(() => {
       setIsLoading(false)
     })
-  }, [currentPage, param.accountId])
+  }, [currentPage, param.accountId, startTime, endTime])
 
   useEffect(() => {
     setBreadCrumbData([
@@ -180,7 +208,17 @@ const CampaignsManagment: FC = () => {
 
   return (
     <div className={styles["container"]}>
-      <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+      <div className={styles["detail-information"]}>
+        <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+        <RangePicker
+          allowClear={false}
+          format={"DD-MM-YYYY"}
+          onChange={(dates) => handleRangeChange(dates)}
+          placeholder={["Bắt đầu", "Kết thúc"]}
+          value={dateRange}
+          maxDate={dayjs()}
+        />
+      </div>
       <Table
         columns={columns}
         dataSource={dataTable}

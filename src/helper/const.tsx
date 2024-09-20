@@ -64,7 +64,19 @@ export const convertStringToRoundNumber = (number: string) => {
 }
 
 export const handleEffectiveStatus = (value: string) => {
-    switch (value) {
+
+    let status = ''
+
+    if (value.includes('ACTIVE')) status = 'ACTIVE'
+    else if (value.includes('PAUSED')) status = 'PAUSED'
+    else if (value.includes('IN_PROCESS')) status = 'IN_PROCESS'
+    else if (value.includes('WITH_ISSUES')) status = 'WITH_ISSUES'
+    else if (value.includes('PENDING_REVIEW')) status = 'PENDING_REVIEW'
+    else if (value.includes('DISAPPROVED')) status = 'DISAPPROVED'
+    else if (value.includes('ARCHIVED')) status = 'ARCHIVED'
+    else if (value.includes('DELETE')) status = 'DELETE'
+
+    switch (status) {
         case "ACTIVE": return <Tag color="green">Đang hoạt động</Tag>
         case "PAUSED": return <Tag color="gray">Đã tạm dừng</Tag>
         case "IN_PROCESS": return <Tag color="lightblue">Đang xử lí</Tag>

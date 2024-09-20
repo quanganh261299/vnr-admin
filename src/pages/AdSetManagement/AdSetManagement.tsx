@@ -1,11 +1,13 @@
-import { Breadcrumb, Table, TableProps, Tag, Tooltip } from "antd"
+import { Breadcrumb, DatePicker, Table, TableProps, Tag, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommas, formatNumberWithCommasNotZero, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, formatDateTime, formatDateYMD, formatNumberWithCommas, formatNumberWithCommasNotZero, handleDevice, handleEffectiveStatus, handleFacebookPosition } from "../../helper/const"
+import useDateRangeStore from "../../store/dateRangeStore"
+import dayjs, { Dayjs } from "dayjs"
 
 const AdSetManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdSetsTable[]>([])
@@ -21,25 +23,13 @@ const AdSetManagement: FC = () => {
 
   const navigate = useNavigate()
 
-  const handleFacebookPosition = (value: string) => {
-    switch (value) {
-      case 'feed': return 'Bảng tin'
-      case 'facebook_reels': return 'Reels (video ngắn)'
-      case 'facebook_reels_overlay': return 'Quảng cáo trên Facebook Reels'
-      case 'video_feeds': return 'Video'
-      case 'instream_video': return 'Video trong luồng trên Facebook'
-      case 'marketplace': return 'Marketplace'
-      case 'story': return 'Facebook Stories'
-      case 'search': return 'Kết quả tìm kiếm'
-    }
-  }
-
-  const handleDevice = (value: string) => {
-    switch (value) {
-      case 'mobile': return 'Thiết bị di động'
-      case 'desktop': return 'Máy tính'
-    }
-  }
+  const { RangePicker } = DatePicker;
+  const currentDate = new Date();
+  const oneMonthBeforeToday = new Date(currentDate);
+  oneMonthBeforeToday.setMonth(currentDate.getMonth() - 1);
+  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeToday))
+  const [endTime, setEndTime] = useState<string>(formatDateYMD(currentDate))
+  const { dateRange, setDateRange } = useDateRangeStore();
 
   const columns: TableProps<TAdSetsTable>['columns'] = [
     {
@@ -211,9 +201,21 @@ const AdSetManagement: FC = () => {
     }
   }
 
+  const handleRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (dates !== null) {
+      setDateRange(dates);
+      if (dates[0] !== null && dates[1] !== null) {
+        const startTime = formatDateYMD(dates[0].toDate());
+        const endTime = formatDateYMD(dates[1].toDate());
+        setStartTime(startTime);
+        setEndTime(endTime);
+      }
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true)
-    advertisementApi.getListAdSet(String(param.campaignId), currentPage, 10).then((res) => {
+    advertisementApi.getListAdSet(String(param.campaignId), currentPage, 10, startTime, endTime).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -224,17 +226,24 @@ const AdSetManagement: FC = () => {
           key: item.id,
         }));
         setTotalPage(res.data.paging.totalPages)
-        setDataTable((prevData) => {
-          const prevDataIds = new Set(prevData.map(item => item.id));
-          const newData = dataTableConfig.filter((item: TAdSetsTable) => !prevDataIds.has(item.id));
-          return [...prevData, ...newData];
+        setDataTable(prevData => {
+          const updatedData = [...prevData];
+          dataTableConfig.forEach((newItem: TAdSetsTable) => {
+            const existingIndex = updatedData.findIndex(item => item.id === newItem.id);
+            if (existingIndex >= 0) {
+              updatedData[existingIndex] = newItem;
+            } else {
+              updatedData.push(newItem);
+            }
+          });
+          return updatedData;
         });
         setIsLoading(false)
       }
     }).catch(() => {
       setIsLoading(false)
     })
-  }, [param.campaignId])
+  }, [currentPage, param.campaignId, startTime, endTime])
 
   useEffect(() => {
     setBreadCrumbData([
@@ -275,7 +284,17 @@ const AdSetManagement: FC = () => {
 
   return (
     <div className={styles["container"]}>
-      <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+      <div className={styles["detail-information"]}>
+        <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+        <RangePicker
+          allowClear={false}
+          format={"DD-MM-YYYY"}
+          onChange={(dates) => handleRangeChange(dates)}
+          placeholder={["Bắt đầu", "Kết thúc"]}
+          value={dateRange}
+          maxDate={dayjs()}
+        />
+      </div>
       <Table
         columns={columns}
         dataSource={dataTable}
