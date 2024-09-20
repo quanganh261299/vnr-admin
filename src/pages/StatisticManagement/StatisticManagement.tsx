@@ -37,12 +37,10 @@ const StatisticManagement: FC = () => {
   const currentDate = new Date();
   const yesterday = new Date(currentDate);
   yesterday.setDate(currentDate.getDate() - 1);
-  const oneMonthBeforeFromYesterday = new Date(yesterday);
-  oneMonthBeforeFromYesterday.setMonth(yesterday.getMonth() - 1);
-  const [startTime, setStartTime] = useState<string>(formatDateYMD(oneMonthBeforeFromYesterday))
+  const [startTime, setStartTime] = useState<string>(formatDateYMD(yesterday))
   const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    dayjs(oneMonthBeforeFromYesterday),
+    dayjs(yesterday),
     dayjs(yesterday),
   ]);
 
@@ -237,8 +235,8 @@ const StatisticManagement: FC = () => {
     setSelectSystemId(null)
     setSelectAgencyId(null)
     setSelectTeamId(null)
-    setDateRange([dayjs(oneMonthBeforeFromYesterday), dayjs(yesterday)])
-    setStartTime(formatDateYMD(oneMonthBeforeFromYesterday))
+    setDateRange([dayjs(yesterday), dayjs(yesterday)])
+    setStartTime(formatDateYMD(yesterday))
     setEndTime(formatDateYMD(yesterday))
     switch (value) {
       case 1: {

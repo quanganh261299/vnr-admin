@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Input, Modal, Select } from "antd"
+import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import styles from './style.module.scss'
 import { SelectType } from "../../../models/common";
@@ -19,14 +19,16 @@ import advertisementApi from "../../../api/advertisementApi";
 interface Props {
   isModalOpen: boolean,
   handleOk: () => void,
+  handleSave: () => void,
   handleCancel: () => void,
   onFinish: (values: TAdvertisementField) => void,
   editingData?: TAdUserTable | null,
-  isLoadingBtn?: boolean
+  isLoadingOkBtn?: boolean,
+  isLoadingSaveBtn?: boolean
 }
 
-const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, isLoadingBtn, editingData, handleOk, handleCancel, onFinish } = props
+const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
+  const { isModalOpen, isLoadingOkBtn, isLoadingSaveBtn, editingData, handleOk, handleSave, handleCancel, onFinish } = props
   const [selectSystemDataModal, setSelectSystemDataModal] = useState<SelectType[]>([])
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
@@ -55,6 +57,9 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     },
     reset: () => {
       form.resetFields();
+    },
+    saveReset: () => {
+      form.resetFields(['id']);
     }
   }));
 
@@ -249,10 +254,27 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     <Modal
       title={'Thêm tài khoản quảng cáo'}
       open={isModalOpen}
-      onOk={handleOk}
-      onCancel={handleCancel}
       centered
-      okButtonProps={{ loading: isLoadingBtn }}
+      onCancel={handleCancel}
+      footer={(
+        <Flex gap={"small"} justify="flex-end">
+          <Button onClick={handleCancel}>Cancel</Button>
+          <Button
+            type="primary"
+            onClick={handleSave}
+            loading={isLoadingSaveBtn}
+          >
+            Save & Continue
+          </Button>
+          <Button
+            type="primary"
+            onClick={handleOk}
+            loading={isLoadingOkBtn}
+          >
+            Ok
+          </Button>
+        </Flex>
+      )}
     >
       <Form
         form={form}
