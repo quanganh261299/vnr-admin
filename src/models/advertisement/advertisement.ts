@@ -52,6 +52,28 @@ export type TCampaignTable = {
     objective: string; // Mục tiêu chiến dịch
     updateDataTime: string; // Thời gian cập nhật dữ liệu
     account?: TAdvertisementTable;
+    insight: {
+        clicks: string;
+        costPerAction: string;
+        cpc: string;
+        cpm: string;
+        ctr: string;
+        frequency: string;
+        impressions: string;
+        onsiteConversionMessagingConversationStarted7d: string;
+        onsiteConversionMessagingFirstReply: string;
+        onsiteConversionTotalMessagingConnection: string;
+        pageEngagement: string;
+        photoView: string;
+        postEngagement: string;
+        reach: string;
+        spend: string;
+        video10sView: string;
+        video30sView: string;
+        videoCompleteView: string;
+        videoPlay: string;
+        videoView: string;
+    };
 };
 
 // export type TypeTargeting = {
@@ -89,6 +111,28 @@ export type TAdSetsTable = {
     updatedTime: string; // Thời gian cập nhật cuối cùng theo facebook
     updateDataTime: string; // Thời gian cập nhật dữ liệu lần cuối theo database
     campaign?: TCampaignTable;
+    insight: {
+        clicks: string;
+        costPerAction: string;
+        cpc: string;
+        cpm: string;
+        ctr: string;
+        frequency: string;
+        impressions: string;
+        onsiteConversionMessagingConversationStarted7d: string;
+        onsiteConversionMessagingFirstReply: string;
+        onsiteConversionTotalMessagingConnection: string;
+        pageEngagement: string;
+        photoView: string;
+        postEngagement: string;
+        reach: string;
+        spend: string;
+        video10sView: string;
+        video30sView: string;
+        videoCompleteView: string;
+        videoPlay: string;
+        videoView: string;
+    };
 };
 
 // export type TAdsTable = {

@@ -110,6 +110,7 @@ export const handleCallToActionType = (value: string) => {
 export const handleFacebookPosition = (value: string) => {
     switch (value) {
         case 'feed': return 'Bảng tin'
+        case 'profile_feed': return 'Bảng tin trang cá nhân'
         case 'facebook_reels': return 'Reels (video ngắn)'
         case 'facebook_reels_overlay': return 'Quảng cáo trên Facebook Reels'
         case 'video_feeds': return 'Video'
