@@ -134,25 +134,13 @@ const MemberManagement: FC = () => {
     setSelectTeamId(null)
   };
 
-  const onSearchSystem = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeAgency = (value: string) => {
     setSelectAgencyId(value)
     setSelectTeamId(null)
   };
 
-  const onSearchAgency = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeTeam = (value: string) => {
     setSelectTeamId(value)
-  };
-
-  const onSearchTeam = (value: string) => {
-    console.log('search:', value);
   };
 
   const onFinish: FormProps<TMemberField>['onFinish'] = (values) => {
@@ -176,7 +164,6 @@ const MemberManagement: FC = () => {
         setLoading({ ...loading, isBtn: false })
         success('Tạo thành viên thành công!')
       }).catch((err) => {
-        console.log('err', err)
         setLoading({ ...loading, isBtn: false })
         error(err.response.data.message)
       })
@@ -303,8 +290,7 @@ const MemberManagement: FC = () => {
         setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
-    }).catch((err) => {
-      console.log('error', err)
+    }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
   }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi])
@@ -329,7 +315,6 @@ const MemberManagement: FC = () => {
             placeholder="Chọn hệ thống"
             optionFilterProp="label"
             onChange={onChangeSystem}
-            onSearch={onSearchSystem}
             options={selectSystemData}
             className={styles["select-system-item"]}
             notFoundContent={'Không có dữ liệu'}
@@ -341,7 +326,6 @@ const MemberManagement: FC = () => {
             placeholder="Chọn chi nhánh"
             optionFilterProp="label"
             onChange={onChangeAgency}
-            onSearch={onSearchAgency}
             options={selectAgencyData}
             value={selectAgencyId || null}
             className={styles["select-system-item"]}
@@ -354,7 +338,6 @@ const MemberManagement: FC = () => {
             placeholder="Chọn đội nhóm"
             optionFilterProp="label"
             onChange={onChangeTeam}
-            onSearch={onSearchTeam}
             options={selectTeamData}
             value={selectTeamId || null}
             className={styles["select-system-item"]}

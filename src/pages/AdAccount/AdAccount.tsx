@@ -98,7 +98,7 @@ const AdAccount: FC = () => {
         )
         : values.pms
     }
-    console.log('data', data)
+
     if (dataRecord) {
       advertisementApi.updateAdsAccount(data).then(() => {
         setIsModalOpen(false)
@@ -106,7 +106,6 @@ const AdAccount: FC = () => {
         setLoading({ ...loading, isBtn: false })
         success('Sửa tài khoản quảng cáo thành công!')
       }).catch((err) => {
-        console.log('err', err)
         setLoading({ ...loading, isBtn: false })
         error(err.response.data.message)
       })
@@ -118,7 +117,6 @@ const AdAccount: FC = () => {
         setIsModalOpen(false)
         setIsCallbackApi(!isCallbackApi)
       }).catch((err) => {
-        console.log('err', err)
         setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
         error(err.response.data.message)
       })
@@ -137,7 +135,6 @@ const AdAccount: FC = () => {
 
   const handleShowModal = (data: TAdUserTable | null = null) => {
     if (data) {
-      console.log('data', data)
       setDataRecord(data)
       setIsModalOpen(true)
     }
@@ -201,7 +198,7 @@ const AdAccount: FC = () => {
         setLoading({ ...loading, isTable: false })
       }
     }).catch((err) => {
-      console.log('err', err)
+      error(err.response.data.message)
       setLoading({ ...loading, isTable: false })
     })
   }, [currentPage, isCallbackApi])

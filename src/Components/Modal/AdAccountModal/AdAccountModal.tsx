@@ -213,11 +213,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     })
   }, [])
 
-  console.log('selectBmEditingDataModal', selectBmEditingDataModal)
-
   useEffect(() => {
     if (editingData) {
-      console.log('edit', editingData)
       setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
       setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
       setSelectTeamModalId(String(editingData.employee?.groupId))

@@ -1,11 +1,11 @@
-import { Breadcrumb, Table, TableProps, Tag, Tooltip } from "antd"
+import { Breadcrumb, Table, TableProps, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
-import { DollarOutlined, ProjectOutlined, PushpinOutlined } from "@ant-design/icons"
+import { DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
+import { formatDateTime, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
@@ -20,33 +20,6 @@ const CampaignsManagment: FC = () => {
   const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
 
   const navigate = useNavigate()
-
-  const handleBuyingType = (value: string) => {
-    switch (value) {
-      case "AUCTION": return <Tag color="green" icon={<DollarOutlined />}>Đấu giá</Tag>
-      case "RESERVED": return <Tag color="gold" icon={<PushpinOutlined />}>RESERVED - Đặt chỗ</Tag>
-    }
-  }
-
-  const handleObjective = (value: string) => {
-    switch (value) {
-      case "BRAND_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
-      case "REACH": return <span>Tối ưu hóa lượng người dùng tiếp cận quảng cáo</span>
-      case "TRAFFIC": return <span>Tăng lượng truy cập</span>
-      case "ENGAGEMENT": return <span>Tăng lượt tương tác</span>
-      case "APP_INSTALLS": return <span>Tăng số lượng cài đặt ứng dụng</span>
-      case "VIDEO_VIEWS": return <span>Tăng lượt xem video</span>
-      case "LEAD_GENERATION": return <span>Thu thập thông tin người dùng</span>
-      case "MESSAGES": return <span>Thúc đẩy người dùng gửi tin nhắn tới doanh nghiệp</span>
-      case "CONVERSIONS": return <span>Tối ưu hóa hành động chuyển đổi</span>
-      case "CATALOG_SALES": return <span>Tự động hiển thị sản phẩm cho người có khả năng mua cao nhất</span>
-      case "STORE_VISITS": return <span>Tăng lượng khách hàng ghé thăm cửa hàng</span>
-      case "OUTCOME_ENGAGEMENT": return <span>Tăng chất lượng tương tác</span>
-      case "OUTCOME_LEADS": return <span>Thu thập thông tin khách hàng tiềm năng</span>
-      case "OUTCOME_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
-      case "OUTCOME_SALES": return <span>Tăng doanh số</span>
-    }
-  }
 
   const columns: TableProps<TCampaignTable>['columns'] = [
     {
@@ -82,7 +55,7 @@ const CampaignsManagment: FC = () => {
           return (
             <>
               <div>Ngân sách hàng ngày:</div>
-              <span> {formatNumberWithCommas(record.dailyBudget)}</span>
+              <span> {formatNumberWithCommasNotZero(record.dailyBudget)}</span>
             </>
           );
         }
@@ -90,7 +63,7 @@ const CampaignsManagment: FC = () => {
           return (
             <>
               <div>Ngân sách trọn đời:</div>
-              <span> {formatNumberWithCommas(record.lifetimeBudget)}</span>
+              <span> {formatNumberWithCommasNotZero(record.lifetimeBudget)}</span>
             </>
           );
         }
@@ -103,7 +76,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
-      render: (value) => formatNumberWithCommas(value),
+      render: (value) => formatNumberWithCommasNotZero(value),
       width: 250
     },
     {
@@ -118,7 +91,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'startTime',
       key: 'startTime',
       className: styles['center-cell'],
-      render: (startTime) => <span>{formatDateTime(startTime)}</span>,
+      render: (startTime) => <span>{formatDateTime(startTime) || '-'}</span>,
       width: 250,
     },
     {
@@ -126,7 +99,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
       className: styles['center-cell'],
-      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>,
+      render: (updateDataTime) => <span>{formatDateTime(updateDataTime) || '-'}</span>,
       width: 250,
     },
     // {
@@ -156,7 +129,6 @@ const CampaignsManagment: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10).then((res) => {
-      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -174,8 +146,7 @@ const CampaignsManagment: FC = () => {
         });
         setIsLoading(false)
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setIsLoading(false)
     })
   }, [currentPage, param.accountId])

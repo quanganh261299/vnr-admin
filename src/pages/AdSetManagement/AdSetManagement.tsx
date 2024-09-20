@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommas, formatNumberWithCommasNotZero, handleEffectiveStatus } from "../../helper/const"
 
 const AdSetManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdSetsTable[]>([])
@@ -145,6 +145,7 @@ const AdSetManagement: FC = () => {
       dataIndex: 'promoteObjectPageId',
       key: 'page_id',
       className: styles['center-cell'],
+      render: (value) => value || '-',
       width: 200
     },
     {
@@ -183,7 +184,7 @@ const AdSetManagement: FC = () => {
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
-      render: (value) => Number(formatNumberWithCommas(convertStringToRoundNumber(value))),
+      render: (value) => formatNumberWithCommasNotZero(convertStringToRoundNumber(value)),
       width: 200
     },
     {
@@ -230,8 +231,7 @@ const AdSetManagement: FC = () => {
         });
         setIsLoading(false)
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setIsLoading(false)
     })
   }, [param.campaignId])

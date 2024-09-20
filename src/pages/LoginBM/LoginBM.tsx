@@ -49,19 +49,16 @@ const LoginBM = () => {
           scope='ads_management, ads_read, public_profile, email, business_management'
           className="fb-login-special-btn"
           onSuccess={(response) => {
-            console.log('Login Success!', response);
             authApi.loginFB(response.accessToken).then((res) => {
               storeAuthFBStatus(res.data.data.accessToken)
               setIsLoading(false)
               window.location.href = '/bm-homepage'
             })
           }}
-          onFail={(error) => {
-            console.log('Login Failed!', error);
+          onFail={() => {
             setIsLoading(false)
           }}
           onProfileSuccess={(response) => {
-            console.log('Get Profile Success!', response);
             localStorage.setItem('profileFacebook', JSON.stringify(response));
           }}
         />

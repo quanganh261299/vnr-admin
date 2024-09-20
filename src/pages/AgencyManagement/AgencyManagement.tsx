@@ -82,10 +82,6 @@ const AgencyManagement: FC = () => {
     setSelectSystemId(value)
   };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onFinish: FormProps<TAgencyField>['onFinish'] = (values) => {
     setLoading({ ...loading, isBtn: true })
     if (dataRecord) {
@@ -202,8 +198,7 @@ const AgencyManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
 
       }
-    }).catch((err) => {
-      console.log('error', err)
+    }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
 
     })
@@ -230,7 +225,6 @@ const AgencyManagement: FC = () => {
             placeholder="Chọn hệ thống"
             optionFilterProp="label"
             onChange={onChange}
-            onSearch={onSearch}
             options={selectSystemData}
             loading={loading.isSelect}
             className={styles["select-system"]}

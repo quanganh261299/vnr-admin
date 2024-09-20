@@ -5,7 +5,7 @@ import { Link, useLocation, useParams } from "react-router-dom"
 import { TAdsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, NotificationOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, formatDateTime, formatNumberWithCommasNotZero, handleCallToActionType, handleEffectiveStatus } from "../../helper/const"
 
 const AdManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdsTable[]>([])
@@ -20,24 +20,6 @@ const AdManagement: FC = () => {
   const advertisementUrl = location.pathname.split('/')[1]
   const campaignsUrl = location.pathname.split('/').slice(1, 4).join('/')
   const adsetUrl = location.pathname.split('/').slice(1, 6).join('/')
-
-  const handleCallToActionType = (value: string) => {
-    switch (value) {
-      case "BUY_NOW": return "Mua ngay"
-      case "CONTACT_US": return "Liên hệ với chúng tôi"
-      case "DOWNLOAD": return "Tải xuống"
-      case "LEARN_MORE": return "Tìm hiểu thêm"
-      case "MESSAGE_PAGE": return "Gửi tin nhắn đến trang"
-      case "NO_BUTTON": return "Không có nút"
-      case "ORDER_NOW": return "Đặt hàng ngay"
-      case "PLAY_GAME": return "Chơi game"
-      case "SHOP_NOW": return "Mua sắm ngay"
-      case "SIGN_UP": return "Đăng ký"
-      case "WATCH_MORE": return "Xem thêm"
-      case "GET_DIRECTIONS": return "Xem chỉ đường"
-    }
-    return '-'
-  }
 
   const columns: TableProps<TAdsTable>['columns'] = [
     {
@@ -89,21 +71,21 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'impressions',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.impressions))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.impressions)) || '-'
     },
     {
       title: 'Số lần người dùng nhấp vào quảng cáo',
       dataIndex: 'insight',
       key: 'clicks',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.clicks))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.clicks)) || '-'
     },
     {
       title: 'Số tiền đã chi tiêu',
       dataIndex: 'insight',
       key: 'spend',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.spend))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.spend)) || '-'
     },
     {
       title: 'Tỉ lệ nhấp chuột',
@@ -117,21 +99,21 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'cpm',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.cpm))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.cpm)) || '-'
     },
     {
       title: 'Chi phí mỗi lần nhấp chuột',
       dataIndex: 'insight',
       key: 'cpc',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.cpc))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.cpc)) || '-'
     },
     {
       title: 'Số lượng người dùng quảng cáo đã tiếp cận',
       dataIndex: 'insight',
       key: 'reach',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.reach))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.reach)) || '-'
     },
     {
       title: 'Tần suất trung bình mỗi người dùng thấy quảng cáo',
@@ -146,14 +128,14 @@ const AdManagement: FC = () => {
       key: 'totalMessagingConnection',
       className: styles['center-cell'],
       render: (insight) =>
-        Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.onsiteConversionTotalMessagingConnection))) || '-'
+        formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionTotalMessagingConnection)) || '-'
     },
     {
       title: 'Chi phí trên mỗi kết quả',
       dataIndex: 'insight',
       key: 'costPerResult',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.costPerAction))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.costPerAction)) || '-'
     },
     {
       title: 'Số người nhắn tin',
@@ -161,70 +143,70 @@ const AdManagement: FC = () => {
       key: 'messagingFirstReply',
       className: styles['center-cell'],
       render: (insight) =>
-        Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply))) || '-'
+        formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply)) || '-'
     },
     {
       title: 'Lượt tương tác với bài viết',
       dataIndex: 'insight',
       key: 'postEngagement',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.postEngagement))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.postEngagement)) || '-'
     },
     {
       title: 'Lượt tương tác với trang',
       dataIndex: 'insight',
       key: 'pageEngagement',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.pageEngagement))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.pageEngagement)) || '-'
     },
     {
       title: 'Lượt xem hình ảnh',
       dataIndex: 'insight',
       key: 'photoView',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.photoView))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.photoView)) || '-'
     },
     {
       title: 'Số lần phát video',
       dataIndex: 'insight',
       key: 'videoPlay',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.videoPlay))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoPlay)) || '-'
     },
     {
       title: 'Số lần video được xem ít nhất 3 giây',
       dataIndex: 'insight',
       key: 'videoView',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.videoView))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoView)) || '-'
     },
     {
       title: 'Số lần video được xem ít nhất 10 giây',
       dataIndex: 'insight',
       key: 'videoView10s',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.video10sView))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video10sView)) || '-'
     },
     {
       title: 'Số lần video được xem ít nhất 30 giây',
       dataIndex: 'insight',
       key: 'videoView30s',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.video30sView))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video30sView)) || '-'
     },
     {
       title: 'Số lần video được xem đầy đủ',
       dataIndex: 'insight',
       key: 'videoCompleteView',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.videoCompleteView))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoCompleteView)) || '-'
     },
     {
       title: 'Người dùng nhắn tin sau 7 ngày',
       dataIndex: 'insight',
       key: 'conversationStarted7d',
       className: styles['center-cell'],
-      render: (insight) => Number(formatNumberWithCommas(convertStringToRoundNumber(insight?.onsiteConversionMessagingConversationStarted7d))) || '-'
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingConversationStarted7d)) || '-'
     },
     {
       title: 'Thời gian chạy quảng cáo',
@@ -253,7 +235,6 @@ const AdManagement: FC = () => {
     setIsLoading(true)
     advertisementApi.getListAd(String(param.adsetsId), currentPage, 10).then((res) => {
       const data = res.data.data
-      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
@@ -270,8 +251,7 @@ const AdManagement: FC = () => {
         });
         setIsLoading(false)
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setIsLoading(false)
     })
   }, [param.adsetsId, currentPage])

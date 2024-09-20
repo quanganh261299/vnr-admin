@@ -280,25 +280,13 @@ const StatisticManagement: FC = () => {
     setSelectTeamId(null)
   };
 
-  const onSearchSystem = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeAgency = (value: string) => {
     setSelectAgencyId(value)
     setSelectTeamId(null)
   };
 
-  const onSearchAgency = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeTeam = (value: string) => {
     setSelectTeamId(value)
-  };
-
-  const onSearchTeam = (value: string) => {
-    console.log('search:', value);
   };
 
   const handleRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
@@ -351,8 +339,6 @@ const StatisticManagement: FC = () => {
       })
     }
   }, [selectSystemId, selectAgencyId])
-
-  console.log('total', totalCostPerResultData)
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isBarChart: true }))
@@ -442,7 +428,6 @@ const StatisticManagement: FC = () => {
             placeholder="Chọn hệ thống"
             optionFilterProp="label"
             onChange={onChangeSystem}
-            onSearch={onSearchSystem}
             options={selectSystemData}
             value={selectSystemId}
             className={styles["select-system-item"]}
@@ -455,7 +440,6 @@ const StatisticManagement: FC = () => {
             placeholder="Chọn chi nhánh"
             optionFilterProp="label"
             onChange={onChangeAgency}
-            onSearch={onSearchAgency}
             options={selectAgencyData}
             value={selectAgencyId || null}
             className={styles["select-system-item"]}
@@ -468,7 +452,6 @@ const StatisticManagement: FC = () => {
             placeholder="Chọn đội nhóm"
             optionFilterProp="label"
             onChange={onChangeTeam}
-            onSearch={onSearchTeam}
             options={selectTeamData}
             value={selectTeamId || null}
             className={styles["select-system-item"]}

@@ -97,7 +97,6 @@ const SystemManagement: FC = () => {
 
   const handleShowModal = (data: TSystemField | null = null) => {
     if (data) {
-      console.log('data', data)
       setDataRecord(data)
       setIsModalOpen(true)
     }
@@ -160,8 +159,7 @@ const SystemManagement: FC = () => {
         setDataTable(dataTableConfig)
         setLoading({ ...loading, isTable: false })
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setLoading({ ...loading, isTable: false })
     })
   }, [currentPage, isCallbackApi])

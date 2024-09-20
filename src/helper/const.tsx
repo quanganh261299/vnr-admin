@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { AppstoreAddOutlined, BankOutlined, CloseCircleOutlined, CreditCardOutlined, DollarOutlined, GiftOutlined, PayCircleOutlined, PushpinOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -48,6 +49,13 @@ export const formatNumberWithCommas = (number: number | string) => {
     }
 };
 
+export const formatNumberWithCommasNotZero = (number: number | string) => {
+    if (number && number !== 0) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    else return 0
+};
+
 export const convertStringToRoundNumber = (number: string) => {
     if (number) {
         return Math.round(Number(number))
@@ -67,6 +75,127 @@ export const handleEffectiveStatus = (value: string) => {
         case "DELETE": return <Tag color="black">Đã bị xóa</Tag>
     }
     return '-'
+}
+
+export const handleCallToActionType = (value: string) => {
+    switch (value) {
+        case "BUY_NOW": return "Mua ngay"
+        case "CONTACT_US": return "Liên hệ với chúng tôi"
+        case "DOWNLOAD": return "Tải xuống"
+        case "LEARN_MORE": return "Tìm hiểu thêm"
+        case "MESSAGE_PAGE": return "Gửi tin nhắn đến trang"
+        case "NO_BUTTON": return "Không có nút"
+        case "ORDER_NOW": return "Đặt hàng ngay"
+        case "PLAY_GAME": return "Chơi game"
+        case "SHOP_NOW": return "Mua sắm ngay"
+        case "SIGN_UP": return "Đăng ký"
+        case "WATCH_MORE": return "Xem thêm"
+        case "GET_DIRECTIONS": return "Xem chỉ đường"
+    }
+    return '-'
+}
+
+export const handleFacebookPosition = (value: string) => {
+    switch (value) {
+        case 'feed': return 'Bảng tin'
+        case 'facebook_reels': return 'Reels (video ngắn)'
+        case 'facebook_reels_overlay': return 'Quảng cáo trên Facebook Reels'
+        case 'video_feeds': return 'Video'
+        case 'instream_video': return 'Video trong luồng trên Facebook'
+        case 'marketplace': return 'Marketplace'
+        case 'story': return 'Facebook Stories'
+        case 'search': return 'Kết quả tìm kiếm'
+    }
+}
+
+export const handleDevice = (value: string) => {
+    switch (value) {
+        case 'mobile': return 'Thiết bị di động'
+        case 'desktop': return 'Máy tính'
+    }
+}
+
+export const handleObjective = (value: string) => {
+    switch (value) {
+        case "BRAND_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
+        case "REACH": return <span>Tối ưu hóa lượng người dùng tiếp cận quảng cáo</span>
+        case "TRAFFIC": return <span>Tăng lượng truy cập</span>
+        case "ENGAGEMENT": return <span>Tăng lượt tương tác</span>
+        case "APP_INSTALLS": return <span>Tăng số lượng cài đặt ứng dụng</span>
+        case "VIDEO_VIEWS": return <span>Tăng lượt xem video</span>
+        case "LEAD_GENERATION": return <span>Thu thập thông tin người dùng</span>
+        case "MESSAGES": return <span>Thúc đẩy người dùng gửi tin nhắn tới doanh nghiệp</span>
+        case "CONVERSIONS": return <span>Tối ưu hóa hành động chuyển đổi</span>
+        case "CATALOG_SALES": return <span>Tự động hiển thị sản phẩm cho người có khả năng mua cao nhất</span>
+        case "STORE_VISITS": return <span>Tăng lượng khách hàng ghé thăm cửa hàng</span>
+        case "OUTCOME_ENGAGEMENT": return <span>Tăng chất lượng tương tác</span>
+        case "OUTCOME_LEADS": return <span>Thu thập thông tin khách hàng tiềm năng</span>
+        case "OUTCOME_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
+        case "OUTCOME_SALES": return <span>Tăng doanh số</span>
+    }
+    return '-'
+}
+
+export const handleBuyingType = (value: string) => {
+    switch (value) {
+        case "AUCTION": return <Tag color="green" icon={<DollarOutlined />}>Đấu giá</Tag>
+        case "RESERVED": return <Tag color="gold" icon={<PushpinOutlined />}>RESERVED - Đặt chỗ</Tag>
+    }
+    return '-'
+}
+
+export const handleAccountStatus = (value: number) => {
+    switch (value) {
+        case 1: return <Tag color='green' className='text-wrap'>Tài khoản đang hoạt động</Tag>
+        case 2: return <Tag color='orange' className='text-wrap'>Tài khoản bị tạm dừng</Tag>
+        case 3: return <Tag color='red' className='text-wrap'>Tài khoản bị vô hiệu hóa</Tag>
+        case 7: return <Tag color='gold' className='text-wrap'>Tài khoản đang trong quá trình xem xét</Tag>
+        case 100: return <Tag color='red' className='text-wrap'>Tài khoản bị khóa do vi phạm chính sách</Tag>
+    }
+}
+
+export const handleDisableReason = (value: number) => {
+    switch (value) {
+        case 0: return <Tag color='darkgrey' className='text-wrap'>Không có lí do</Tag>
+        case 1: return (
+            <Tag color='red' className='text-wrap'>
+                Tài khoản bị vô hiệu hóa do vi phạm chính sách quảng cáo Facebook
+            </Tag>
+        )
+        case 2: return (
+            <Tag color='red' className='text-wrap'>
+                Tài khoản bị vô hiệu hóa do nghi ngờ hoạt động gian lận
+            </Tag>
+        )
+        case 3: return (
+            <Tag color='red' className='text-wrap'>
+                Tài khoản bị vô hiệu hóa do không thanh toán hoặc vấn đề liên quan đến thanh toán
+            </Tag>
+        )
+        case 4: return (
+            <Tag color='red' className='text-wrap'>
+                Tài khoản bị vô hiệu hóa do yêu cầu của chủ tài khoản
+            </Tag>
+        )
+        case 5: return (
+            <Tag color='red' className='text-wrap'>
+                Tài khoản bị vô hiệu hóa với các lý do khác
+            </Tag>
+        )
+    }
+}
+
+export const handleTypeCardBanking = (value: number) => {
+    switch (value) {
+        case 1: return <Tag color="blue" icon={<CreditCardOutlined />}>Thẻ tín dụng</Tag>
+        case 2: return <Tag color="green" icon={<CreditCardOutlined />}>Thẻ ghi nợ</Tag>
+        case 3: return <Tag color="lightgrey" icon={<BankOutlined />}>Tài khoản ngân hàng</Tag>
+        case 4: return <Tag color="#003087" icon={<PayCircleOutlined />}>PayPal</Tag>
+        case 5: return <Tag color="orange" icon={<BankOutlined />}>Thanh toán trực tiếp</Tag>
+        case 6: return <Tag color="red" icon={<GiftOutlined />}>Voucher hoặc mã giảm giá</Tag>
+        case 20: return <Tag color="#00aaff" icon={<AppstoreAddOutlined />}>Các phương thức thanh toán khác</Tag>
+        case -1: return <Tag color="darkgrey" icon={<CloseCircleOutlined />}>Chưa có phương thức thanh toán</Tag>
+    }
 }
 
 export const formatDateYMD = (date: Date) => {
