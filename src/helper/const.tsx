@@ -130,24 +130,26 @@ export const handleDevice = (value: string) => {
 
 export const handleObjective = (value: string) => {
     switch (value) {
-        case "BRAND_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
-        case "REACH": return <span>Tối ưu hóa lượng người dùng tiếp cận quảng cáo</span>
-        case "TRAFFIC": return <span>Tăng lượng truy cập</span>
-        case "ENGAGEMENT": return <span>Tăng lượt tương tác</span>
-        case "APP_INSTALLS": return <span>Tăng số lượng cài đặt ứng dụng</span>
-        case "VIDEO_VIEWS": return <span>Tăng lượt xem video</span>
-        case "LEAD_GENERATION": return <span>Thu thập thông tin người dùng</span>
-        case "MESSAGES": return <span>Thúc đẩy người dùng gửi tin nhắn tới doanh nghiệp</span>
-        case "CONVERSIONS": return <span>Tối ưu hóa hành động chuyển đổi</span>
-        case "CATALOG_SALES": return <span>Tự động hiển thị sản phẩm cho người có khả năng mua cao nhất</span>
-        case "STORE_VISITS": return <span>Tăng lượng khách hàng ghé thăm cửa hàng</span>
-        case "OUTCOME_ENGAGEMENT": return <span>Tăng chất lượng tương tác</span>
-        case "OUTCOME_LEADS": return <span>Thu thập thông tin khách hàng tiềm năng</span>
-        case "OUTCOME_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
-        case "OUTCOME_SALES": return <span>Tăng doanh số</span>
+        case "BRAND_AWARENESS": return "Tăng độ nhận diện thương hiệu";
+        case "REACH": return "Tối ưu hóa lượng người dùng tiếp cận quảng cáo";
+        case "TRAFFIC": return "Tăng lượng truy cập";
+        case "ENGAGEMENT": return "Tăng lượt tương tác";
+        case "APP_INSTALLS": return "Tăng số lượng cài đặt ứng dụng";
+        case "VIDEO_VIEWS": return "Tăng lượt xem video";
+        case "LEAD_GENERATION": return "Thu thập thông tin người dùng";
+        case "MESSAGES": return "Thúc đẩy người dùng gửi tin nhắn tới doanh nghiệp qua Messenger, Instagram và WhatsApp";
+        case "CONVERSIONS": return "Tối ưu hóa hành động chuyển đổi";
+        case "CATALOG_SALES": return "Tự động hiển thị sản phẩm cho người có khả năng mua cao nhất";
+        case "STORE_VISITS": return "Tăng lượng khách hàng ghé thăm cửa hàng";
+        case "OUTCOME_ENGAGEMENT": return "Tăng chất lượng tương tác";
+        case "OUTCOME_LEADS": return "Thu thập thông tin khách hàng tiềm năng";
+        case "OUTCOME_AWARENESS": return "Tăng độ nhận diện thương hiệu";
+        case "OUTCOME_SALES": return "Tăng doanh số trên trang web hoặc ứng dụng";
+        case "CALLS": return "Tăng doanh số và chuyển đổi qua cuộc gọi điện thoại";
     }
-    return '-'
+    return '-';
 }
+
 
 export const handleBuyingType = (value: string) => {
     switch (value) {
