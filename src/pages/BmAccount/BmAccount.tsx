@@ -86,7 +86,7 @@ const SystemManagement: FC = () => {
         id: dataRecord?.id,
         email: values.email,
         groupId: values.groupId,
-        bmsId: String(values.bmsId).split(',').map((id) => id.trim())
+        bmsId: values.bmsId
       }
       userApi.updateBmUser(data).then(() => {
         setIsModalOpen(false)
