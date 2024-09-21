@@ -207,7 +207,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
                   <Flex align="center" gap={"small"}>
                     <div style={{ flex: 1 }}>
                       <Form.Item
-                        label={index === 0 ? 'Chọn Id BM (có thể thêm nhiều)' : ''}
+                        label={index === 0 ? 'Thêm Id BM (có thể thêm nhiều)' : ''}
                         name={[field.name]}
                         key={field.key}
                         rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
