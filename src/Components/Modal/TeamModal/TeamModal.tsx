@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Input, Modal, Select } from "antd"
+import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import styles from './style.module.scss'
 import { SelectType } from "../../../models/common";
@@ -10,20 +10,24 @@ import branchApi from "../../../api/branchApi";
 interface Props {
   isModalOpen: boolean,
   handleOk: () => void,
+  handleSave: () => void,
   handleCancel: () => void,
   onFinish: (values: TypeTeamField) => void,
   editingData?: TypeTeamField | null,
   selectSystemData: SelectType[],
-  isLoadingBtn?: boolean
+  isLoadingOkBtn?: boolean,
+  isLoadingSaveBtn?: boolean
 }
 
-const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
+const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
   const {
     isModalOpen,
-    isLoadingBtn,
     editingData,
     selectSystemData,
+    isLoadingOkBtn,
+    isLoadingSaveBtn,
     handleOk,
+    handleSave,
     handleCancel,
     onFinish
   } = props
@@ -39,6 +43,9 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
     },
     reset: () => {
       form.resetFields();
+    },
+    saveReset: () => {
+      form.resetFields(['name', 'description']);
     }
   }));
 
@@ -104,7 +111,27 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((
       onOk={handleOk}
       onCancel={handleCancel}
       centered
-      okButtonProps={{ loading: isLoadingBtn }}
+      footer={(
+        <Flex gap={"small"} justify="flex-end">
+          <Button onClick={handleCancel}>Cancel</Button>
+          {!editingData &&
+            <Button
+              type="primary"
+              onClick={handleSave}
+              loading={isLoadingSaveBtn}
+            >
+              Save & Continue
+            </Button>
+          }
+          <Button
+            type="primary"
+            onClick={handleOk}
+            loading={isLoadingOkBtn}
+          >
+            Ok
+          </Button>
+        </Flex>
+      )}
     >
       <Form
         form={form}

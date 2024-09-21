@@ -22,7 +22,15 @@ interface Props {
 }
 
 const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, editingData, isLoadingBtn, selectSystemData, handleOk, handleCancel, onFinish } = props
+  const {
+    isModalOpen,
+    editingData,
+    isLoadingBtn,
+    selectSystemData,
+    handleOk,
+    handleCancel,
+    onFinish
+  } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])

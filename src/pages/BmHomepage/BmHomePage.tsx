@@ -1,4 +1,4 @@
-import { Button, DatePicker, Spin } from "antd"
+import { Button, DatePicker, message, Spin } from "antd"
 import { useState } from "react"
 import BmApi from "../../api/BmApi"
 import { useNavigate } from "react-router-dom"
@@ -11,25 +11,26 @@ import dayjs, { Dayjs } from "dayjs"
 const BmHomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const navigate = useNavigate()
-  const { RangePicker } = DatePicker;
-  const currentDate = new Date();
-  const yesterday = new Date(currentDate);
-  yesterday.setDate(currentDate.getDate() - 1);
+  const [messageApi, contextHolder] = message.useMessage()
+  const { RangePicker } = DatePicker
+  const currentDate = new Date()
+  const yesterday = new Date(currentDate)
+  yesterday.setDate(currentDate.getDate() - 1)
   const [startTime, setStartTime] = useState<string>(formatDateYMD(currentDate))
   const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     dayjs(yesterday),
     dayjs(currentDate),
-  ]);
+  ])
 
 
   const getDataFromFacebook = () => {
     setIsLoading(true)
     BmApi.getDataFromFacebook(startTime, endTime).then(() => {
-      alert('Thành công!')
+      success('Kéo dữ liệu thành công!')
       setIsLoading(false)
-    }).catch(() => {
-      alert('Thất bại!')
+    }).catch((err) => {
+      error(err.response.data.message || err.response.message)
       setIsLoading(false)
     })
   }
@@ -52,11 +53,23 @@ const BmHomePage: React.FC = () => {
     }
   };
 
+  const success = (message: string) => {
+    messageApi.open({
+      type: 'success',
+      content: message,
+    });
+  };
+
+  const error = (message: string) => {
+    messageApi.open({
+      type: 'error',
+      content: message,
+    });
+  };
+
   return (
     <>
-      <div>
-
-      </div>
+      {contextHolder}
       <div className={styles["container"]}>
         <img src={logo} alt="VINARA" className={styles["img-logo"]} />
         <RangePicker

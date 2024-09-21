@@ -75,6 +75,10 @@ export const route = [
         element: <AdAccount />
       },
       {
+        path: '/ad-account?isDeleted=true',
+        element: <AdAccount />
+      },
+      {
         path: '/bm-account',
         element: <BmAccount />
       },

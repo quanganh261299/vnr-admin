@@ -11,7 +11,6 @@ import dayjs, { Dayjs } from "dayjs"
 
 const AdManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdsTable[]>([])
-  // const [pageSize, setPageSize] = useState<number>(10);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [breadCrumbData, setBreadCrumbData] = useState<{ title: ReactNode }[]>([])

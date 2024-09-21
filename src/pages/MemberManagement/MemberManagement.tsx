@@ -21,7 +21,7 @@ const MemberManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TMemberTable[]>([])
   const [totalData, setTotalData] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [totalPage, setTotalPage] = useState<number>(0);
+  const [isSave, setIsSave] = useState<boolean>(false)
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
   const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
   const [selectTeamData, setSelectTeamData] = useState<SelectType[]>([])
@@ -32,13 +32,14 @@ const MemberManagement: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
+    isSaveBtn: false,
     isSelectSystem: false,
     isSelectAgency: false,
     isSelectTeam: false
   })
   const [messageApi, contextHolder] = message.useMessage();
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
-  const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
+  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
 
 
   const columns: TableProps<TMemberTable>['columns'] = [
@@ -87,13 +88,6 @@ const MemberManagement: FC = () => {
       width: 120,
       className: styles['center-cell']
     },
-    // {
-    //   title: 'Ngày tham gia',
-    //   dataIndex: 'startDate',
-    //   key: 'startDate',
-    //   width: 150,
-    //   className: styles['center-cell']
-    // },
     {
       title: 'Ghi chú',
       dataIndex: 'description',
@@ -144,10 +138,24 @@ const MemberManagement: FC = () => {
   };
 
   const onFinish: FormProps<TMemberField>['onFinish'] = (values) => {
-    setLoading({ ...loading, isBtn: true })
+    if (!isSave) setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
+    else setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: true }))
+
     if (dataRecord) {
       employeeApi.updateEmployee({ ...values, id: dataRecord?.id }).then(() => {
-        setIsModalOpen(false)
+        if (!isSave) {
+          setIsModalOpen(false)
+          setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.reset();
+          }
+        }
+        else {
+          setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.saveReset();
+          }
+        }
         setIsCallbackApi(!isCallbackApi)
         setLoading({ ...loading, isBtn: false })
         success('Sửa thành viên thành công!')
@@ -158,9 +166,20 @@ const MemberManagement: FC = () => {
     }
     else {
       employeeApi.createEmployee(values).then(() => {
-        setIsModalOpen(false)
+        if (!isSave) {
+          setIsModalOpen(false)
+          setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.reset();
+          }
+        }
+        else {
+          setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.saveReset();
+          }
+        }
         setIsCallbackApi(!isCallbackApi)
-        modalRef.current?.reset();
         setLoading({ ...loading, isBtn: false })
         success('Tạo thành viên thành công!')
       }).catch((err) => {
@@ -171,6 +190,7 @@ const MemberManagement: FC = () => {
   };
 
   const handleOk = () => {
+    setIsSave(false)
     if (modalRef.current) {
       modalRef.current.submit();
     }
@@ -179,6 +199,9 @@ const MemberManagement: FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
+    if (modalRef.current) {
+      modalRef.current.reset();
+    }
   }
 
   const handleShowModal = (data: TMemberField | null = null) => {
@@ -209,6 +232,13 @@ const MemberManagement: FC = () => {
       setLoading({ ...loading, isBtn: false })
       setIsDeleteConfirm(false)
     })
+  }
+
+  const handleSave = () => {
+    setIsSave(true)
+    if (modalRef.current) {
+      modalRef.current.submit();
+    }
   }
 
   const handleCancelDelete = () => {
@@ -362,11 +392,13 @@ const MemberManagement: FC = () => {
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}
+        handleSave={handleSave}
         handleCancel={handleCancel}
         onFinish={onFinish}
         editingData={dataRecord}
         selectSystemData={selectSystemData}
-        isLoadingBtn={loading.isBtn}
+        isLoadingOkBtn={loading.isBtn}
+        isLoadingSaveBtn={loading.isSaveBtn}
       />
       <DeleteModal
         title='Xóa thành viên'

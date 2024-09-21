@@ -27,13 +27,14 @@ const TeamManagement: FC = () => {
     isBtn: false,
     isSelectSystem: false,
     isSelectAgency: false,
+    isSaveBtn: false
   })
-  // const [pageSize, setPageSize] = useState<number>(10);
+  const [isSave, setIsSave] = useState<boolean>(false)
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
-  const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
+  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
 
   const columns: TableProps<TypeTeamTable>['columns'] = [
     {
@@ -100,12 +101,24 @@ const TeamManagement: FC = () => {
   };
 
   const onFinish: FormProps<TypeTeamField>['onFinish'] = (values) => {
-    setLoading({ ...loading, isBtn: true })
+    if (!isSave) setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
+    else setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: true }))
     if (dataRecord) {
       groupApi.updateGroup({ ...values, id: dataRecord?.id }).then(() => {
-        setIsModalOpen(false)
+        if (!isSave) {
+          setIsModalOpen(false)
+          setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.reset();
+          }
+        }
+        else {
+          setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.saveReset();
+          }
+        }
         setIsCallbackApi(!isCallbackApi)
-        setLoading({ ...loading, isBtn: false })
         success('Sửa đội nhóm thành công!')
       }).catch((err) => {
         setLoading({ ...loading, isBtn: false })
@@ -114,9 +127,20 @@ const TeamManagement: FC = () => {
     }
     else {
       groupApi.createGroup(values).then(() => {
-        setIsModalOpen(false)
+        if (!isSave) {
+          setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+          setIsModalOpen(false)
+          if (modalRef.current) {
+            modalRef.current.reset();
+          }
+        }
+        else {
+          setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.saveReset();
+          }
+        }
         setIsCallbackApi(!isCallbackApi)
-        modalRef.current?.reset();
         setLoading({ ...loading, isBtn: false })
         success('Tạo đội nhóm thành công!')
       }).catch((err) => {
@@ -127,6 +151,7 @@ const TeamManagement: FC = () => {
   };
 
   const handleOk = () => {
+    setIsSave(false)
     if (modalRef.current) {
       modalRef.current.submit();
     }
@@ -135,6 +160,9 @@ const TeamManagement: FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
+    if (modalRef.current) {
+      modalRef.current.reset();
+    }
   }
 
   const handleShowModal = (data: TypeTeamField | null = null) => {
@@ -169,6 +197,13 @@ const TeamManagement: FC = () => {
 
   const handleCancelDelete = () => {
     setIsDeleteConfirm(false)
+  }
+
+  const handleSave = () => {
+    setIsSave(true)
+    if (modalRef.current) {
+      modalRef.current.submit();
+    }
   }
 
   const success = (message: string) => {
@@ -290,10 +325,12 @@ const TeamManagement: FC = () => {
         isModalOpen={isModalOpen}
         handleOk={handleOk}
         handleCancel={handleCancel}
+        handleSave={handleSave}
         onFinish={onFinish}
         editingData={dataRecord}
         selectSystemData={selectSystemData}
-        isLoadingBtn={loading.isBtn}
+        isLoadingOkBtn={loading.isBtn}
+        isLoadingSaveBtn={loading.isSaveBtn}
       />
       <DeleteModal
         title='Xóa đội nhóm'

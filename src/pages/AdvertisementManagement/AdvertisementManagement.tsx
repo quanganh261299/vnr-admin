@@ -26,7 +26,6 @@ const AdvertisementManagement: FC = () => {
   const [selectAgencyId, setSelectAgencyId] = useState<string | null>(null)
   const [selectTeamId, setSelectTeamId] = useState<string | null>(null)
   const [selectMemberId, setSelectMemberId] = useState<string | null>(null)
-  // const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
   const [loading, setLoading] = useState({
@@ -152,21 +151,6 @@ const AdvertisementManagement: FC = () => {
       className: styles['center-cell'],
       render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>
     },
-    // Can use this later
-    // {
-    //   title: 'Hạn mức chi tiêu tối thiểu nhóm chiến dịch',
-    //   dataIndex: 'minCampaignGroupSpendCap',
-    //   key: 'minCampaignGroupSpendCap',
-    //   className: styles['center-cell'],
-    //   render: (value) => <span>{formatNumberWithCommas(value)}</span>
-    // },
-    // {
-    //   title: 'Ngân sách tối thiểu hàng ngày cho chiến dịch',
-    //   dataIndex: 'minDailyBudget',
-    //   key: 'minDailyBudget',
-    //   className: styles['center-cell'],
-    //   render: (value) => <span>{formatNumberWithCommas(value)}</span>
-    // },
   ];
 
   const onChangeSystem = (value: string) => {

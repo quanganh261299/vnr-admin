@@ -220,7 +220,6 @@ const StatisticManagement: FC = () => {
     series: [
       {
         type: 'bar',
-        // barWidth: '60%',
         data: [1321, 5212, 2200, 3234, 3190, 1330, 220]
       }
     ]
