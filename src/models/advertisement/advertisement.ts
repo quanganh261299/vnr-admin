@@ -28,6 +28,7 @@ export type TAdvertisementField = {
     groupId?: string;
     employeeId?: string;
     id?: string;
+    pms?: string[] | { value: string; label: string }[];
 };
 
 export type TCampaignTable = {
@@ -51,6 +52,28 @@ export type TCampaignTable = {
     objective: string; // Mục tiêu chiến dịch
     updateDataTime: string; // Thời gian cập nhật dữ liệu
     account?: TAdvertisementTable;
+    insight: {
+        clicks: string;
+        costPerAction: string;
+        cpc: string;
+        cpm: string;
+        ctr: string;
+        frequency: string;
+        impressions: string;
+        onsiteConversionMessagingConversationStarted7d: string;
+        onsiteConversionMessagingFirstReply: string;
+        onsiteConversionTotalMessagingConnection: string;
+        pageEngagement: string;
+        photoView: string;
+        postEngagement: string;
+        reach: string;
+        spend: string;
+        video10sView: string;
+        video30sView: string;
+        videoCompleteView: string;
+        videoPlay: string;
+        videoView: string;
+    };
 };
 
 // export type TypeTargeting = {
@@ -88,6 +111,28 @@ export type TAdSetsTable = {
     updatedTime: string; // Thời gian cập nhật cuối cùng theo facebook
     updateDataTime: string; // Thời gian cập nhật dữ liệu lần cuối theo database
     campaign?: TCampaignTable;
+    insight: {
+        clicks: string;
+        costPerAction: string;
+        cpc: string;
+        cpm: string;
+        ctr: string;
+        frequency: string;
+        impressions: string;
+        onsiteConversionMessagingConversationStarted7d: string;
+        onsiteConversionMessagingFirstReply: string;
+        onsiteConversionTotalMessagingConnection: string;
+        pageEngagement: string;
+        photoView: string;
+        postEngagement: string;
+        reach: string;
+        spend: string;
+        video10sView: string;
+        video30sView: string;
+        videoCompleteView: string;
+        videoPlay: string;
+        videoView: string;
+    };
 };
 
 // export type TAdsTable = {
@@ -142,22 +187,27 @@ export type TAdsTable = {
     startTime: string; // thời gian chạy quảng cáo
     updatedTime: string; // thời gian cập nhật dữ liệu facebook
     updateDataTime: string; // thời gian cập nhật dữ liệu database
-    insighn: {
-        id: string; // id của insight
-        impressions: string; // Số lần quảng cáo được hiển thị
-        clicks: string; // số lần người dùng nhấp vào quảng cáo
-        spend: string; // tổng chi phí quảng cáo
-        reach: string; // số lượng người dùng quảng cáo đã tiếp cận
-        ctr: string; // tỉ lệ nhấp chuột
-        cpm: string; // chi phí mỗi 1000 lượt hiển thị
-        cpc: string; // chi phí mỗi lần nhấp chuột
-        cpp: string; // chi phí mỗi hành động
-        frequency: string; // tần suất trung bình mà mỗi người dùng thấy quảng cáo
-        actions: string | null;
-        dateAt: string | null;
-        updateDataTime: string | null;
-        adsId: string; // id quảng cáo
-        ads?: null; // để sau
+    insight: {
+        clicks: string;
+        costPerAction: string;
+        cpc: string;
+        cpm: string;
+        ctr: string;
+        frequency: string;
+        impressions: string;
+        onsiteConversionMessagingConversationStarted7d: string;
+        onsiteConversionMessagingFirstReply: string;
+        onsiteConversionTotalMessagingConnection: string;
+        pageEngagement: string;
+        photoView: string;
+        postEngagement: string;
+        reach: string;
+        spend: string;
+        video10sView: string;
+        video30sView: string;
+        videoCompleteView: string;
+        videoPlay: string;
+        videoView: string;
     };
 };
 

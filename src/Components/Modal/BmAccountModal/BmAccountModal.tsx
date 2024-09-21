@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Input, Modal, Select } from "antd"
+import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { SelectType } from "../../../models/common";
 import groupApi from "../../../api/groupApi";
 import { TypeTeamTable } from "../../../models/team/team";
 import { TBmUser, TBmUserField } from "../../../models/user/user";
-import TextArea from "antd/es/input/TextArea";
 import { TAgencyTable } from "../../../models/agency/agency";
 import branchApi from "../../../api/branchApi";
 import styles from './style.module.scss'
 import { EMAIL_REGEX } from "../../../helper/const";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 interface Props {
   isModalOpen: boolean,
@@ -77,7 +77,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.group?.branch.id)?.value,
         groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.group.id)?.value,
         email: editingData.email,
-        bmsId: editingData.pms.map((item) => item.id).join(', ')
+        bmsId: editingData.pms.map((item) => item.id)
       });
     } else {
       form.resetFields();
@@ -138,6 +138,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
       onCancel={handleCancel}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
+      style={{ maxHeight: '520px', overflowY: 'auto' }}
     >
       <Form
         form={form}
@@ -146,6 +147,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         autoComplete="off"
         layout="vertical"
         onValuesChange={handleFormChange}
+        initialValues={{ bmsId: [''] }}
       >
         <div className={styles["select-form"]}>
           <Form.Item
@@ -196,14 +198,36 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           />
         </Form.Item>
 
-        <Form.Item
-          label="Id BM (có thể nhập nhiều id, mỗi id ngăn cách nhau bởi dấu ',')"
-          name="bmsId"
-          rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
-          className='custom-margin-form'
-        >
-          <TextArea autoSize />
-        </Form.Item>
+
+        <Form.List name="bmsId">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map((field, index) => {
+                return (
+                  <Flex align="center" gap={"small"}>
+                    <div style={{ flex: 1 }}>
+                      <Form.Item
+                        label={index === 0 ? 'Chọn Id BM (có thể thêm nhiều)' : ''}
+                        name={[field.name]}
+                        key={field.key}
+                        rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </div>
+                    {index !== 0 && <MinusCircleOutlined onClick={() => remove(field.name)} className={styles['minus-icon']} />}
+                  </Flex>
+
+                )
+              })}
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  Thêm Id BM
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
 
         <Form.Item
           label="Email"

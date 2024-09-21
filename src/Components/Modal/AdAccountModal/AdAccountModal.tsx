@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Input, Modal, Select } from "antd"
+import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import styles from './style.module.scss'
 import { SelectType } from "../../../models/common";
@@ -13,23 +13,27 @@ import { TMemberTable } from "../../../models/member/member";
 import organizationApi from "../../../api/organizationApi";
 import { TSystemTable } from "../../../models/system/system";
 import { TAdUserTable } from "../../../models/user/user";
+import advertisementApi from "../../../api/advertisementApi";
 
 
 interface Props {
   isModalOpen: boolean,
   handleOk: () => void,
+  handleSave: () => void,
   handleCancel: () => void,
   onFinish: (values: TAdvertisementField) => void,
   editingData?: TAdUserTable | null,
-  isLoadingBtn?: boolean
+  isLoadingOkBtn?: boolean,
+  isLoadingSaveBtn?: boolean
 }
 
-const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, isLoadingBtn, editingData, handleOk, handleCancel, onFinish } = props
+const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
+  const { isModalOpen, isLoadingOkBtn, isLoadingSaveBtn, editingData, handleOk, handleSave, handleCancel, onFinish } = props
   const [selectSystemDataModal, setSelectSystemDataModal] = useState<SelectType[]>([])
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
   const [selectMemberDataModal, setSelectMemberDataModal] = useState<SelectType[]>([])
+  const [selectBmDataModal, setSelectBmDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [selectTeamModalId, setSelectTeamModalId] = useState<string | null>(null)
@@ -37,11 +41,13 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
   const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectTeamEditingDataModal, setSelectTeamEditingDataModal] = useState<SelectType[]>([])
   const [selectMemberEditingDataModal, setSelectMemberEditingDataModal] = useState<SelectType[]>([])
+  const [selectBmEditingDataModal, setSelectBmEditingDataModal] = useState<SelectType[]>([])
   const [loading, setLoading] = useState({
     isSelectSystem: false,
     isSelectAgency: false,
     isSelectTeam: false,
-    isSelectMember: false
+    isSelectMember: false,
+    isSelectBM: false
   })
   const [form] = Form.useForm();
 
@@ -51,6 +57,9 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     },
     reset: () => {
       form.resetFields();
+    },
+    saveReset: () => {
+      form.resetFields(['id']);
     }
   }));
 
@@ -142,7 +151,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         ...prevLoading,
         isSelectAgency: false,
         isSelectTeam: false,
-        isSelectMember: true
+        isSelectMember: true,
+        isSelectBM: true,
       }))
       employeeApi.getListEmployee(undefined, undefined, undefined, undefined, selectTeamModalId).then((res) => {
         setSelectMemberDataModal(
@@ -152,6 +162,15 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           }))
         )
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
+      })
+      advertisementApi.getListBm(selectTeamModalId).then((res) => {
+        setSelectBmDataModal(
+          res.data.data.map((item: TMemberTable) => ({
+            value: item.id,
+            label: item.id
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectBM: false }))
       })
     }
   }, [selectSystemModalId, selectAgencyModalId, selectTeamModalId])
@@ -189,6 +208,14 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         }))
       )
     })
+    advertisementApi.getListBm().then((res) => {
+      setSelectBmEditingDataModal(
+        res.data.data.map((item: { id: string }) => ({
+          value: item.id,
+          label: item.id
+        }))
+      )
+    })
   }, [])
 
   useEffect(() => {
@@ -203,10 +230,22 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData?.employee?.group?.branchId)?.value,
         groupId: selectTeamEditingDataModal.find((item) => item.value === editingData?.employee?.groupId)?.value,
         employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData?.employee?.id)?.value,
-        id: editingData?.accountId
+        pms: editingData?.pms?.map((pms) => {
+          if (typeof pms === 'object' && 'id' in pms) {
+            return selectBmEditingDataModal.find((item) => item.value === pms.id);
+          }
+        }).filter(Boolean),
+        id: editingData?.accountId,
       });
     } else {
       form.resetFields();
+      setSelectSystemModalId(null)
+      setSelectAgencyModalId(null)
+      setSelectTeamModalId(null)
+      setSelectAgencyDataModal([])
+      setSelectTeamDataModal([])
+      setSelectMemberDataModal([])
+      setSelectBmDataModal([])
     }
   }, [editingData, form, selectSystemEditingDataModal, selectAgencyEditingDataModal, selectTeamEditingDataModal, selectMemberEditingDataModal]);
 
@@ -215,10 +254,27 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     <Modal
       title={'Thêm tài khoản quảng cáo'}
       open={isModalOpen}
-      onOk={handleOk}
-      onCancel={handleCancel}
       centered
-      okButtonProps={{ loading: isLoadingBtn }}
+      onCancel={handleCancel}
+      footer={(
+        <Flex gap={"small"} justify="flex-end">
+          <Button onClick={handleCancel}>Cancel</Button>
+          <Button
+            type="primary"
+            onClick={handleSave}
+            loading={isLoadingSaveBtn}
+          >
+            Save & Continue
+          </Button>
+          <Button
+            type="primary"
+            onClick={handleOk}
+            loading={isLoadingOkBtn}
+          >
+            Ok
+          </Button>
+        </Flex>
+      )}
     >
       <Form
         form={form}
@@ -291,10 +347,26 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             loading={loading.isSelectMember}
           />
         </Form.Item>
+        <Form.Item
+          label="Chọn BM"
+          name="pms"
+          rules={[{ required: true, message: 'Bạn phải chọn ít nhất một id BM!' }]}
+          className={"custom-margin-form"}
+        >
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            placeholder="Chọn ít nhất một id BM"
+            options={selectBmDataModal}
+            notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            loading={loading.isSelectBM}
+          />
+        </Form.Item>
         <Form.Item<TAdvertisementField>
           label="Id tài khoản quảng cáo"
           name="id"
-          rules={[{ required: true, message: 'Không được để trống tên tài khoản quảng cáo' }]}
+          rules={[{ required: true, message: 'Không được để trống Id tài khoản quảng cáo' }]}
         >
           <Input disabled={editingData ? true : false} />
         </Form.Item>

@@ -1,11 +1,13 @@
-import { Breadcrumb, Table, TableProps, Tag } from "antd"
+import { Breadcrumb, DatePicker, Flex, Table, TableProps, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
-import { DollarOutlined, ProjectOutlined, PushpinOutlined } from "@ant-design/icons"
+import { DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { formatDateTime, formatNumberWithCommas, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
+import dayjs, { Dayjs } from "dayjs"
+import useDateRangeStore from "../../store/dateRangeStore"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
@@ -18,35 +20,12 @@ const CampaignsManagment: FC = () => {
   const location = useLocation();
   const advertisementUrl = location.pathname.split('/')[1]
   const breadCrumbName = JSON.parse(sessionStorage.getItem('breadCrumbName') || 'null');
+  const { RangePicker } = DatePicker;
+  const { dateRange, setDateRange } = useDateRangeStore();
+  const [startTime, setStartTime] = useState<string>(dateRange[0] ? formatDateYMD(dateRange[0].toDate()) : '');
+  const [endTime, setEndTime] = useState<string>(dateRange[1] ? formatDateYMD(dateRange[1].toDate()) : '');
 
   const navigate = useNavigate()
-
-  const handleBuyingType = (value: string) => {
-    switch (value) {
-      case "AUCTION": return <Tag color="green" icon={<DollarOutlined />}>Đấu giá</Tag>
-      case "RESERVED": return <Tag color="gold" icon={<PushpinOutlined />}>RESERVED - Đặt chỗ</Tag>
-    }
-  }
-
-  const handleObjective = (value: string) => {
-    switch (value) {
-      case "BRAND_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
-      case "REACH": return <span>Tối ưu hóa lượng người dùng tiếp cận quảng cáo</span>
-      case "TRAFFIC": return <span>Tăng lượng truy cập</span>
-      case "ENGAGEMENT": return <span>Tăng lượt tương tác</span>
-      case "APP_INSTALLS": return <span>Tăng số lượng cài đặt ứng dụng</span>
-      case "VIDEO_VIEWS": return <span>Tăng lượt xem video</span>
-      case "LEAD_GENERATION": return <span>Thu thập thông tin người dùng</span>
-      case "MESSAGES": return <span>Thúc đẩy người dùng gửi tin nhắn tới doanh nghiệp</span>
-      case "CONVERSIONS": return <span>Tối ưu hóa hành động chuyển đổi</span>
-      case "CATALOG_SALES": return <span>Tự động hiển thị sản phẩm cho người có khả năng mua cao nhất</span>
-      case "STORE_VISITS": return <span>Tăng lượng khách hàng ghé thăm cửa hàng</span>
-      case "OUTCOME_ENGAGEMENT": return <span>Tăng chất lượng tương tác</span>
-      case "OUTCOME_LEADS": return <span>Thu thập thông tin khách hàng tiềm năng</span>
-      case "OUTCOME_AWARENESS": return <span>Tăng độ nhận diện thương hiệu</span>
-      case "OUTCOME_SALES": return <span>Tăng doanh số</span>
-    }
-  }
 
   const columns: TableProps<TCampaignTable>['columns'] = [
     {
@@ -82,7 +61,7 @@ const CampaignsManagment: FC = () => {
           return (
             <>
               <div>Ngân sách hàng ngày:</div>
-              <span> {formatNumberWithCommas(record.dailyBudget)}</span>
+              <span> {formatNumberWithCommasNotZero(record.dailyBudget)}</span>
             </>
           );
         }
@@ -90,7 +69,7 @@ const CampaignsManagment: FC = () => {
           return (
             <>
               <div>Ngân sách trọn đời:</div>
-              <span> {formatNumberWithCommas(record.lifetimeBudget)}</span>
+              <span> {formatNumberWithCommasNotZero(record.lifetimeBudget)}</span>
             </>
           );
         }
@@ -103,7 +82,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
       className: styles['center-cell'],
-      render: (value) => formatNumberWithCommas(value),
+      render: (value) => formatNumberWithCommasNotZero(value),
       width: 250
     },
     {
@@ -114,11 +93,303 @@ const CampaignsManagment: FC = () => {
       render: (value) => handleObjective(value)
     },
     {
+      title:
+        <Tooltip title='Số lần quảng cáo xuất hiện trên màn hình'>
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt hiển thị
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'impressions',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.impressions)) || '-',
+      width: 150,
+    },
+    {
+      title:
+        <Tooltip title='Số lượt vuốt, click hoặc nhấn vào quảng cáo của bạn'>
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Số lần nhấp
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'clicks',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.clicks)) || '-',
+      width: 150,
+    },
+    {
+      title:
+        <Tooltip
+          title='Tổng số tiền ước tính mà bạn đã chi tiêu cho chiến dịch, nhóm quảng cáo hoặc quảng cáo trong suốt lịch chạy'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Số tiền đã chi tiêu
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'spend',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.spend)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Tỷ lệ lượt hiển thị có diễn ra lượt click (tất cả) trên tổng số lượt hiển thị'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            CTR
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'ctr',
+      className: styles['center-cell'],
+      render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(1) : '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Chi phí trung bình cho 1.000 lượt hiển thị'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            CPM (Chi phí mỗi 1000 lần hiển thị)
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'cpm',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.cpm)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Chi phí trung bình cho mỗi lượt click'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            CPC
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'cpc',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.cpc)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Số tài khoản đã nhìn thấy quảng cáo của bạn ít nhất 1 lần. Số người tiếp cận khác với lượt hiển thị ở chỗ lượt hiển thị có thể bao gồm nhiều lượt xem quảng cáo bởi cùng một tài khoản'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Người tiếp cận
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'reach',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.reach)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Số lần quảng cáo đạt được kết quả, dựa trên mục tiêu và cài đặt bạn đã chọn'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Tần suất
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'frequency',
+      className: styles['center-cell'],
+      render: (insight) => Number(insight?.frequency) ? Number(insight?.frequency).toFixed(1) : '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Số lần quảng cáo đạt được kết quả, dựa trên mục tiêu và cài đặt bạn đã chọn'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Kết quả
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'totalMessagingConnection',
+      className: styles['center-cell'],
+      render: (insight) =>
+        formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionTotalMessagingConnection)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Chi phí trung bình trên mỗi kết quả quảng cáo của bạn'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Chi phí trên mỗi kết quả
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'costPerResult',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.costPerAction)) || '-'
+    },
+    // {
+    //   title: 'Số người nhắn tin',
+    //   dataIndex: 'insight',
+    //   key: 'messagingFirstReply',
+    //   className: styles['center-cell'],
+    //   render: (insight) =>
+    //     formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply)) || '-'
+    // },
+    {
+      title:
+        <Tooltip
+          title='Số người dùng nhắn tin sau 1 tuần đầu tiên'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Người dùng nhắn tin sau 7 ngày
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'conversationStarted7d',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingConversationStarted7d)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Lượt tương tác với bài viết là tổng số hành động mà mọi người thực hiện có liên quan đến quảng cáo của bạn trên Facebook'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt tương tác với bài viết
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'postEngagement',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.postEngagement)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Số hành động diễn ra trên Trang Facebook, trang cá nhân Instagram hoặc bất kỳ nội dung nào của bạn, được ghi nhận cho quảng cáo của bạn'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Tương tác với trang
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'pageEngagement',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.pageEngagement)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Số lượt xem hình ảnh trên quảng cáo của bạn'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt xem hình ảnh
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'photoView',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.photoView)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Số lượt phát video trên quảng cáo của bạn'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt phát video
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'videoPlay',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoPlay)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Lượt phát video trong tối thiểu 3 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 3 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt phát video trong tối thiểu 3 giây
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'videoView',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoView)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Lượt phát video trong tối thiểu 10 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 10 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt phát video trong tối thiểu 10 giây
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'videoView10s',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video10sView)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Lượt phát video trong tối thiểu 30 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 30 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt phát video trong tối thiểu 30 giây
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'videoView30s',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video30sView)) || '-'
+    },
+    {
+      title:
+        <Tooltip
+          title='Lượt phát 100% thời lượng video, bao gồm lượt phát tua nhanh đến điểm này'
+        >
+          <Flex gap={'small'} align="center">
+            <InfoCircleOutlined />
+            Lượt phát 100% thời lượng video
+          </Flex>
+        </Tooltip>,
+      dataIndex: 'insight',
+      key: 'videoCompleteView',
+      className: styles['center-cell'],
+      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoCompleteView)) || '-'
+    },
+    {
       title: 'Thời gian chạy chiến dịch',
       dataIndex: 'startTime',
       key: 'startTime',
       className: styles['center-cell'],
-      render: (startTime) => <span>{formatDateTime(startTime)}</span>,
+      render: (startTime) => <span>{formatDateTime(startTime) || '-'}</span>,
       width: 250,
     },
     {
@@ -126,23 +397,9 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
       className: styles['center-cell'],
-      render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>,
+      render: (updateDataTime) => <span>{formatDateTime(updateDataTime) || '-'}</span>,
       width: 250,
     },
-    // {
-    //   title: 'Các quốc gia áp dụng quảng cáo',
-    //   dataIndex: 'specialAdCategoryCountry',
-    //   key: 'specialAdCategoryCountry',
-    //   className: styles['center-cell'],
-    //   render: (countries) => {
-    //     return (
-    //       countries !== 'null' && (
-    //         <span>{JSON.parse(countries).join(',')}</span>
-    //       )
-    //     )
-    //   },
-    //   width: 250
-    // },
   ];
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
@@ -153,11 +410,23 @@ const CampaignsManagment: FC = () => {
     }
   }
 
+  const handleRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (dates !== null) {
+      setDateRange(dates);
+      if (dates[0] !== null && dates[1] !== null) {
+        const startTime = formatDateYMD(dates[0].toDate());
+        const endTime = formatDateYMD(dates[1].toDate());
+        setStartTime(startTime);
+        setEndTime(endTime);
+      }
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true)
-    advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10).then((res) => {
-      console.log('res', res)
+    advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10, startTime, endTime).then((res) => {
       const data = res.data.data
+      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
@@ -167,18 +436,24 @@ const CampaignsManagment: FC = () => {
           key: item.id,
         }));
         setTotalPage(res.data.paging.totalPages)
-        setDataTable((prevData) => {
-          const prevDataIds = new Set(prevData.map(item => item.id));
-          const newData = dataTableConfig.filter((item: TCampaignTable) => !prevDataIds.has(item.id));
-          return [...prevData, ...newData];
+        setDataTable(prevData => {
+          const updatedData = [...prevData];
+          dataTableConfig.forEach((newItem: TCampaignTable) => {
+            const existingIndex = updatedData.findIndex(item => item.id === newItem.id);
+            if (existingIndex >= 0) {
+              updatedData[existingIndex] = newItem;
+            } else {
+              updatedData.push(newItem);
+            }
+          });
+          return updatedData;
         });
         setIsLoading(false)
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setIsLoading(false)
     })
-  }, [currentPage, param.accountId])
+  }, [currentPage, param.accountId, startTime, endTime])
 
   useEffect(() => {
     setBreadCrumbData([
@@ -196,9 +471,11 @@ const CampaignsManagment: FC = () => {
         title: (
           <>
             <ProjectOutlined />
-            <span className={styles["breadcrumb-item"]}>
-              Chiến dịch tài khoản {breadCrumbName.accountName}
-            </span>
+            <Tooltip title={`Chiến dịch tài khoản: ${breadCrumbName.accountName}`} placement="bottom">
+              <span className={styles["breadcrumb-item"]}>
+                Chiến dịch
+              </span>
+            </Tooltip>
           </>
         )
       }
@@ -207,7 +484,17 @@ const CampaignsManagment: FC = () => {
 
   return (
     <div className={styles["container"]}>
-      <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+      <div className={styles["detail-information"]}>
+        <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+        <RangePicker
+          allowClear={false}
+          format={"DD-MM-YYYY"}
+          onChange={(dates) => handleRangeChange(dates)}
+          placeholder={["Bắt đầu", "Kết thúc"]}
+          value={dateRange}
+          maxDate={dayjs()}
+        />
+      </div>
       <Table
         columns={columns}
         dataSource={dataTable}
@@ -223,7 +510,7 @@ const CampaignsManagment: FC = () => {
         }}
         onScroll={handleScroll}
         loading={isLoading}
-        scroll={{ x: 2000, y: dataTable.length > 5 ? 'calc(100vh - 300px)' : undefined }}
+        scroll={{ x: 5500, y: dataTable.length > 0 ? 'calc(100vh - 300px)' : undefined }}
       />
     </div>
   )

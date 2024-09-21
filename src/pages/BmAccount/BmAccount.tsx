@@ -86,7 +86,7 @@ const SystemManagement: FC = () => {
         id: dataRecord?.id,
         email: values.email,
         groupId: values.groupId,
-        bmsId: String(values.bmsId).split(',').map((id) => id.trim())
+        bmsId: values.bmsId
       }
       userApi.updateBmUser(data).then(() => {
         setIsModalOpen(false)
@@ -94,7 +94,6 @@ const SystemManagement: FC = () => {
         setLoading({ ...loading, isBtn: false })
         success('Sửa tài khoản BM thành công!')
       }).catch((err) => {
-        console.log('err', err)
         setLoading({ ...loading, isBtn: false })
         error(err.response.data.message)
       })
@@ -131,7 +130,6 @@ const SystemManagement: FC = () => {
 
   const handleShowModal = (data: TBmUser | null = null) => {
     if (data) {
-      console.log('data', data)
       setDataRecord(data)
       setIsModalOpen(true)
     }
@@ -148,7 +146,6 @@ const SystemManagement: FC = () => {
 
   const handleConfirmDelete = () => {
     setLoading({ ...loading, isBtn: true })
-    console.log('data id', dataRecord?.id)
     userApi.deleteUser(dataRecord?.id as string).then(() => {
       setIsCallbackApi(!isCallbackApi)
       setIsDeleteConfirm(false)
@@ -167,25 +164,13 @@ const SystemManagement: FC = () => {
     setSelectTeamId(null)
   };
 
-  const onSearchSystem = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeAgency = (value: string) => {
     setSelectAgencyId(value)
     setSelectTeamId(null)
   };
 
-  const onSearchAgency = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeTeam = (value: string) => {
     setSelectTeamId(value)
-  };
-
-  const onSearchTeam = (value: string) => {
-    console.log('search:', value);
   };
 
   const handleCancelDelete = () => {
@@ -249,7 +234,6 @@ const SystemManagement: FC = () => {
     setLoading({ ...loading, isTable: true })
     userApi.getListBmUser(currentPage, 10).then((res) => {
       const data = res.data.data
-      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
@@ -262,8 +246,7 @@ const SystemManagement: FC = () => {
         setDataTable(dataTableConfig)
         setLoading({ ...loading, isTable: false })
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setLoading({ ...loading, isTable: false })
     })
   }, [currentPage, isCallbackApi])
@@ -289,7 +272,6 @@ const SystemManagement: FC = () => {
             placeholder="Chọn hệ thống"
             optionFilterProp="label"
             onChange={onChangeSystem}
-            onSearch={onSearchSystem}
             options={selectSystemData}
             className={styles["select-system-item"]}
             notFoundContent={'Không có dữ liệu'}
@@ -301,7 +283,6 @@ const SystemManagement: FC = () => {
             placeholder="Chọn chi nhánh"
             optionFilterProp="label"
             onChange={onChangeAgency}
-            onSearch={onSearchAgency}
             options={selectAgencyData}
             value={selectAgencyId || null}
             className={styles["select-system-item"]}
@@ -314,7 +295,6 @@ const SystemManagement: FC = () => {
             placeholder="Chọn đội nhóm"
             optionFilterProp="label"
             onChange={onChangeTeam}
-            onSearch={onSearchTeam}
             options={selectTeamData}
             value={selectTeamId || null}
             className={styles["select-system-item"]}

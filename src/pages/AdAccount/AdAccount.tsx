@@ -17,21 +17,30 @@ const AdAccount: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
+    isSaveBtn: false
   })
   // const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
+  const [isSave, setIsSave] = useState<boolean>(false)
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
-  const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
+  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
 
   const columns: TableProps<TAdUserTable>['columns'] = [
     {
-      title: 'Tên tài khoản quảng cáo',
+      title: 'Tên tài khoản QC',
       dataIndex: 'name',
       key: 'name',
       width: '15%',
+    },
+    {
+      title: 'Danh sách BM',
+      dataIndex: 'pms',
+      key: 'pms',
+      width: '15%',
+      render: (arr) => arr.length > 0 ? arr.map((item: { id: string }) => (<Tag>{item.id}</Tag>)) : null
     },
     {
       title: 'Tên thành viên',
@@ -49,7 +58,7 @@ const AdAccount: FC = () => {
       width: '15%',
     },
     {
-      title: 'Id tài khoản quảng cáo',
+      title: 'Id tài khoản QC',
       dataIndex: 'accountId',
       key: 'accountId',
       width: '15%',
@@ -76,21 +85,36 @@ const AdAccount: FC = () => {
           </Space>
         </>
       ),
-      width: '12%',
+      width: '10%',
     },
   ];
 
   const onFinish: FormProps<TAdvertisementField>['onFinish'] = (values) => {
-    setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
+    if (!isSave) setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
+    else setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: true }))
     const data = {
       accountID: String(values.id),
       employeeID: String(values.employeeId),
+      pmsId: dataRecord
+        ? values.pms?.map((item: string | { value: string; label: string }) =>
+          typeof item === 'string' ? item : item.value
+        )
+        : values.pms
     }
+
     if (dataRecord) {
       advertisementApi.updateAdsAccount(data).then(() => {
-        setIsModalOpen(false)
+        if (!isSave) {
+          setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+          setIsModalOpen(false)
+        }
+        else {
+          setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.saveReset();
+          }
+        }
         setIsCallbackApi(!isCallbackApi)
-        setLoading({ ...loading, isBtn: false })
         success('Sửa tài khoản quảng cáo thành công!')
       }).catch((err) => {
         setLoading({ ...loading, isBtn: false })
@@ -99,23 +123,37 @@ const AdAccount: FC = () => {
     }
     else {
       advertisementApi.createAdsAccount(data).then(() => {
-        setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+        if (!isSave) {
+          setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+          setIsModalOpen(false)
+        }
+        else {
+          setLoading((prevLoading) => ({ ...prevLoading, isSaveBtn: false }))
+          if (modalRef.current) {
+            modalRef.current.saveReset();
+          }
+        }
         success('Tạo tài khoản quảng cáo thành công!')
-        setIsModalOpen(false)
         setIsCallbackApi(!isCallbackApi)
       }).catch((err) => {
-        console.log('err', err)
-        setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+        setLoading((prevLoading) => ({ ...prevLoading, isBtn: false, isSaveBtn: false }))
         error(err.response.data.message)
       })
     }
   };
 
   const handleOk = () => {
+    setIsSave(false)
     if (modalRef.current) {
       modalRef.current.submit();
     }
-    console.log('OK')
+  }
+
+  const handleSave = () => {
+    setIsSave(true)
+    if (modalRef.current) {
+      modalRef.current.submit();
+    }
   }
 
   const handleCancel = () => {
@@ -124,7 +162,6 @@ const AdAccount: FC = () => {
 
   const handleShowModal = (data: TAdUserTable | null = null) => {
     if (data) {
-      console.log('data', data)
       setDataRecord(data)
       setIsModalOpen(true)
     }
@@ -175,7 +212,6 @@ const AdAccount: FC = () => {
     setLoading({ ...loading, isTable: true })
     advertisementApi.getListAdsAccount(currentPage, 10).then((res) => {
       const data = res.data.data
-      console.log('res', res.data.data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
@@ -189,7 +225,7 @@ const AdAccount: FC = () => {
         setLoading({ ...loading, isTable: false })
       }
     }).catch((err) => {
-      console.log('err', err)
+      error(err.response.data.message)
       setLoading({ ...loading, isTable: false })
     })
   }, [currentPage, isCallbackApi])
@@ -226,9 +262,11 @@ const AdAccount: FC = () => {
         isModalOpen={isModalOpen}
         handleOk={handleOk}
         handleCancel={handleCancel}
+        handleSave={handleSave}
         onFinish={onFinish}
         editingData={dataRecord}
-        isLoadingBtn={loading.isBtn}
+        isLoadingOkBtn={loading.isBtn}
+        isLoadingSaveBtn={loading.isSaveBtn}
       />
       <DeleteModal
         title='Xóa tài khoản quảng cáo'

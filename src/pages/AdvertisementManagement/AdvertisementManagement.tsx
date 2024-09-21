@@ -1,9 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import styles from './style.module.scss'
-import { DatePicker, Select, Spin, Table, Tag } from 'antd';
+import { Select, Spin, Table } from 'antd';
 import type { TableProps } from 'antd';
-import dayjs from 'dayjs';
-import { NoUndefinedRangeValueType } from 'rc-picker/lib/PickerInput/RangePicker';
 import { TAdvertisementTable } from '../../models/advertisement/advertisement';
 import { SelectType } from '../../models/common';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,11 +14,9 @@ import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
 import advertisementApi from '../../api/advertisementApi';
-import { formatDateTime, formatNumberWithCommas } from '../../helper/const';
-import { AppstoreAddOutlined, BankOutlined, CloseCircleOutlined, CreditCardOutlined, GiftOutlined, PayCircleOutlined } from '@ant-design/icons';
+import { formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
-  const { RangePicker } = DatePicker;
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
   const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
@@ -45,59 +41,7 @@ const AdvertisementManagement: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleAccountStatus = (value: number) => {
-    switch (value) {
-      case 1: return <Tag color='green' className='text-wrap'>Tài khoản đang hoạt động</Tag>
-      case 2: return <Tag color='orange' className='text-wrap'>Tài khoản bị tạm dừng</Tag>
-      case 3: return <Tag color='red' className='text-wrap'>Tài khoản bị vô hiệu hóa</Tag>
-      case 7: return <Tag color='gold' className='text-wrap'>Tài khoản đang trong quá trình xem xét</Tag>
-      case 100: return <Tag color='red' className='text-wrap'>Tài khoản bị khóa do vi phạm chính sách</Tag>
-    }
-  }
 
-  const handleDisableReason = (value: number) => {
-    switch (value) {
-      case 0: return <Tag color='darkgrey' className='text-wrap'>Không có lí do</Tag>
-      case 1: return (
-        <Tag color='red' className='text-wrap'>
-          Tài khoản bị vô hiệu hóa do vi phạm chính sách quảng cáo Facebook
-        </Tag>
-      )
-      case 2: return (
-        <Tag color='red' className='text-wrap'>
-          Tài khoản bị vô hiệu hóa do nghi ngờ hoạt động gian lận
-        </Tag>
-      )
-      case 3: return (
-        <Tag color='red' className='text-wrap'>
-          Tài khoản bị vô hiệu hóa do không thanh toán hoặc vấn đề liên quan đến thanh toán
-        </Tag>
-      )
-      case 4: return (
-        <Tag color='red' className='text-wrap'>
-          Tài khoản bị vô hiệu hóa do yêu cầu của chủ tài khoản
-        </Tag>
-      )
-      case 5: return (
-        <Tag color='red' className='text-wrap'>
-          Tài khoản bị vô hiệu hóa với các lý do khác
-        </Tag>
-      )
-    }
-  }
-
-  const handleTypeCardBanking = (value: number) => {
-    switch (value) {
-      case 1: return <Tag color="blue" icon={<CreditCardOutlined />}>Thẻ tín dụng</Tag>
-      case 2: return <Tag color="green" icon={<CreditCardOutlined />}>Thẻ ghi nợ</Tag>
-      case 3: return <Tag color="lightgrey" icon={<BankOutlined />}>Tài khoản ngân hàng</Tag>
-      case 4: return <Tag color="#003087" icon={<PayCircleOutlined />}>PayPal</Tag>
-      case 5: return <Tag color="orange" icon={<BankOutlined />}>Thanh toán trực tiếp</Tag>
-      case 6: return <Tag color="red" icon={<GiftOutlined />}>Voucher hoặc mã giảm giá</Tag>
-      case 20: return <Tag color="#00aaff" icon={<AppstoreAddOutlined />}>Các phương thức thanh toán khác</Tag>
-      case -1: return <Tag color="darkgrey" icon={<CloseCircleOutlined />}>Chưa có phương thức thanh toán</Tag>
-    }
-  }
 
   const columns: TableProps<TAdvertisementTable>['columns'] = [
     {
@@ -232,27 +176,15 @@ const AdvertisementManagement: FC = () => {
     setSelectMemberId(null)
   };
 
-  const onSearchSystem = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeAgency = (value: string) => {
     setSelectAgencyId(value)
     setSelectTeamId(null)
     setSelectMemberId(null)
   };
 
-  const onSearchAgency = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeTeam = (value: string) => {
     setSelectTeamId(value)
     setSelectMemberId(null)
-  };
-
-  const onSearchTeam = (value: string) => {
-    console.log('search:', value);
   };
 
   const onChangeMember = (value: string) => {
@@ -261,15 +193,6 @@ const AdvertisementManagement: FC = () => {
 
   const onSearchMember = (value: string) => {
     setSelectMemberId(value)
-  };
-
-  const handleRangeChange = (dates: NoUndefinedRangeValueType<dayjs.Dayjs> | null) => {
-    if (dates !== null && dates[0] !== null && dates[1] !== null) {
-      const startTime = dates[0].toDate().getTime();
-      const endTime = dates[1].toDate().getTime();
-      console.log('Start Time:', startTime);
-      console.log('End Time:', endTime);
-    }
   };
 
   useEffect(() => {
@@ -350,7 +273,6 @@ const AdvertisementManagement: FC = () => {
       selectMemberId as string
     ).then((res) => {
       const data = res.data.data
-      console.log('res', res.data.data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }
@@ -363,8 +285,7 @@ const AdvertisementManagement: FC = () => {
         setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
   }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId])
@@ -379,7 +300,6 @@ const AdvertisementManagement: FC = () => {
             placeholder="Chọn hệ thống"
             optionFilterProp="label"
             onChange={onChangeSystem}
-            onSearch={onSearchSystem}
             options={selectSystemData}
             className={styles["select-system-item"]}
             loading={loading.isSelectSystem}
@@ -392,7 +312,6 @@ const AdvertisementManagement: FC = () => {
             placeholder="Chọn chi nhánh"
             optionFilterProp="label"
             onChange={onChangeAgency}
-            onSearch={onSearchAgency}
             options={selectAgencyData}
             className={styles["select-system-item"]}
             loading={loading.isSelectAgency}
@@ -405,7 +324,6 @@ const AdvertisementManagement: FC = () => {
             placeholder="Chọn đội nhóm"
             optionFilterProp="label"
             onChange={onChangeTeam}
-            onSearch={onSearchTeam}
             options={selectTeamData}
             className={styles["select-system-item"]}
             loading={loading.isSelectTeam}
@@ -424,11 +342,6 @@ const AdvertisementManagement: FC = () => {
             loading={loading.isSelectMember}
             value={selectMemberId || null}
             notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
-          />
-          <RangePicker
-            format={"DD-MM-YYYY"}
-            onChange={(dates) => handleRangeChange(dates)}
-            placeholder={["Ngày tạo", "Ngày tạo"]}
           />
         </div>
         <Table

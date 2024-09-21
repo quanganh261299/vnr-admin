@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {
   ApartmentOutlined,
   AppstoreOutlined,
+  BarChartOutlined,
   CaretDownOutlined,
   CrownOutlined,
   DollarOutlined,
   IdcardOutlined,
+  LoginOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -81,6 +83,10 @@ const ManagementLayout: React.FC = () => {
       setHeaderName('Tài khoản BM')
       setCurrent('bm-account')
     }
+    else if (location.pathname.includes('/statistic')) {
+      setHeaderName('Thống kê')
+      setCurrent('statistic')
+    }
     else setCurrent('')
   }, [location])
 
@@ -140,9 +146,19 @@ const ManagementLayout: React.FC = () => {
               label: <Link to='/ad-account'>Tài khoản quảng cáo</Link>,
             },
             {
+              key: 'statistic',
+              icon: <BarChartOutlined />,
+              label: <Link to='/statistic'>Thống kê</Link>
+            },
+            {
               key: 'bm-account',
               icon: <IdcardOutlined />,
               label: <Link to='/bm-account'>Tài khoản BM</Link>,
+            },
+            {
+              key: 'login-bm',
+              icon: <LoginOutlined />,
+              label: <div onClick={() => window.open('/loginBM')}>Login tài khoản BM</div>,
             },
           ]}
         />

@@ -1,9 +1,9 @@
-import axiosInstance from "./axiosClients";
+import axiosBmInstance from "./axiosClientsBm";
 
 const BmApi = {
-    getDataFromFacebook: () => {
-        const url = "/datafacebook";
-        return axiosInstance.get(url);
+    getDataFromFacebook: (startTime: string, endTime: string) => {
+        const url = `/datafacebook?since=${startTime}&until=${endTime}`;
+        return axiosBmInstance.get(url);
     },
 };
 

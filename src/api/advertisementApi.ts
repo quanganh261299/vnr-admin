@@ -24,23 +24,37 @@ const advertisementApi = {
     getListCampaigns: (
         accountId: string,
         pageIndex?: number | string,
-        pageSize?: number | string
+        pageSize?: number | string,
+        startTime?: string,
+        endTime?: string
     ) => {
         const url = `/campaign?pageIndex=${pageIndex || ""}&pageSize=${
             pageSize || ""
-        }&adsAccountId=${accountId}`;
+        }&adsAccountId=${accountId}&start=${startTime}&end=${endTime}`;
         return axiosInstance.get(url);
     },
     getListAdSet: (
         campaignId: string,
         pageIndex?: number,
-        pageSize?: number
+        pageSize?: number,
+        startTime?: string,
+        endTime?: string
     ) => {
-        const url = `/Adset?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${campaignId}`;
+        const url = `/Adset?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${campaignId}&start=${startTime}&end=${endTime}`;
         return axiosInstance.get(url);
     },
-    getListAd: (adSetId: string, pageIndex?: number, pageSize?: number) => {
-        const url = `/Ads?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${adSetId}`;
+    getListAd: (
+        adSetId: string,
+        pageIndex?: number,
+        pageSize?: number,
+        startTime?: string,
+        endTime?: string
+    ) => {
+        const url = `/Ads?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${adSetId}&start=${startTime}&end=${endTime}`;
+        return axiosInstance.get(url);
+    },
+    getListBm: (groupId?: string) => {
+        const url = `/bm?groupId=${groupId || ""}`;
         return axiosInstance.get(url);
     },
     createAdsAccount: (data: TCreateAdsAccount) => {
@@ -53,8 +67,8 @@ const advertisementApi = {
     },
     deleteAdsAccount: (id: string) => {
         const url = `/adsAccount/${id}`;
-        return axiosInstance.delete(url)
-    }
+        return axiosInstance.delete(url);
+    },
 };
 
 export default advertisementApi;

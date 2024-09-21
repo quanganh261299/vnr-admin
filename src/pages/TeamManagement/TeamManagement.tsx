@@ -95,16 +95,8 @@ const TeamManagement: FC = () => {
     setSelectAgencyId(null)
   };
 
-  const onSearchSystem = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeAgency = (value: string) => {
     setSelectAgencyId(value)
-  };
-
-  const onSearchAgency = (value: string) => {
-    console.log('search:', value);
   };
 
   const onFinish: FormProps<TypeTeamField>['onFinish'] = (values) => {
@@ -138,7 +130,6 @@ const TeamManagement: FC = () => {
     if (modalRef.current) {
       modalRef.current.submit();
     }
-    console.log('OK')
   }
 
   const handleCancel = () => {
@@ -236,8 +227,7 @@ const TeamManagement: FC = () => {
         setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
-    }).catch((err) => {
-      console.log('error', err)
+    }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
 
@@ -263,7 +253,6 @@ const TeamManagement: FC = () => {
             placeholder="Chọn hệ thống"
             optionFilterProp="label"
             onChange={onChangeSystem}
-            onSearch={onSearchSystem}
             options={selectSystemData}
             className={styles["select-system-item"]}
             notFoundContent={'Không có dữ liệu'}
@@ -276,7 +265,6 @@ const TeamManagement: FC = () => {
             placeholder="Chọn chi nhánh"
             optionFilterProp="label"
             onChange={onChangeAgency}
-            onSearch={onSearchAgency}
             options={selectAgencyData}
             className={styles["select-system-item"]}
             notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}

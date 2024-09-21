@@ -99,7 +99,6 @@ const SystemAccount: FC = () => {
 
   const handleShowModal = (data: TUser | null = null) => {
     if (data) {
-      console.log('data', data)
       setDataRecord(data)
       setIsModalOpen(true)
     }
@@ -173,8 +172,7 @@ const SystemAccount: FC = () => {
         setDataTable(dataTableConfig)
         setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
   }, [currentPage, isCallbackApi])

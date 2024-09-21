@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './reset.scss'
 import './global.scss'
@@ -10,10 +9,11 @@ if ('serviceWorker' in navigator) {
       .then(registration => {
         console.log('Service Worker registered with scope:', registration.scope);
         navigator.serviceWorker.ready.then(swRegistration => {
-          const token = localStorage.getItem('token');
+          const token = localStorage.getItem('BmToken');
+          const baseUrl = import.meta.env.VITE_BASE_URL;
           if (token && swRegistration.active) {
-            swRegistration.active.postMessage({ token });
-            console.log('Token sent to Service Worker:', token);
+            swRegistration.active.postMessage({ token, baseUrl });
+            console.log('Token sent to Service Worker!');
           }
         });
       })
@@ -24,7 +24,5 @@ if ('serviceWorker' in navigator) {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+  <App />
 )

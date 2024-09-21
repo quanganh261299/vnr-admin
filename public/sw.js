@@ -1,3 +1,8 @@
+let resolveTokenAndBaseUrlPromise;
+const tokenAndBaseUrlPromise = new Promise((resolve) => {
+  resolveTokenAndBaseUrlPromise = resolve;
+});
+
 self.addEventListener('install', (event) => {
   console.log('Service Worker installed.');
   self.skipWaiting();
@@ -7,34 +12,47 @@ self.addEventListener('activate', (event) => {
   console.log('Service Worker activated.');
   self.clients.claim();
 
-  // Hàm để lấy dữ liệu từ Facebook API, sử dụng token từ biến toàn cục
-  const getDataFromFacebook = () => {
-    const token = self.token; // Sử dụng token đã lưu trong Service Worker
-    console.log('Fetching data from Facebook API');
-    fetch('https://ads.versethin.net/api/datafacebook', {
+  const getDataFromFacebook = (token, baseUrl) => {
+    console.log('Starting...');
+    console.log('Fetching data from Facebook API!');
+    fetch(`${baseUrl}/datafacebook`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : '',
+        'Authorization': `Bearer ${token}`,
       }
     })
-      .then(res => console.log('Fetch successfully!'))
+      .then((res) => {
+        if (res.status === 200) {
+          console.log('Fetch Successfully!');
+        } else {
+          console.log('Error fetching data from Facebook:', res.status);
+        }
+      })
       .catch(error => {
         console.error('Error fetching data from Facebook:', error);
       });
-    setTimeout(getDataFromFacebook, 60 * 10 * 1000);
+
+    // Lặp lại quá trình fetch sau 10 phút
+    setInterval(() => {
+      tokenAndBaseUrlPromise.then(({ token, baseUrl }) => {
+        getDataFromFacebook(token, baseUrl);
+      });
+    }, 60 * 10 * 1000);
   };
 
-  getDataFromFacebook();
-  self.clients.claim();
+  // Bắt đầu gọi API sau khi token và baseUrl đều có sẵn
+  tokenAndBaseUrlPromise.then(({ token, baseUrl }) => {
+    getDataFromFacebook(token, baseUrl);
+  }).catch((err) => console.log('Error in token and baseUrl promise:', err));
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.token) {
-    self.token = event.data.token;
-    console.log('Token received in Service Worker:', self.token);
+  if (event.data && event.data.token && event.data.baseUrl) {
+    console.log('Token and BaseUrl received!');
+    if (resolveTokenAndBaseUrlPromise) {
+      resolveTokenAndBaseUrlPromise({ token: event.data.token, baseUrl: event.data.baseUrl });
+      resolveTokenAndBaseUrlPromise = null;
+    }
   }
-});
-
-self.addEventListener('fetch', (event) => {
 });
