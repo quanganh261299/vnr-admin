@@ -75,6 +75,10 @@ const ManagementLayout: React.FC = () => {
       setHeaderName('Quản lí tài khoản quảng cáo')
       setCurrent('advertisement-account')
     }
+    else if (location.pathname.includes('/ad-account') && location.search.includes('isDeleted=true')) {
+      setHeaderName('Tài khoản quảng cáo đã xóa')
+      setCurrent('ad-account-deleted')
+    }
     else if (location.pathname.includes('/ad-account')) {
       setHeaderName('Tài khoản quảng cáo')
       setCurrent('ad-account')
@@ -145,6 +149,11 @@ const ManagementLayout: React.FC = () => {
               icon: <TagOutlined />,
               label: <Link to='/ad-account'>Tài khoản quảng cáo</Link>,
             },
+            // {
+            //   key: 'ad-account-deleted',
+            //   icon: <TagOutlined />,
+            //   label: <Link to='/ad-account?isDeleted=true'>Tài khoản quảng cáo đã xóa</Link>,
+            // },
             {
               key: 'statistic',
               icon: <BarChartOutlined />,

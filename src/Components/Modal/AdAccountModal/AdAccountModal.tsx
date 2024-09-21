@@ -259,13 +259,15 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       footer={(
         <Flex gap={"small"} justify="flex-end">
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button
-            type="primary"
-            onClick={handleSave}
-            loading={isLoadingSaveBtn}
-          >
-            Save & Continue
-          </Button>
+          {!editingData &&
+            <Button
+              type="primary"
+              onClick={handleSave}
+              loading={isLoadingSaveBtn}
+            >
+              Save & Continue
+            </Button>
+          }
           <Button
             type="primary"
             onClick={handleOk}
