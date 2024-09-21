@@ -223,14 +223,6 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.costPerAction)) || '-'
     },
-    // {
-    //   title: 'Số người nhắn tin',
-    //   dataIndex: 'insight',
-    //   key: 'messagingFirstReply',
-    //   className: styles['center-cell'],
-    //   render: (insight) =>
-    //     formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply)) || '-'
-    // },
     {
       title:
         <Tooltip
@@ -373,12 +365,6 @@ const AdManagement: FC = () => {
       className: styles['center-cell'],
       render: (startTime) => <span>{formatDateTime(startTime) || '-'}</span>
     },
-    // {
-    //   title: 'Tracking specs',
-    //   dataIndex: 'trackingSpecs',
-    //   key: 'trackingSpecs',
-    //   className: styles['center-cell'],
-    // },
   ];
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
