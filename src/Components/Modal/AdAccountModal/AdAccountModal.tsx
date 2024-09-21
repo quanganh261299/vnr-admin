@@ -28,7 +28,16 @@ interface Props {
 }
 
 const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, isLoadingOkBtn, isLoadingSaveBtn, editingData, handleOk, handleSave, handleCancel, onFinish } = props
+  const {
+    isModalOpen,
+    isLoadingOkBtn,
+    isLoadingSaveBtn,
+    editingData,
+    handleOk,
+    handleSave,
+    handleCancel,
+    onFinish
+  } = props
   const [selectSystemDataModal, setSelectSystemDataModal] = useState<SelectType[]>([])
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
@@ -47,7 +56,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
     isSelectAgency: false,
     isSelectTeam: false,
     isSelectMember: false,
-    isSelectBM: false
+    isSelectBM: false,
+    isEditingModal: false
   })
   const [form] = Form.useForm();
 
@@ -74,16 +84,19 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       form.setFieldValue('branchId', undefined)
       form.setFieldValue('groupId', undefined)
       form.setFieldValue('employeeId', undefined)
+      form.setFieldValue('pms', undefined)
     }
     if (changedValues.branchId) {
       setSelectTeamDataModal([])
       setSelectMemberDataModal([])
       form.setFieldValue('groupId', undefined)
       form.setFieldValue('employeeId', undefined)
+      form.setFieldValue('pms', undefined)
     }
     if (changedValues.groupId) {
       setSelectMemberDataModal([])
       form.setFieldValue('employeeId', undefined)
+      form.setFieldValue('pms', undefined)
     }
   };
 
@@ -91,21 +104,27 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
     form.setFieldValue('branchId', undefined)
     form.setFieldValue('groupId', undefined)
     form.setFieldValue('employeeId', undefined)
+    form.setFieldValue('pms', undefined)
     setSelectAgencyDataModal([])
     setSelectTeamDataModal([])
     setSelectMemberDataModal([])
+    setSelectBmDataModal([])
   }
 
   const clearSelectAgencyModalId = () => {
     form.setFieldValue('groupId', undefined)
     form.setFieldValue('employeeId', undefined)
+    form.setFieldValue('pms', undefined)
     setSelectTeamDataModal([])
     setSelectMemberDataModal([])
+    setSelectBmDataModal([])
   }
 
   const clearSelectTeamModalId = () => {
     form.setFieldValue('employeeId', undefined)
+    form.setFieldValue('pms', undefined)
     setSelectMemberDataModal([])
+    setSelectBmDataModal([])
   }
 
   useEffect(() => {
@@ -220,6 +239,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
 
   useEffect(() => {
     if (editingData) {
+      setLoading((prevLoading) => ({ ...prevLoading, isEditingModal: true }))
       setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
       setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
       setSelectTeamModalId(String(editingData.employee?.groupId))
@@ -237,6 +257,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         }).filter(Boolean),
         id: editingData?.accountId,
       });
+      setLoading((prevLoading) => ({ ...prevLoading, isEditingModal: false }))
     } else {
       form.resetFields();
       setSelectSystemModalId(null)

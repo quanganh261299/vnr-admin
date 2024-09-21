@@ -324,14 +324,6 @@ const AdSetManagement: FC = () => {
       className: styles['center-cell'],
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.costPerAction)) || '-'
     },
-    // {
-    //   title: 'Số người nhắn tin',
-    //   dataIndex: 'insight',
-    //   key: 'messagingFirstReply',
-    //   className: styles['center-cell'],
-    //   render: (insight) =>
-    //     formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply)) || '-'
-    // },
     {
       title:
         <Tooltip

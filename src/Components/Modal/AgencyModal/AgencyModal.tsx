@@ -14,7 +14,15 @@ interface Props {
 }
 
 const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, editingData, selectSystemData, handleOk, handleCancel, onFinish, isLoadingBtn } = props
+  const {
+    isModalOpen,
+    editingData,
+    selectSystemData,
+    handleOk,
+    handleCancel,
+    onFinish,
+    isLoadingBtn
+  } = props
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({

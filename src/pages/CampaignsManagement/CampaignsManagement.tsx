@@ -11,7 +11,6 @@ import useDateRangeStore from "../../store/dateRangeStore"
 
 const CampaignsManagment: FC = () => {
   const [dataTable, setDataTable] = useState<TCampaignTable[]>([])
-  // const [pageSize, setPageSize] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [totalPage, setTotalPage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -241,14 +240,6 @@ const CampaignsManagment: FC = () => {
       className: styles['center-cell'],
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.costPerAction)) || '-'
     },
-    // {
-    //   title: 'Số người nhắn tin',
-    //   dataIndex: 'insight',
-    //   key: 'messagingFirstReply',
-    //   className: styles['center-cell'],
-    //   render: (insight) =>
-    //     formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingFirstReply)) || '-'
-    // },
     {
       title:
         <Tooltip
@@ -426,7 +417,6 @@ const CampaignsManagment: FC = () => {
     setIsLoading(true)
     advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10, startTime, endTime).then((res) => {
       const data = res.data.data
-      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }

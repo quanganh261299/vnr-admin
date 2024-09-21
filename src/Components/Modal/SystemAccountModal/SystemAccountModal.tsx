@@ -14,7 +14,15 @@ interface Props {
 }
 
 const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { isModalOpen, editingData, isLoadingBtn, selectAccountData, handleOk, handleCancel, onFinish } = props
+  const { 
+    isModalOpen, 
+    editingData, 
+    isLoadingBtn, 
+    selectAccountData, 
+    handleOk, 
+    handleCancel, 
+    onFinish 
+  } = props
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({

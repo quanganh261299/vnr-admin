@@ -26,7 +26,6 @@ const SystemManagement: FC = () => {
     isSelectAgency: false,
     isSelectTeam: false
   })
-  // const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
