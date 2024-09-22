@@ -18,7 +18,7 @@ const advertisementApi = {
         return axiosInstance.get(url, { params });
     },
     getListCampaigns: (params?: {
-        accountId: string;
+        adsAccountId: string;
         pageIndex?: number;
         pageSize?: number;
         startTime?: string;
@@ -28,7 +28,7 @@ const advertisementApi = {
         return axiosInstance.get(url, { params });
     },
     getListAdSet: (params?: {
-        campaignId: string;
+        adsAccountId: string;
         pageIndex?: number;
         pageSize?: number;
         startTime?: string;
@@ -38,7 +38,7 @@ const advertisementApi = {
         return axiosInstance.get(url, { params });
     },
     getListAd: (params?: {
-        adSetId: string;
+        adsAccountId: string;
         pageIndex?: number;
         pageSize?: number;
         startTime?: string;

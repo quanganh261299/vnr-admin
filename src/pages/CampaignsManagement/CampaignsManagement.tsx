@@ -416,13 +416,14 @@ const CampaignsManagment: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListCampaigns({
-      accountId: param.accountId || '',
+      adsAccountId: param.accountId || '',
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
       startTime,
       endTime
     }).then((res) => {
       const data = res.data.data
+      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }

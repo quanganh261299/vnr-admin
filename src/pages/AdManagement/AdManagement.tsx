@@ -389,7 +389,7 @@ const AdManagement: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     advertisementApi.getListAd({
-      adSetId: param.adsetsId || '',
+      adsAccountId: param.adsetsId || '',
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
       startTime,
