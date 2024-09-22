@@ -234,7 +234,7 @@ const TeamManagement: FC = () => {
     })
     if (selectSystemId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -248,7 +248,12 @@ const TeamManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    groupApi.getListGroup(currentPage, 10, selectSystemId as string, selectAgencyId as string).then((res) => {
+    groupApi.getListGroup({
+      pageIndex: currentPage,
+      pageSize: 10,
+      organizationId: selectSystemId || '',
+      branchId: selectAgencyId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

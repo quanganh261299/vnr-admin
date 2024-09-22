@@ -497,7 +497,13 @@ const AdSetManagement: FC = () => {
 
   useEffect(() => {
     setIsLoading(true)
-    advertisementApi.getListAdSet(String(param.campaignId), currentPage, 10, startTime, endTime).then((res) => {
+    advertisementApi.getListAdSet({
+      campaignId: param.campaignId || '',
+      pageIndex: currentPage,
+      pageSize: 10,
+      startTime,
+      endTime
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

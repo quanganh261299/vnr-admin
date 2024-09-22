@@ -274,7 +274,7 @@ const MemberManagement: FC = () => {
     })
     if (selectSystemId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -286,7 +286,7 @@ const MemberManagement: FC = () => {
     }
     if (selectAgencyId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -300,13 +300,13 @@ const MemberManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    employeeApi.getListEmployee(
-      currentPage,
-      10,
-      selectSystemId as string,
-      selectAgencyId as string,
-      selectTeamId as string
-    ).then((res) => {
+    employeeApi.getListEmployee({
+      pageIndex: currentPage,
+      pageSize: 10,
+      organizationId: selectSystemId || '',
+      branchId: selectAgencyId || '',
+      groupId: selectTeamId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

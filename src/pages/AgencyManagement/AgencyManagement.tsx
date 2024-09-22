@@ -182,7 +182,11 @@ const AgencyManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    branchApi.getListBranch(currentPage, 10, selectSystemId as string).then((res) => {
+    branchApi.getListBranch({
+      pageIndex: currentPage,
+      pageSize: 10,
+      organizationId: selectSystemId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

@@ -114,7 +114,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
   useEffect(() => {
     if (selectSystemModalId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemModalId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -126,7 +126,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     }
     if (selectAgencyModalId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: true }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyModalId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyModalId }).then((res) => {
         setSelectTeamDataModal(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,

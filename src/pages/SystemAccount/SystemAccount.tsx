@@ -157,7 +157,7 @@ const SystemAccount: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    userApi.getListSystemUser(currentPage, 10).then((res) => {
+    userApi.getListSystemUser({ pageIndex: currentPage, pageSize: 10 }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

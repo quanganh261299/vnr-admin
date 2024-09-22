@@ -6,11 +6,12 @@ const organizationApi = {
         const url = "/organizations";
         return axiosInstance.post(url, data);
     },
-    getListOrganization: (pageIndex?: number, pageSize?: number) => {
-        const url = `/organizations?pageIndex=${pageIndex || ""}&pageSize=${
-            pageSize || ""
-        }`;
-        return axiosInstance.get(url);
+    getListOrganization: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+    }) => {
+        const url = "/organizations";
+        return axiosInstance.get(url, { params });
     },
     updateOrganization: (data: TSystemField) => {
         const url = "/organizations";

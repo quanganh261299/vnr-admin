@@ -144,7 +144,7 @@ const SystemManagement: FC = () => {
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
-    organizationApi.getListOrganization(currentPage, 10).then((res) => {
+    organizationApi.getListOrganization({ pageIndex: currentPage, pageSize: 10 }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

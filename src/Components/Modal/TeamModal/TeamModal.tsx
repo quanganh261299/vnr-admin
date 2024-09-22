@@ -76,7 +76,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
   useEffect(() => {
     if (selectSystemModalId) {
       setIsLoadingSelectAgency(true)
-      branchApi.getListBranch(undefined, undefined, selectSystemModalId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,

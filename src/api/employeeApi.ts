@@ -6,19 +6,15 @@ const employeeApi = {
         const url = "/employee";
         return axiosInstance.post(url, data);
     },
-    getListEmployee: (
-        pageIndex?: number,
-        pageSize?: number,
-        organizationId?: string,
-        branchId?: string,
-        groupId?: string
-    ) => {
-        const url = `/employee?pageIndex=${pageIndex || ""}&pageSize=${
-            pageSize || ""
-        }&organizationId=${organizationId || ""}&branchId=${
-            branchId || ""
-        }&groupId=${groupId || ""}`;
-        return axiosInstance.get(url);
+    getListEmployee: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        organizationId?: string;
+        branchId?: string;
+        groupId?: string;
+    }) => {
+        const url = "/employee";
+        return axiosInstance.get(url, { params });
     },
     updateEmployee: (data: TMemberField) => {
         const url = "/employee";

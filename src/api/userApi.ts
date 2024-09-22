@@ -6,11 +6,9 @@ const userApi = {
         const url = "/Role";
         return axiosInstance.get(url);
     },
-    getListSystemUser: (pageIndex?: number, pageSize?: number) => {
-        const url = `/users/system?pageIndex=${
-            pageIndex || ""
-        }&pageSize=${pageSize}`;
-        return axiosInstance.get(url);
+    getListSystemUser: (params?: { pageIndex?: number; pageSize?: number }) => {
+        const url = "/users/system";
+        return axiosInstance.get(url, { params });
     },
     createSystemUser: (data: TSystemUser) => {
         const url = "/users";
@@ -20,11 +18,15 @@ const userApi = {
         const url = "/users/system";
         return axiosInstance.put(url, data);
     },
-    getListBmUser: (pageIndex?: number, pageSize?: number) => {
-        const url = `/users/bm?pageIndex=${pageIndex || ""}&pageSize=${
-            pageSize || ""
-        }`;
-        return axiosInstance.get(url);
+    getListBmUser: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        organizationId?: string;
+        branchId?: string;
+        groupId?: string;
+    }) => {
+        const url = "/users/bm";
+        return axiosInstance.get(url, { params });
     },
     createBmUser: (data: TBmUserField) => {
         const url = "/users/bm";
