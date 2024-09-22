@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatDateYMD, formatNumberWithCommas, formatNumberWithCommasNotZero, handleDevice, handleEffectiveStatus, handleFacebookPosition } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommas, formatNumberWithCommasNotZero, handleDevice, handleEffectiveStatus, handleFacebookPosition } from "../../helper/const"
 import useDateRangeStore from "../../store/dateRangeStore"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -500,7 +500,7 @@ const AdSetManagement: FC = () => {
     advertisementApi.getListAdSet({
       campaignId: param.campaignId || '',
       pageIndex: currentPage,
-      pageSize: 10,
+      pageSize: DEFAULT_PAGE_SIZE,
       startTime,
       endTime
     }).then((res) => {

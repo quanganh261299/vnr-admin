@@ -14,6 +14,7 @@ import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
 import groupApi from '../../api/groupApi';
 import { TypeTeamTable } from '../../models/team/team';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const MemberManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -302,7 +303,7 @@ const MemberManagement: FC = () => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     employeeApi.getListEmployee({
       pageIndex: currentPage,
-      pageSize: 10,
+      pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || '',
       branchId: selectAgencyId || '',
       groupId: selectTeamId || ''
@@ -380,7 +381,7 @@ const MemberManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

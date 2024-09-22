@@ -12,6 +12,7 @@ import organizationApi from '../../api/organizationApi';
 import { TSystemTable } from '../../models/system/system';
 import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const TeamManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -250,7 +251,7 @@ const TeamManagement: FC = () => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     groupApi.getListGroup({
       pageIndex: currentPage,
-      pageSize: 10,
+      pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || '',
       branchId: selectAgencyId || ''
     }).then((res) => {
@@ -317,7 +318,7 @@ const TeamManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

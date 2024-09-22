@@ -39,7 +39,7 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
       form.setFieldsValue({
         name: editingData?.name,
         description: editingData?.description,
-        organizationId: selectSystemData.find((item) => item.value === editingData.organization?.id)?.value
+        organizationId: editingData.organization?.id
       });
     } else {
       form.resetFields();

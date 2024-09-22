@@ -10,6 +10,7 @@ import AdAccountModal from '../../Components/Modal/AdAccountModal/AdAccountModal
 import { useSearchParams } from 'react-router-dom';
 import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 
 const AdAccount: FC = () => {
@@ -249,7 +250,7 @@ const AdAccount: FC = () => {
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
-    advertisementApi.getListAdsAccount({ pageIndex: currentPage, pageSize: 10 }).then((res) => {
+    advertisementApi.getListAdsAccount({ pageIndex: currentPage, pageSize: DEFAULT_PAGE_SIZE }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -293,7 +294,7 @@ const AdAccount: FC = () => {
           loading={loading.isTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

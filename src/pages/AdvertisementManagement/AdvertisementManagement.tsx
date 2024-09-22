@@ -14,7 +14,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
 import advertisementApi from '../../api/advertisementApi';
-import { formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
@@ -244,7 +244,7 @@ const AdvertisementManagement: FC = () => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     advertisementApi.getListAdsAccountActive({
       pageIndex: currentPage,
-      pageSize: 10,
+      pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || '',
       branchId: selectAgencyId || '',
       groupId: selectTeamId || '',
@@ -327,7 +327,7 @@ const AdvertisementManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

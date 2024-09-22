@@ -32,9 +32,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     onFinish
   } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
-  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
-  const [selectTeamEditingDataModal, setSelectTeamEditingDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [loading, setLoading] = useState({
@@ -81,9 +79,9 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
       setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
       setSelectAgencyModalId(editingData?.group?.branch.id as string)
       form.setFieldsValue({
-        organizationId: selectSystemData.find((item) => item.value === editingData?.group?.branch?.organization.id)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.group?.branch.id)?.value,
-        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.group.id)?.value,
+        organizationId: editingData?.group?.branch?.organization.id,
+        branchId: editingData.group?.branch.id,
+        groupId: editingData.group.id,
         email: editingData.email,
         bmsId: editingData.pms.map((item) => item.id)
       });
@@ -91,25 +89,6 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
       form.resetFields();
     }
   }, [editingData, form]);
-
-  useEffect(() => {
-    branchApi.getListBranch().then((res) => {
-      setSelectAgencyEditingDataModal(
-        res.data.data.map((item: TAgencyTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-    groupApi.getListGroup().then((res) => {
-      setSelectTeamEditingDataModal(
-        res.data.data.map((item: TypeTeamTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-  }, [])
 
   useEffect(() => {
     if (selectSystemModalId) {

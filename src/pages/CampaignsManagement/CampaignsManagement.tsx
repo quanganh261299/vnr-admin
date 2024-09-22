@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
 import { DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
 import dayjs, { Dayjs } from "dayjs"
 import useDateRangeStore from "../../store/dateRangeStore"
 
@@ -418,7 +418,7 @@ const CampaignsManagment: FC = () => {
     advertisementApi.getListCampaigns({
       accountId: param.accountId || '',
       pageIndex: currentPage,
-      pageSize: 10,
+      pageSize: DEFAULT_PAGE_SIZE,
       startTime,
       endTime
     }).then((res) => {

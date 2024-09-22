@@ -35,9 +35,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
     onFinish
   } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
-  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
-  const [selectTeamEditingDataModal, setSelectTeamEditingDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [loading, setLoading] = useState({
@@ -83,25 +81,6 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
   }
 
   useEffect(() => {
-    branchApi.getListBranch().then((res) => {
-      setSelectAgencyEditingDataModal(
-        res.data.data.map((item: TAgencyTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-    groupApi.getListGroup().then((res) => {
-      setSelectTeamEditingDataModal(
-        res.data.data.map((item: TypeTeamTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-  }, [])
-
-  useEffect(() => {
     if (selectSystemModalId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
       branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
@@ -137,9 +116,9 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
         email: editingData.email || "",
         phone: editingData.phone || "",
         description: editingData.description || "",
-        organizationId: selectSystemData.find((item) => item.value === editingData?.group?.branch?.organization.id)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.group?.branch.id)?.value,
-        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData.groupId)?.value
+        organizationId: editingData?.group?.branch?.organization.id,
+        branchId: editingData.group?.branch.id,
+        groupId: editingData.groupId
       });
     } else {
       form.resetFields();

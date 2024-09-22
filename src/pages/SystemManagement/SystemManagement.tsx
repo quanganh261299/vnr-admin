@@ -7,6 +7,7 @@ import SystemModal from '../../Components/Modal/SystemModal/SystemModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { TSystemField, TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -144,7 +145,7 @@ const SystemManagement: FC = () => {
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
-    organizationApi.getListOrganization({ pageIndex: currentPage, pageSize: 10 }).then((res) => {
+    organizationApi.getListOrganization({ pageIndex: currentPage, pageSize: DEFAULT_PAGE_SIZE }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -183,7 +184,7 @@ const SystemManagement: FC = () => {
           loading={loading.isTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

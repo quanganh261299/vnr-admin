@@ -32,7 +32,6 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
     onFinish
   } = props
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
-  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [isLoadingSelectAgency, setIsLoadingSelectAgency] = useState<boolean>(false)
   const [form] = Form.useForm();
@@ -63,17 +62,6 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
   }
 
   useEffect(() => {
-    branchApi.getListBranch().then((res) => {
-      setSelectAgencyEditingDataModal(
-        res.data.data.map((item: TAgencyTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-  }, [])
-
-  useEffect(() => {
     if (selectSystemModalId) {
       setIsLoadingSelectAgency(true)
       branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
@@ -94,15 +82,15 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
       form.setFieldsValue({
         name: editingData.name || "",
         description: editingData.description || "",
-        organizationId: selectSystemData.find((item) => item.value === editingData.branch?.organizationId)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData.branchId)?.value
+        organizationId: editingData.branch?.organizationId,
+        branchId: editingData.branchId
       });
     } else {
       form.resetFields();
       setSelectSystemModalId(null)
       setSelectAgencyDataModal([])
     }
-  }, [editingData, form, selectAgencyEditingDataModal]);
+  }, [editingData, form]);
 
   return (
     <Modal

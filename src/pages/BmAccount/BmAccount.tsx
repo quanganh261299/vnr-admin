@@ -14,6 +14,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -233,7 +234,7 @@ const SystemManagement: FC = () => {
     setLoading({ ...loading, isTable: true })
     userApi.getListBmUser({
       pageIndex: currentPage,
-      pageSize: 10,
+      pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || '',
       branchId: selectAgencyId || '',
       groupId: selectTeamId || ''
@@ -313,7 +314,7 @@ const SystemManagement: FC = () => {
           loading={loading.isTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),
