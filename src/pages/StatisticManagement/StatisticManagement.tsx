@@ -342,8 +342,8 @@ const StatisticManagement: FC = () => {
     switch (barChartType) {
       case 1: {
         statisticApi.getTotalAmountSpent({
-          startTime: `${startTime}T01:00:00`,
-          endTime: `${endTime}T23:59:59`,
+          start: `${startTime}T01:00:00`,
+          end: `${endTime}T23:59:59`,
           organizationId: selectSystemId || '',
           branchId: selectAgencyId || '',
           groupId: selectTeamId || ''
@@ -355,8 +355,8 @@ const StatisticManagement: FC = () => {
       }
       case 2: {
         statisticApi.getHighestResultEmployee({
-          startTime: `${startTime}T01:00:00`,
-          endTime: `${endTime}T23:59:59`,
+          start: `${startTime}T01:00:00`,
+          end: `${endTime}T23:59:59`,
           organizationId: selectSystemId || '',
           branchId: selectAgencyId || '',
           groupId: selectTeamId || ''
@@ -368,8 +368,8 @@ const StatisticManagement: FC = () => {
       }
       case 3: {
         statisticApi.getTotalCostPerResult({
-          startTime: `${startTime}T01:00:00`,
-          endTime: `${endTime}T23:59:59`,
+          start: `${startTime}T01:00:00`,
+          end: `${endTime}T23:59:59`,
           organizationId: selectSystemId || '',
           branchId: selectAgencyId || '',
           groupId: selectTeamId || ''
@@ -381,8 +381,8 @@ const StatisticManagement: FC = () => {
       }
       case 4: {
         statisticApi.getTotalResultCampaign({
-          startTime: `${startTime}T01:00:00`,
-          endTime: `${endTime}T23:59:59`,
+          start: `${startTime}T01:00:00`,
+          end: `${endTime}T23:59:59`,
           organizationId: selectSystemId || '',
           branchId: selectAgencyId || '',
           groupId: selectTeamId || ''

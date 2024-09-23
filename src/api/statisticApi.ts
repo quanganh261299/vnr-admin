@@ -2,8 +2,8 @@ import axiosInstance from "./axiosClients";
 
 const statisticApi = {
     getTotalAmountSpent: (params: {
-        startTime: string;
-        endTime: string;
+        start: string;
+        end: string;
         organizationId?: string;
         branchId?: string;
         groupId?: string;
@@ -12,8 +12,8 @@ const statisticApi = {
         return axiosInstance.get(url, { params });
     },
     getHighestResultEmployee: (params: {
-        startTime: string;
-        endTime: string;
+        start: string;
+        end: string;
         organizationId?: string;
         branchId?: string;
         groupId?: string;
@@ -22,8 +22,8 @@ const statisticApi = {
         return axiosInstance.get(url, { params });
     },
     getTotalCostPerResult: (params: {
-        startTime: string;
-        endTime: string;
+        start: string;
+        end: string;
         organizationId?: string;
         branchId?: string;
         groupId?: string;
@@ -32,8 +32,8 @@ const statisticApi = {
         return axiosInstance.get(url, { params });
     },
     getTotalResultCampaign: (params: {
-        startTime: string;
-        endTime: string;
+        start: string;
+        end: string;
         organizationId?: string;
         branchId?: string;
         groupId?: string;
