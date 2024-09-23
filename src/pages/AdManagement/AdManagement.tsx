@@ -419,6 +419,10 @@ const AdManagement: FC = () => {
   }, [param.adsetsId, currentPage, startTime, endTime])
 
   useEffect(() => {
+    setCurrentPage(1)
+  }, [startTime, endTime])
+
+  useEffect(() => {
     setBreadCrumbData([
       {
         title: (

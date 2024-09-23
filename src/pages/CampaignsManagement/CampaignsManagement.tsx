@@ -147,7 +147,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'insight',
       key: 'ctr',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(1) : '-'
+      render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(2) : '-'
     },
     {
       title:
@@ -444,6 +444,10 @@ const CampaignsManagment: FC = () => {
       setIsLoading(false)
     })
   }, [currentPage, param.accountId, startTime, endTime])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [startTime, endTime])
 
   useEffect(() => {
     setBreadCrumbData([
