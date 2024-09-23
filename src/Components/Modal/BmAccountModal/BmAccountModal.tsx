@@ -83,7 +83,9 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: editingData.group?.branch.id,
         groupId: editingData.group.id,
         email: editingData.email,
-        bmsId: editingData.pms.map((item) => item.id)
+        bmsId: editingData.pms.map((item) => item.id),
+        chatId: editingData.chatId,
+        tokenTelegram: editingData.tokenTelegram
       });
     } else {
       form.resetFields();
@@ -222,6 +224,28 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           rules={[
             { required: true, whitespace: true, message: 'Không được để trống email' },
             { pattern: EMAIL_REGEX, message: 'Email không đúng định dạng' },
+          ]}
+          className='custom-margin-form'
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Chat id"
+          name="chatId"
+          rules={[
+            { required: true, whitespace: true, message: 'Không được để trống chat id' },
+          ]}
+          className='custom-margin-form'
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Token Telegram"
+          name="tokenTelegram"
+          rules={[
+            { required: true, whitespace: true, message: 'Không được để trống token Telegram' },
           ]}
           className='custom-margin-form'
         >
