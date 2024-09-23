@@ -55,4 +55,6 @@ export type TBmUserField = {
     email: string;
     groupId: string;
     bmsId: string | string[];
+    chatId: string;
+    tokenTelegram: string;
 };
