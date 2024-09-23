@@ -86,7 +86,9 @@ const SystemManagement: FC = () => {
         id: dataRecord?.id,
         email: values.email,
         groupId: values.groupId,
-        bmsId: values.bmsId
+        bmsId: values.bmsId,
+        chatId: values.chatId,
+        tokenTelegram: values.tokenTelegram
       }
       userApi.updateBmUser(data).then(() => {
         setIsModalOpen(false)
@@ -102,7 +104,9 @@ const SystemManagement: FC = () => {
       const data = {
         email: values.email,
         groupId: values.groupId,
-        bmsId: String(values.bmsId).split(',').map((id) => id.trim())
+        bmsId: values.bmsId,
+        chatId: values.chatId,
+        tokenTelegram: values.tokenTelegram
       }
       userApi.createBmUser(data).then(() => {
         setIsModalOpen(false)
@@ -239,6 +243,7 @@ const SystemManagement: FC = () => {
       branchId: selectAgencyId || '',
       groupId: selectTeamId || ''
     }).then((res) => {
+      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

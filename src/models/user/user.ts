@@ -46,6 +46,8 @@ export type TBmUser = {
     email: string;
     group: TypeTeamTable;
     pms: TBmList[];
+    chatId: string;
+    tokenTelegram: string;
 };
 
 export type TBmUserField = {
@@ -53,4 +55,6 @@ export type TBmUserField = {
     email: string;
     groupId: string;
     bmsId: string | string[];
+    chatId: string;
+    tokenTelegram: string;
 };
