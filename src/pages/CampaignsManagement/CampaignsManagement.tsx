@@ -419,8 +419,8 @@ const CampaignsManagment: FC = () => {
       adsAccountId: param.accountId || '',
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      startTime,
-      endTime
+      start: startTime,
+      end: endTime
     }).then((res) => {
       const data = res.data.data
       console.log('data', data)

@@ -21,8 +21,8 @@ const advertisementApi = {
         adsAccountId: string;
         pageIndex?: number;
         pageSize?: number;
-        startTime?: string;
-        endTime?: string;
+        start?: string;
+        end?: string;
     }) => {
         const url = "/campaign";
         return axiosInstance.get(url, { params });
@@ -31,8 +31,8 @@ const advertisementApi = {
         adsAccountId: string;
         pageIndex?: number;
         pageSize?: number;
-        startTime?: string;
-        endTime?: string;
+        start?: string;
+        end?: string;
     }) => {
         const url = "/Adset";
         return axiosInstance.get(url, { params });
@@ -41,8 +41,8 @@ const advertisementApi = {
         adsAccountId: string;
         pageIndex?: number;
         pageSize?: number;
-        startTime?: string;
-        endTime?: string;
+        start?: string;
+        end?: string;
     }) => {
         const url = "/Ads";
         return axiosInstance.get(url, { params });

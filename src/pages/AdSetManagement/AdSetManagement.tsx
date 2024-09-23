@@ -501,8 +501,8 @@ const AdSetManagement: FC = () => {
       adsAccountId: param.campaignId || '',
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      startTime,
-      endTime
+      start: startTime,
+      end: endTime
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
