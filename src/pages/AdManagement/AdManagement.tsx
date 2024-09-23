@@ -129,7 +129,7 @@ const AdManagement: FC = () => {
       dataIndex: 'insight',
       key: 'ctr',
       className: styles['center-cell'],
-      render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(1) : '-'
+      render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(2) : '-'
     },
     {
       title:
