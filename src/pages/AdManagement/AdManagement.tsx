@@ -5,7 +5,7 @@ import { Link, useLocation, useParams } from "react-router-dom"
 import { TAdsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, InfoCircleOutlined, NotificationOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleCallToActionType, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleCallToActionType, handleEffectiveStatus } from "../../helper/const"
 import useDateRangeStore from "../../store/dateRangeStore"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -388,7 +388,13 @@ const AdManagement: FC = () => {
 
   useEffect(() => {
     setIsLoading(true)
-    advertisementApi.getListAd(String(param.adsetsId), currentPage, 10, startTime, endTime).then((res) => {
+    advertisementApi.getListAd({
+      adsAccountId: param.adsetsId || '',
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      start: startTime,
+      end: endTime
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

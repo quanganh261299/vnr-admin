@@ -15,7 +15,6 @@ import { TSystemTable } from "../../../models/system/system";
 import { TAdUserTable } from "../../../models/user/user";
 import advertisementApi from "../../../api/advertisementApi";
 
-
 interface Props {
   isModalOpen: boolean,
   handleOk: () => void,
@@ -46,18 +45,12 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [selectAgencyModalId, setSelectAgencyModalId] = useState<string | null>(null)
   const [selectTeamModalId, setSelectTeamModalId] = useState<string | null>(null)
-  const [selectSystemEditingDataModal, setSelectSystemEditingDataModal] = useState<SelectType[]>([])
-  const [selectAgencyEditingDataModal, setSelectAgencyEditingDataModal] = useState<SelectType[]>([])
-  const [selectTeamEditingDataModal, setSelectTeamEditingDataModal] = useState<SelectType[]>([])
-  const [selectMemberEditingDataModal, setSelectMemberEditingDataModal] = useState<SelectType[]>([])
-  const [selectBmEditingDataModal, setSelectBmEditingDataModal] = useState<SelectType[]>([])
   const [loading, setLoading] = useState({
     isSelectSystem: false,
     isSelectAgency: false,
     isSelectTeam: false,
     isSelectMember: false,
     isSelectBM: false,
-    isEditingModal: false
   })
   const [form] = Form.useForm();
 
@@ -74,10 +67,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   }));
 
   const handleFormChange = (changedValues: any) => {
-    setSelectSystemModalId(changedValues.organizationId)
-    setSelectAgencyModalId(changedValues.branchId)
-    setSelectTeamModalId(changedValues.groupId)
     if (changedValues.organizationId) {
+      setSelectSystemModalId(changedValues.organizationId)
       setSelectAgencyDataModal([])
       setSelectTeamDataModal([])
       setSelectMemberDataModal([])
@@ -87,6 +78,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       form.setFieldValue('pms', undefined)
     }
     if (changedValues.branchId) {
+      setSelectAgencyModalId(changedValues.branchId)
       setSelectTeamDataModal([])
       setSelectMemberDataModal([])
       form.setFieldValue('groupId', undefined)
@@ -94,6 +86,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       form.setFieldValue('pms', undefined)
     }
     if (changedValues.groupId) {
+      setSelectTeamModalId(changedValues.groupId)
       setSelectMemberDataModal([])
       form.setFieldValue('employeeId', undefined)
       form.setFieldValue('pms', undefined)
@@ -101,6 +94,9 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   };
 
   const clearSelectSystemModalId = () => {
+    setSelectSystemModalId(null)
+    setSelectAgencyModalId(null)
+    setSelectTeamModalId(null)
     form.setFieldValue('branchId', undefined)
     form.setFieldValue('groupId', undefined)
     form.setFieldValue('employeeId', undefined)
@@ -112,6 +108,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   }
 
   const clearSelectAgencyModalId = () => {
+    setSelectAgencyModalId(null)
+    setSelectTeamModalId(null)
     form.setFieldValue('groupId', undefined)
     form.setFieldValue('employeeId', undefined)
     form.setFieldValue('pms', undefined)
@@ -121,6 +119,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   }
 
   const clearSelectTeamModalId = () => {
+    setSelectTeamModalId(null)
     form.setFieldValue('employeeId', undefined)
     form.setFieldValue('pms', undefined)
     setSelectMemberDataModal([])
@@ -129,7 +128,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
-    organizationApi.getListOrganization(undefined, undefined).then((res) => {
+    organizationApi.getListOrganization().then((res) => {
       setSelectSystemDataModal(
         res.data.data.map((item: TSystemTable) => ({
           value: item.id,
@@ -143,7 +142,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   useEffect(() => {
     if (selectSystemModalId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemModalId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -155,7 +154,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
     }
     if (selectAgencyModalId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyModalId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyModalId }).then((res) => {
         setSelectTeamDataModal(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -173,7 +172,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         isSelectMember: true,
         isSelectBM: true,
       }))
-      employeeApi.getListEmployee(undefined, undefined, undefined, undefined, selectTeamModalId).then((res) => {
+      employeeApi.getListEmployee({ groupId: selectTeamModalId }).then((res) => {
         setSelectMemberDataModal(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -182,7 +181,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         )
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
       })
-      advertisementApi.getListBm(selectTeamModalId).then((res) => {
+      advertisementApi.getListBm(selectTeamModalId || '').then((res) => {
         setSelectBmDataModal(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -195,69 +194,19 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   }, [selectSystemModalId, selectAgencyModalId, selectTeamModalId])
 
   useEffect(() => {
-    organizationApi.getListOrganization().then((res) => {
-      setSelectSystemEditingDataModal(
-        res.data.data.map((item: TSystemTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-    branchApi.getListBranch().then((res) => {
-      setSelectAgencyEditingDataModal(
-        res.data.data.map((item: TAgencyTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-    groupApi.getListGroup().then((res) => {
-      setSelectTeamEditingDataModal(
-        res.data.data.map((item: TypeTeamTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-    employeeApi.getListEmployee().then((res) => {
-      setSelectMemberEditingDataModal(
-        res.data.data.map((item: TMemberTable) => ({
-          value: item.id,
-          label: item.name
-        }))
-      )
-    })
-    advertisementApi.getListBm().then((res) => {
-      setSelectBmEditingDataModal(
-        res.data.data.map((item: { id: string }) => ({
-          value: item.id,
-          label: item.id
-        }))
-      )
-    })
-  }, [])
-
-  useEffect(() => {
     if (editingData) {
-      setLoading((prevLoading) => ({ ...prevLoading, isEditingModal: true }))
       setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
       setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
       setSelectTeamModalId(String(editingData.employee?.groupId))
       form.setFieldsValue({
-        name: editingData?.name || "",
-        organizationId:
-          selectSystemEditingDataModal.find((item) => item.value === editingData?.employee?.group?.branch?.organizationId)?.value,
-        branchId: selectAgencyEditingDataModal.find((item) => item.value === editingData?.employee?.group?.branchId)?.value,
-        groupId: selectTeamEditingDataModal.find((item) => item.value === editingData?.employee?.groupId)?.value,
-        employeeId: selectMemberEditingDataModal.find((item) => item.value === editingData?.employee?.id)?.value,
-        pms: editingData?.pms?.map((pms) => {
-          if (typeof pms === 'object' && 'id' in pms) {
-            return selectBmEditingDataModal.find((item) => item.value === pms.id);
-          }
-        }).filter(Boolean),
+        name: editingData?.name,
+        organizationId: editingData?.employee?.group?.branch?.organizationId,
+        branchId: editingData?.employee?.group?.branchId,
+        groupId: editingData?.employee?.groupId,
+        employeeId: editingData?.employee?.id,
+        pms: editingData?.pms?.map((pms) => typeof pms === 'object' && pms.id),
         id: editingData?.accountId,
       });
-      setLoading((prevLoading) => ({ ...prevLoading, isEditingModal: false }))
     } else {
       form.resetFields();
       setSelectSystemModalId(null)
@@ -268,7 +217,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       setSelectMemberDataModal([])
       setSelectBmDataModal([])
     }
-  }, [editingData, form, selectSystemEditingDataModal, selectAgencyEditingDataModal, selectTeamEditingDataModal, selectMemberEditingDataModal]);
+  }, [editingData, form]);
 
 
   return (

@@ -6,16 +6,14 @@ const groupApi = {
         const url = "/groups";
         return axiosInstance.post(url, data);
     },
-    getListGroup: (
-        pageIndex?: number,
-        pageSize?: number,
-        organizationId?: string,
-        branchId?: string
-    ) => {
-        const url = `/groups?pageIndex=${pageIndex || ""}&pageSize=${
-            pageSize || ""
-        }&organizationId=${organizationId || ""}&branchId=${branchId || ""}`;
-        return axiosInstance.get(url);
+    getListGroup: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        organizationId?: string;
+        branchId?: string;
+    }) => {
+        const url = "/groups";
+        return axiosInstance.get(url, { params });
     },
     updateGroup: (data: TypeTeamField) => {
         const url = "/groups";

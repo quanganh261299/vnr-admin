@@ -2,59 +2,53 @@ import { TCreateAdsAccount } from "../models/advertisement/advertisement";
 import axiosInstance from "./axiosClients";
 
 const advertisementApi = {
-    getListAdsAccount: (pageIndex?: number, pageSize?: number) => {
-        const url = `/adsAccount?pageIndex=${pageIndex}&pageSize=${pageSize}`;
-        return axiosInstance.get(url);
+    getListAdsAccount: (params?: { pageIndex?: number; pageSize?: number }) => {
+        const url = `/adsAccount`;
+        return axiosInstance.get(url, { params });
     },
-    getListAdsAccountActive: (
-        pageIndex?: number,
-        pageSize?: number,
-        organizationId?: string,
-        branchId?: string,
-        groupId?: string,
-        employeeId?: string
-    ) => {
-        const url = `/adsAccount/isActive?pageIndex=${pageIndex}&pageSize=${pageSize}&organizationId=${
-            organizationId || ""
-        }&branchId=${branchId || ""}&groupId=${groupId || ""}&employeeId=${
-            employeeId || ""
-        }`;
-        return axiosInstance.get(url);
+    getListAdsAccountActive: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        organizationId?: string;
+        branchId?: string;
+        groupId?: string;
+        employeeId?: string;
+    }) => {
+        const url = "/adsAccount/isActive";
+        return axiosInstance.get(url, { params });
     },
-    getListCampaigns: (
-        accountId: string,
-        pageIndex?: number | string,
-        pageSize?: number | string,
-        startTime?: string,
-        endTime?: string
-    ) => {
-        const url = `/campaign?pageIndex=${pageIndex || ""}&pageSize=${
-            pageSize || ""
-        }&adsAccountId=${accountId}&start=${startTime}&end=${endTime}`;
-        return axiosInstance.get(url);
+    getListCampaigns: (params?: {
+        adsAccountId: string;
+        pageIndex?: number;
+        pageSize?: number;
+        start?: string;
+        end?: string;
+    }) => {
+        const url = "/campaign";
+        return axiosInstance.get(url, { params });
     },
-    getListAdSet: (
-        campaignId: string,
-        pageIndex?: number,
-        pageSize?: number,
-        startTime?: string,
-        endTime?: string
-    ) => {
-        const url = `/Adset?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${campaignId}&start=${startTime}&end=${endTime}`;
-        return axiosInstance.get(url);
+    getListAdSet: (params?: {
+        adsAccountId: string;
+        pageIndex?: number;
+        pageSize?: number;
+        start?: string;
+        end?: string;
+    }) => {
+        const url = "/Adset";
+        return axiosInstance.get(url, { params });
     },
-    getListAd: (
-        adSetId: string,
-        pageIndex?: number,
-        pageSize?: number,
-        startTime?: string,
-        endTime?: string
-    ) => {
-        const url = `/Ads?pageIndex=${pageIndex}&pageSize=${pageSize}&adsAccountId=${adSetId}&start=${startTime}&end=${endTime}`;
-        return axiosInstance.get(url);
+    getListAd: (params?: {
+        adsAccountId: string;
+        pageIndex?: number;
+        pageSize?: number;
+        start?: string;
+        end?: string;
+    }) => {
+        const url = "/Ads";
+        return axiosInstance.get(url, { params });
     },
     getListBm: (groupId?: string) => {
-        const url = `/bm?groupId=${groupId || ""}`;
+        const url = `/bm?groupId=${groupId}`;
         return axiosInstance.get(url);
     },
     createAdsAccount: (data: TCreateAdsAccount) => {

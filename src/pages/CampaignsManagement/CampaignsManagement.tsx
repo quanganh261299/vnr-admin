@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
 import { DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
 import dayjs, { Dayjs } from "dayjs"
 import useDateRangeStore from "../../store/dateRangeStore"
 
@@ -415,8 +415,15 @@ const CampaignsManagment: FC = () => {
 
   useEffect(() => {
     setIsLoading(true)
-    advertisementApi.getListCampaigns(String(param.accountId), currentPage, 10, startTime, endTime).then((res) => {
+    advertisementApi.getListCampaigns({
+      adsAccountId: param.accountId || '',
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      start: startTime,
+      end: endTime
+    }).then((res) => {
       const data = res.data.data
+      console.log('data', data)
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
       }

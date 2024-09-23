@@ -14,7 +14,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
 import advertisementApi from '../../api/advertisementApi';
-import { formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
@@ -39,8 +39,6 @@ const AdvertisementManagement: FC = () => {
   })
   const location = useLocation();
   const navigate = useNavigate();
-
-
 
   const columns: TableProps<TAdvertisementTable>['columns'] = [
     {
@@ -175,10 +173,6 @@ const AdvertisementManagement: FC = () => {
     setSelectMemberId(value)
   };
 
-  const onSearchMember = (value: string) => {
-    setSelectMemberId(value)
-  };
-
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
     setSelectAgencyData([])
@@ -199,7 +193,7 @@ const AdvertisementManagement: FC = () => {
         isSelectSystem: false,
         isSelectAgency: true
       }))
-      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -216,7 +210,7 @@ const AdvertisementManagement: FC = () => {
         isSelectAgency: false,
         isSelectTeam: true
       }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -234,7 +228,7 @@ const AdvertisementManagement: FC = () => {
         isSelectTeam: false,
         isSelectMember: true
       }))
-      employeeApi.getListEmployee(undefined, undefined, undefined, undefined, selectTeamId).then((res) => {
+      employeeApi.getListEmployee({ groupId: selectTeamId }).then((res) => {
         setSelectMemberData(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -248,13 +242,14 @@ const AdvertisementManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    advertisementApi.getListAdsAccountActive(
-      currentPage,
-      10,
-      selectSystemId as string,
-      selectAgencyId as string,
-      selectTeamId as string,
-      selectMemberId as string
+    advertisementApi.getListAdsAccountActive({
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      organizationId: selectSystemId || '',
+      branchId: selectAgencyId || '',
+      groupId: selectTeamId || '',
+      employeeId: selectMemberId || ''
+    }
     ).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -320,7 +315,6 @@ const AdvertisementManagement: FC = () => {
             placeholder="Chọn thành viên"
             optionFilterProp="label"
             onChange={onChangeMember}
-            onSearch={onSearchMember}
             options={selectMemberData}
             className={styles["select-system-item"]}
             loading={loading.isSelectMember}
@@ -333,7 +327,7 @@ const AdvertisementManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

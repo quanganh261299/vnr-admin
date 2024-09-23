@@ -17,17 +17,17 @@ interface Props {
 }
 
 const OptionLoginModal: FC<Props> = (props: Props) => {
-  const { 
-    isOpen, 
-    isFBLogin, 
-    title, 
-    description, 
-    firstOptionBtn, 
-    secondOptionBtn, 
-    firstOptionAction, 
-    secondOptionAction, 
-    setIsFBLogin, 
-    loginFB 
+  const {
+    isOpen,
+    isFBLogin,
+    title,
+    description,
+    firstOptionBtn,
+    secondOptionBtn,
+    firstOptionAction,
+    secondOptionAction,
+    setIsFBLogin,
+    loginFB
   } = props
   return (
     <Modal

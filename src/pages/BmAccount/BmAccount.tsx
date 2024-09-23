@@ -14,6 +14,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -205,7 +206,7 @@ const SystemManagement: FC = () => {
     })
     if (selectSystemId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -217,7 +218,7 @@ const SystemManagement: FC = () => {
     }
     if (selectAgencyId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -231,7 +232,13 @@ const SystemManagement: FC = () => {
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
-    userApi.getListBmUser(currentPage, 10).then((res) => {
+    userApi.getListBmUser({
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      organizationId: selectSystemId || '',
+      branchId: selectAgencyId || '',
+      groupId: selectTeamId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -248,7 +255,7 @@ const SystemManagement: FC = () => {
     }).catch(() => {
       setLoading({ ...loading, isTable: false })
     })
-  }, [currentPage, isCallbackApi])
+  }, [currentPage, isCallbackApi, selectSystemId, selectAgencyId, selectTeamId])
 
   return (
     <>
@@ -307,7 +314,7 @@ const SystemManagement: FC = () => {
           loading={loading.isTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

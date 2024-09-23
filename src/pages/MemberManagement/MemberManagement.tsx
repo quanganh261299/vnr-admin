@@ -14,6 +14,7 @@ import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
 import groupApi from '../../api/groupApi';
 import { TypeTeamTable } from '../../models/team/team';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const MemberManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -274,7 +275,7 @@ const MemberManagement: FC = () => {
     })
     if (selectSystemId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -286,7 +287,7 @@ const MemberManagement: FC = () => {
     }
     if (selectAgencyId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -300,13 +301,13 @@ const MemberManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    employeeApi.getListEmployee(
-      currentPage,
-      10,
-      selectSystemId as string,
-      selectAgencyId as string,
-      selectTeamId as string
-    ).then((res) => {
+    employeeApi.getListEmployee({
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      organizationId: selectSystemId || '',
+      branchId: selectAgencyId || '',
+      groupId: selectTeamId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -380,7 +381,7 @@ const MemberManagement: FC = () => {
           dataSource={dataTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

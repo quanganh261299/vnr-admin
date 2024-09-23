@@ -6,15 +6,13 @@ const branchApi = {
         const url = "/branches";
         return axiosInstance.post(url, data);
     },
-    getListBranch: (
-        pageIndex?: number,
-        pageSize?: number,
-        organizationId?: string
-    ) => {
-        const url = `/branches?pageIndex=${pageIndex || ""}&pageSize=${
-            pageSize || ""
-        }&organizationId=${organizationId || ""}`;
-        return axiosInstance.get(url);
+    getListBranch: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        organizationId?: string;
+    }) => {
+        const url = `/branches`;
+        return axiosInstance.get(url, { params });
     },
     updateBranch: (data: TAgencyField) => {
         const url = "/branches";

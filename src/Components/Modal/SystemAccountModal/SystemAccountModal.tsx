@@ -14,14 +14,14 @@ interface Props {
 }
 
 const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
-  const { 
-    isModalOpen, 
-    editingData, 
-    isLoadingBtn, 
-    selectAccountData, 
-    handleOk, 
-    handleCancel, 
-    onFinish 
+  const {
+    isModalOpen,
+    editingData,
+    isLoadingBtn,
+    selectAccountData,
+    handleOk,
+    handleCancel,
+    onFinish
   } = props
   const [form] = Form.useForm();
 
@@ -38,7 +38,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
     if (editingData) {
       form.setFieldsValue({
         email: editingData?.email,
-        roleId: selectAccountData.find((item) => item.value === editingData.role.id)?.value
+        roleId: editingData.role.id
       });
     } else {
       form.resetFields();

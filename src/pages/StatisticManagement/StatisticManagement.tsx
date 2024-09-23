@@ -313,7 +313,7 @@ const StatisticManagement: FC = () => {
     })
     if (selectSystemId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch(undefined, undefined, selectSystemId).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -325,7 +325,7 @@ const StatisticManagement: FC = () => {
     }
     if (selectAgencyId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup(undefined, undefined, undefined, selectAgencyId).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -341,59 +341,55 @@ const StatisticManagement: FC = () => {
     setLoading((prevLoading) => ({ ...prevLoading, isBarChart: true }))
     switch (barChartType) {
       case 1: {
-        statisticApi.getTotalAmountSpent(
-          startTime,
-          endTime,
-          selectSystemId as string,
-          selectAgencyId as string,
-          selectTeamId as string
-        )
-          .then((res) => {
-            setTotalAmountSpentData(res.data.data.data)
-            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-          })
+        statisticApi.getTotalAmountSpent({
+          startTime: `${startTime}T01:00:00`,
+          endTime: `${endTime}T23:59:59`,
+          organizationId: selectSystemId || '',
+          branchId: selectAgencyId || '',
+          groupId: selectTeamId || ''
+        }).then((res) => {
+          setTotalAmountSpentData(res.data.data.data)
+          setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+        })
         break;
       }
       case 2: {
-        statisticApi.getHighestResultEmployee(
-          startTime,
-          endTime,
-          selectSystemId as string,
-          selectAgencyId as string,
-          selectTeamId as string
-        )
-          .then((res) => {
-            setHighestEmployeeResultData(res.data.data.data)
-            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-          })
+        statisticApi.getHighestResultEmployee({
+          startTime: `${startTime}T01:00:00`,
+          endTime: `${endTime}T23:59:59`,
+          organizationId: selectSystemId || '',
+          branchId: selectAgencyId || '',
+          groupId: selectTeamId || ''
+        }).then((res) => {
+          setHighestEmployeeResultData(res.data.data.data)
+          setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+        })
         break;
       }
       case 3: {
-        statisticApi.getTotalCostPerResult(
-          startTime,
-          endTime,
-          selectSystemId as string,
-          selectAgencyId as string,
-          selectTeamId as string
-        )
-          .then((res) => {
-            setTotalCostPerResultData(res.data.data)
-            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-          })
+        statisticApi.getTotalCostPerResult({
+          startTime: `${startTime}T01:00:00`,
+          endTime: `${endTime}T23:59:59`,
+          organizationId: selectSystemId || '',
+          branchId: selectAgencyId || '',
+          groupId: selectTeamId || ''
+        }).then((res) => {
+          setTotalCostPerResultData(res.data.data)
+          setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+        })
         break;
       }
       case 4: {
-        statisticApi.getTotalResultCampaign(
-          startTime,
-          endTime,
-          selectSystemId as string,
-          selectAgencyId as string,
-          selectTeamId as string
-        )
-          .then((res) => {
-            setTotalResultCampaignData(res.data.data.data)
-            setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-          })
+        statisticApi.getTotalResultCampaign({
+          startTime: `${startTime}T01:00:00`,
+          endTime: `${endTime}T23:59:59`,
+          organizationId: selectSystemId || '',
+          branchId: selectAgencyId || '',
+          groupId: selectTeamId || ''
+        }).then((res) => {
+          setTotalResultCampaignData(res.data.data.data)
+          setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+        })
       }
     }
   }, [startTime, endTime, selectSystemId, selectAgencyId, selectTeamId, barChartType])

@@ -8,6 +8,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import SystemAccountModal from '../../Components/Modal/SystemAccountModal/SystemAccountModal';
 import { SelectType } from '../../models/common';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemAccount: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -157,7 +158,7 @@ const SystemAccount: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    userApi.getListSystemUser(currentPage, 10).then((res) => {
+    userApi.getListSystemUser({ pageIndex: currentPage, pageSize: DEFAULT_PAGE_SIZE }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -196,7 +197,7 @@ const SystemAccount: FC = () => {
           loading={loading.isTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),

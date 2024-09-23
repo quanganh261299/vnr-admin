@@ -10,6 +10,7 @@ import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import branchApi from '../../api/branchApi';
 import organizationApi from '../../api/organizationApi';
 import { TSystemTable } from '../../models/system/system';
+import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const AgencyManagement: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -182,7 +183,11 @@ const AgencyManagement: FC = () => {
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    branchApi.getListBranch(currentPage, 10, selectSystemId as string).then((res) => {
+    branchApi.getListBranch({
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      organizationId: selectSystemId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -236,7 +241,7 @@ const AgencyManagement: FC = () => {
           loading={loading.isTable}
           pagination={{
             current: currentPage,
-            pageSize: 10,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: totalData,
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),
