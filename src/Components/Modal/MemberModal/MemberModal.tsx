@@ -104,7 +104,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
             label: item.name
           }))
         )
-        setLoading((prevLoading) => ({ ...prevLoading, iseSelectTeam: false }))
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
   }, [selectSystemModalId, selectAgencyModalId])
