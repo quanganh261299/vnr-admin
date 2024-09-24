@@ -58,7 +58,7 @@ const BMLayout: React.FC = () => {
         localStorage.removeItem('profileFacebook')
         navigate('/loginBM')
       })
-  }, 30000)
+  }, 5 * 60 * 1000)
 
   scheduleNextFetch();
 
@@ -74,10 +74,12 @@ const BMLayout: React.FC = () => {
     <Layout>
       <Header className={cx("header")}>
         <h1 className={cx("title")}>Business Management</h1>
-        <div className={cx('facebook-profile')}>
-          <img src={profileFacebook?.picture?.data?.url} alt="avatar" className={cx("fb-img")} />
-          <h1 className={cx("facebook-name")}>{profileFacebook?.name}</h1>
-        </div>
+        {Object.entries(profileFacebook).length > 0 &&
+          <div className={cx('facebook-profile')}>
+            <img src={profileFacebook?.picture?.data?.url} alt="avatar" className={cx("fb-img")} />
+            <h1 className={cx("facebook-name")}>{profileFacebook?.name}</h1>
+          </div>
+        }
       </Header>
       <Content className={cx("container")}>
         <Outlet />
