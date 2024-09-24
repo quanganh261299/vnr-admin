@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined } from '@ant-design/icons';
@@ -12,8 +13,8 @@ import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
-
 const AdAccount: FC = () => {
+  const cx = classNames.bind(styles)
   const [modal, setModal] = useState({
     isAddModalOpen: false,
     isDeleteModalOpen: false,
@@ -54,13 +55,14 @@ const AdAccount: FC = () => {
       dataIndex: 'employee',
       key: 'name',
       width: '15%',
+      className: cx('center-cell'),
       render: (employee) => <span>{employee?.name}</span>
     },
     {
       title: 'Tên đội nhóm',
       dataIndex: 'employee',
       key: 'groupName',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (employee) => <span>{employee?.group?.name}</span>,
       width: '15%',
     },
@@ -69,12 +71,14 @@ const AdAccount: FC = () => {
       dataIndex: 'accountId',
       key: 'accountId',
       width: '15%',
+      className: cx('center-cell'),
     },
     {
       title: 'Trạng thái tài khoản',
       dataIndex: 'isActive',
       key: 'isActive',
       width: '15%',
+      className: cx('center-cell'),
       render: (isActive) => isActive ? <Tag color='green'>Đã được kích hoạt</Tag> : <Tag color='red'>Chưa được kích hoạt</Tag>
     },
     {
@@ -279,7 +283,7 @@ const AdAccount: FC = () => {
             <Button
               icon={<PlusOutlined />}
               type="primary"
-              className={styles['btn']}
+              className={cx('btn')}
               onClick={() => handleShowModal()}
             >
               Thêm tài khoản quảng cáo
@@ -287,7 +291,7 @@ const AdAccount: FC = () => {
           </Tooltip>
         )
       }
-      <div className={styles["container"]}>
+      <div>
         <Table
           columns={columns}
           dataSource={dataTable}

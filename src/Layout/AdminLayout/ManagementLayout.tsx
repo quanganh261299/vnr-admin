@@ -19,6 +19,7 @@ import {
 import { Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Footer } from 'antd/es/layout/layout';
 import logo from '../../assets/images/logo.png'
 import avatar from '../../assets/images/avatar.png'
@@ -27,6 +28,7 @@ import { clearAuthStatus } from '../../helper/authStatus';
 const { Header, Sider, Content } = Layout;
 
 const ManagementLayout: React.FC = () => {
+  const cx = classNames.bind(styles)
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
   const [current, setCurrent] = useState<string>('system');
@@ -41,7 +43,7 @@ const ManagementLayout: React.FC = () => {
   const dropDownItems: MenuProps['items'] = [
     {
       label: (
-        <div className={styles["user-setting"]} onClick={Logout}>
+        <div className={cx("user-setting")} onClick={Logout}>
           <LogoutOutlined />
           <span>Logout</span>
         </div>
@@ -97,8 +99,8 @@ const ManagementLayout: React.FC = () => {
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
-        <figure className={styles["logo-wrapper"]}>
-          <img src={logo} alt="VINARA GROUP" className={styles["logo"]} />
+        <figure className={cx("logo-wrapper")}>
+          <img src={logo} alt="VINARA GROUP" className={cx("logo")} />
         </figure>
         <Menu
           theme="dark"
@@ -173,28 +175,28 @@ const ManagementLayout: React.FC = () => {
         />
       </Sider>
       <Layout>
-        <Header className={styles["header"]}>
+        <Header className={cx("header")}>
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            className={styles["btn"]}
+            className={cx("btn")}
           />
-          <h1 className={styles['title']}>{headerName}</h1>
+          <h1 className={cx('title')}>{headerName}</h1>
           <Dropdown menu={{ items: dropDownItems }} trigger={['click']}>
-            <div className={styles["user-infor"]}>
-              <div className={styles["user-detail"]}>
-                <img src={avatar} alt="avatar" className={styles["avatar"]} />
+            <div className={cx("user-infor")}>
+              <div className={cx("user-detail")}>
+                <img src={avatar} alt="avatar" className={cx("avatar")} />
                 <span>Hello, admin</span>
               </div>
-              <CaretDownOutlined className={styles["user-icon"]} />
+              <CaretDownOutlined className={cx("user-icon")} />
             </div>
           </Dropdown>
         </Header>
-        <Content className={styles["container"]}>
+        <Content className={cx("container")}>
           <Outlet />
         </Content>
-        <Footer className={styles["footer"]}>Copyright 2024 © Vinara Group</Footer>
+        <Footer className={cx("footer")}>Copyright 2024 © Vinara Group</Footer>
       </Layout>
     </Layout>
   );

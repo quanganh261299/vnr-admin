@@ -2,6 +2,7 @@
 import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import styles from './style.module.scss'
+import classNames from "classnames/bind";
 import { SelectType } from "../../../models/common";
 import { TMemberField } from "../../../models/member/member";
 import branchApi from "../../../api/branchApi";
@@ -34,6 +35,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
     handleCancel,
     onFinish
   } = props
+  const cx = classNames.bind(styles)
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
@@ -102,7 +104,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
             label: item.name
           }))
         )
-        setLoading((prevLoading) => ({ ...prevLoading, iseSelectTeam: false }))
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
   }, [selectSystemModalId, selectAgencyModalId])
@@ -166,12 +168,12 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
         layout="vertical"
         onValuesChange={handleFormChange}
       >
-        <div className={styles["select-form"]}>
+        <div className={cx("select-form")}>
           <Form.Item
             label="Chọn hệ thống"
             name="organizationId"
             rules={[{ required: true, message: 'Bạn phải chọn hệ thống!' }]}
-            className={styles["custom-select-form"]}
+            className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
               allowClear
@@ -186,7 +188,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
             label="Chọn chi nhánh"
             name="branchId"
             rules={[{ required: true, message: 'Bạn phải chọn chi nhánh!' }]}
-            className={styles["custom-select-form"]}
+            className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
               allowClear
@@ -203,7 +205,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
           label="Chọn đội nhóm"
           name="groupId"
           rules={[{ required: true, message: 'Bạn phải chọn đội nhóm!' }]}
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
         >
           <Select
             allowClear
@@ -218,7 +220,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
           label="Tên thành viên"
           name="name"
           rules={[{ required: true, whitespace: true, message: 'Không được để trống tên thành viên' }]}
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
         >
           <Input />
         </Form.Item>
@@ -229,7 +231,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
             { required: true, whitespace: true, message: 'Không được để trống tên email' },
             { pattern: EMAIL_REGEX, message: 'Email không hợp lệ' }
           ]}
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
         >
           <Input />
         </Form.Item>
@@ -240,7 +242,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
             { required: true, whitespace: true, message: 'Không được để trống số điện thoại' },
             { pattern: PHONE_REGEX, message: 'Số điện thoại không hợp lệ, bắt đầu từ 0 và có 9 - 11 số' }
           ]}
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
         >
           <Input />
         </Form.Item>

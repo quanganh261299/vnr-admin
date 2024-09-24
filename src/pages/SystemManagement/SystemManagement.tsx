@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Space, Table, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
@@ -10,6 +11,7 @@ import organizationApi from '../../api/organizationApi';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TSystemTable[]>([])
   const [dataRecord, setDataRecord] = useState<TSystemField | null>(null)
@@ -167,12 +169,12 @@ const SystemManagement: FC = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
+      <div>
         <Tooltip title='Thêm hệ thống'>
           <Button
             icon={<PlusOutlined />}
             type="primary"
-            className={styles['btn']}
+            className={cx('btn')}
             onClick={() => handleShowModal()}
           >
             Thêm hệ thống

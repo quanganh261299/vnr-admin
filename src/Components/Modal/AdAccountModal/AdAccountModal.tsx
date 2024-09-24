@@ -2,6 +2,7 @@
 import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import styles from './style.module.scss'
+import classNames from "classnames/bind";
 import { SelectType } from "../../../models/common";
 import { TAdvertisementField } from "../../../models/advertisement/advertisement";
 import branchApi from "../../../api/branchApi";
@@ -37,6 +38,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
     handleCancel,
     onFinish
   } = props
+  const cx = classNames.bind(styles)
   const [selectSystemDataModal, setSelectSystemDataModal] = useState<SelectType[]>([])
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
@@ -256,38 +258,40 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         layout="vertical"
         onValuesChange={handleFormChange}
       >
-        <Form.Item
-          label="Chọn hệ thống"
-          name="organizationId"
-          rules={[{ required: true, message: 'Bạn phải chọn hệ thống!' }]}
-          className={styles["custom-select-form"]}
-        >
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            options={selectSystemDataModal}
-            onClear={clearSelectSystemModalId}
-            notFoundContent={'Không có dữ liệu'}
-            loading={loading.isSelectSystem}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Chọn chi nhánh"
-          name="branchId"
-          rules={[{ required: true, message: 'Bạn phải chọn chi nhánh!' }]}
-          className={styles["custom-select-form"]}
-        >
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            options={selectAgencyDataModal}
-            onClear={clearSelectAgencyModalId}
-            notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-            loading={loading.isSelectAgency}
-          />
-        </Form.Item>
+        <div className={cx('select-container')}>
+          <Form.Item
+            label="Chọn hệ thống"
+            name="organizationId"
+            rules={[{ required: true, message: 'Bạn phải chọn hệ thống!' }]}
+            className={cx("custom-select-form", "custom-margin-form")}
+          >
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              options={selectSystemDataModal}
+              onClear={clearSelectSystemModalId}
+              notFoundContent={'Không có dữ liệu'}
+              loading={loading.isSelectSystem}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Chọn chi nhánh"
+            name="branchId"
+            rules={[{ required: true, message: 'Bạn phải chọn chi nhánh!' }]}
+            className={cx("custom-select-form", "custom-margin-form")}
+          >
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              options={selectAgencyDataModal}
+              onClear={clearSelectAgencyModalId}
+              notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              loading={loading.isSelectAgency}
+            />
+          </Form.Item>
+        </div>
         <Form.Item
           label="Chọn đội nhóm"
           name="groupId"

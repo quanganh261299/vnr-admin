@@ -1,5 +1,6 @@
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import authApi from '../../api/authApi';
 import { Button, message, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { getAuthFbStatus, storeAuthFBStatus } from '../../helper/authStatus';
 import { useEffect, useState } from 'react';
 
 const LoginBM = () => {
+  const cx = classNames.bind(styles)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage()
   const navigate = useNavigate()
@@ -34,9 +36,9 @@ const LoginBM = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
-        <img src={loginImg} alt='login' className={styles["login-logo"]} />
-        <div className={styles['btn-group']}>
+      <div className={cx("container")}>
+        <img src={loginImg} alt='login' className={cx("login-logo")} />
+        <div className={cx('btn-group')}>
           <Button
             onClick={() => navigate('/login')}
             size='large'

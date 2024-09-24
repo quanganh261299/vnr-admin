@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Select, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
@@ -17,6 +18,7 @@ import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TBmUser[]>([])
   const [dataRecord, setDataRecord] = useState<TBmUser | null>(null)
@@ -265,18 +267,18 @@ const SystemManagement: FC = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
+      <div>
         <Tooltip title='Thêm tài khoản BM'>
           <Button
             icon={<PlusOutlined />}
             type="primary"
-            className={styles['btn']}
+            className={cx('btn')}
             onClick={() => handleShowModal()}
           >
             Thêm tài khoản BM
           </Button>
         </Tooltip>
-        <div className={styles["bm-container"]}>
+        <div className={cx("bm-container")}>
           <Select
             allowClear
             showSearch
@@ -284,7 +286,7 @@ const SystemManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeSystem}
             options={selectSystemData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
           />
@@ -296,7 +298,7 @@ const SystemManagement: FC = () => {
             onChange={onChangeAgency}
             options={selectAgencyData}
             value={selectAgencyId || null}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={loading.isSelectAgency}
           />
@@ -308,7 +310,7 @@ const SystemManagement: FC = () => {
             onChange={onChangeTeam}
             options={selectTeamData}
             value={selectTeamId || null}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
           />

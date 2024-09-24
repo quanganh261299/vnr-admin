@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Select, Spin, Table } from 'antd';
 import type { TableProps } from 'antd';
 import { TAdvertisementTable } from '../../models/advertisement/advertisement';
@@ -17,6 +18,7 @@ import advertisementApi from '../../api/advertisementApi';
 import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
 
 const AdvertisementManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
   const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
@@ -45,14 +47,14 @@ const AdvertisementManagement: FC = () => {
       title: 'Tên tài khoản quảng cáo',
       dataIndex: 'name',
       key: 'name',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       fixed: 'left'
     },
     {
       title: 'Tên thành viên',
       dataIndex: 'employee',
       key: 'employeeName',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (employee) => <span>{employee?.name}</span>,
       width: 180,
     },
@@ -60,7 +62,7 @@ const AdvertisementManagement: FC = () => {
       title: 'Tên đội nhóm',
       dataIndex: 'employee',
       key: 'groupName',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (employee) => <span>{employee?.group?.name}</span>,
       width: 200,
     },
@@ -68,34 +70,34 @@ const AdvertisementManagement: FC = () => {
       title: 'Trạng thái tài khoản quảng cáo',
       dataIndex: 'accountStatus',
       key: 'accountStatus',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => handleAccountStatus(value)
     },
     {
       title: 'Lí do tài khoản bị vô hiệu hóa',
       dataIndex: 'disableReason',
       key: 'disableReason',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => handleDisableReason(value),
     },
     {
       title: 'Loại giao dịch',
       dataIndex: 'typeCardBanking',
       key: 'typeCardBanking',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => handleTypeCardBanking(value)
     },
     {
       title: 'Thông tin giao dịch',
       dataIndex: 'inforCardBanking',
       key: 'inforCardBanking',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
     },
     {
       title: 'Hạn mức chi tiêu',
       dataIndex: 'spendCap',
       key: 'spendCap',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => <span>{formatNumberWithCommas(value)}</span>,
       width: 180
     },
@@ -103,7 +105,7 @@ const AdvertisementManagement: FC = () => {
       title: 'Số tiền đã chi tiêu',
       dataIndex: 'amountSpent',
       key: 'amountSpent',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => <span>{formatNumberWithCommas(value)}</span>,
       width: 180
     },
@@ -111,14 +113,14 @@ const AdvertisementManagement: FC = () => {
       title: 'Đơn vị tiền tệ',
       dataIndex: 'currency',
       key: 'currency',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       width: 180
     },
     {
       title: 'Số tiền nợ',
       dataIndex: 'balance',
       key: 'balance',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => <span>{formatNumberWithCommas(value)}</span>,
       width: 180
     },
@@ -126,27 +128,27 @@ const AdvertisementManagement: FC = () => {
       title: 'Id chủ tài khoản quảng cáo',
       dataIndex: 'owner',
       key: 'owner',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
     },
     {
       title: 'Múi giờ',
       dataIndex: 'timezoneName',
       key: 'timezoneName',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       width: 180
     },
     {
       title: 'Thời gian tạo tài khoản quảng cáo',
       dataIndex: 'createdTime',
       key: 'createdTime',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (createdTime) => <span>{formatDateTime(createdTime)}</span>
     },
     {
       title: 'Thời gian cập nhật dữ liệu',
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (updateDataTime) => <span>{formatDateTime(updateDataTime)}</span>
     },
   ];
@@ -271,8 +273,8 @@ const AdvertisementManagement: FC = () => {
 
   return (
     <>
-      <div className={styles["container"]}>
-        <div className={styles['account-container']}>
+      <div>
+        <div className={cx('select-container')}>
           <Select
             allowClear
             showSearch
@@ -280,7 +282,7 @@ const AdvertisementManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeSystem}
             options={selectSystemData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             loading={loading.isSelectSystem}
             value={selectSystemId || null}
             notFoundContent={'Không có dữ liệu'}
@@ -292,7 +294,7 @@ const AdvertisementManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeAgency}
             options={selectAgencyData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             loading={loading.isSelectAgency}
             value={selectAgencyId || null}
             notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
@@ -304,7 +306,7 @@ const AdvertisementManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeTeam}
             options={selectTeamData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             loading={loading.isSelectTeam}
             value={selectTeamId || null}
             notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
@@ -316,7 +318,7 @@ const AdvertisementManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeMember}
             options={selectMemberData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             loading={loading.isSelectMember}
             value={selectMemberId || null}
             notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}

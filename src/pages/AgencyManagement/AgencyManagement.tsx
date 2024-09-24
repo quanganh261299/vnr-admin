@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Select, Space, Table, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
@@ -13,6 +14,7 @@ import { TSystemTable } from '../../models/system/system';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const AgencyManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TAgencyTable[]>([])
   const [dataRecord, setDataRecord] = useState<TAgencyField | null>(null)
@@ -211,13 +213,13 @@ const AgencyManagement: FC = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
+      <div>
         <div>
           <Tooltip title="Thêm chi nhánh">
             <Button
               icon={<PlusOutlined />}
               type="primary"
-              className={styles['btn']}
+              className={cx('btn')}
               onClick={() => handleShowModal()}
             >
               Thêm chi nhánh
@@ -231,7 +233,7 @@ const AgencyManagement: FC = () => {
             onChange={onChange}
             options={selectSystemData}
             loading={loading.isSelect}
-            className={styles["select-system"]}
+            className={cx("select-system")}
             notFoundContent={'Không có dữ liệu'}
           />
         </div>

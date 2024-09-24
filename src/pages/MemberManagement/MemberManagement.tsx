@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Select, Space, Table, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
@@ -17,6 +18,7 @@ import { TypeTeamTable } from '../../models/team/team';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const MemberManagement: FC = () => {
+  const cx = classNames.bind(styles);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataRecord, setDataRecord] = useState<TMemberField | null>(null)
   const [dataTable, setDataTable] = useState<TMemberTable[]>([])
@@ -50,7 +52,7 @@ const MemberManagement: FC = () => {
       key: 'name',
       render: (text) => <span>{text}</span>,
       width: 150,
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Tên đội nhóm',
@@ -58,7 +60,7 @@ const MemberManagement: FC = () => {
       key: 'groupName',
       render: (group) => <span>{group?.name}</span>,
       width: 150,
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Tên chi nhánh',
@@ -66,7 +68,7 @@ const MemberManagement: FC = () => {
       key: 'branchName',
       render: (group) => <span>{group?.branch?.name}</span>,
       width: 150,
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Tên hệ thống',
@@ -74,26 +76,26 @@ const MemberManagement: FC = () => {
       key: 'organizationName',
       render: (group) => <span>{group?.branch?.organization?.name}</span>,
       width: 150,
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       key: 'phone',
       width: 120,
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Ghi chú',
       dataIndex: 'description',
       key: 'description',
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
     {
       title: 'Tùy chọn',
@@ -119,7 +121,7 @@ const MemberManagement: FC = () => {
           </Space>
         </>
       ),
-      className: styles['center-cell']
+      className: cx('center-cell')
     },
   ];
 
@@ -329,17 +331,17 @@ const MemberManagement: FC = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
+      <div>
         <Tooltip title="Thêm thành viên">
           <Button
             icon={<PlusOutlined />}
-            type="primary" className={styles['btn']}
+            type="primary" className={cx('btn')}
             onClick={() => handleShowModal()}
           >
             Thêm thành viên
           </Button>
         </Tooltip>
-        <div className={styles['member-container']}>
+        <div className={cx('member-container')}>
           <Select
             allowClear
             showSearch
@@ -347,7 +349,7 @@ const MemberManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeSystem}
             options={selectSystemData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
           />
@@ -359,7 +361,7 @@ const MemberManagement: FC = () => {
             onChange={onChangeAgency}
             options={selectAgencyData}
             value={selectAgencyId || null}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={loading.isSelectAgency}
           />
@@ -371,7 +373,7 @@ const MemberManagement: FC = () => {
             onChange={onChangeTeam}
             options={selectTeamData}
             value={selectTeamId || null}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
           />

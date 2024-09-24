@@ -1,6 +1,7 @@
 import { Breadcrumb, DatePicker, Flex, Table, TableProps, Tag, Tooltip } from "antd"
 import { FC, ReactNode, useEffect, useState } from "react"
 import styles from './style.module.scss'
+import classNames from "classnames/bind"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
@@ -10,6 +11,7 @@ import useDateRangeStore from "../../store/dateRangeStore"
 import dayjs, { Dayjs } from "dayjs"
 
 const AdSetManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [dataTable, setDataTable] = useState<TAdSetsTable[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [totalPage, setTotalPage] = useState<number>(0);
@@ -33,14 +35,14 @@ const AdSetManagement: FC = () => {
       title: 'Tên nhóm quảng cáo',
       dataIndex: 'name',
       key: 'name',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       fixed: 'left'
     },
     {
       title: 'Trạng thái nhóm quảng cáo',
       dataIndex: 'effectiveStatus',
       key: 'effectiveStatus',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => handleEffectiveStatus(value),
       width: 210
     },
@@ -48,7 +50,7 @@ const AdSetManagement: FC = () => {
       title: 'Giới hạn độ tuổi',
       dataIndex: 'targeting',
       key: 'age',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (targeting) => {
         const targetingData = targeting ? JSON.parse(targeting) : null
         return (
@@ -61,7 +63,7 @@ const AdSetManagement: FC = () => {
       title: 'Địa điểm mục tiêu quảng cáo',
       dataIndex: 'targeting',
       key: 'countries',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (targeting) => {
         const targetingData = targeting ? JSON.parse(targeting) : null;
         return targetingData?.geo_locations?.countries ? (
@@ -78,7 +80,7 @@ const AdSetManagement: FC = () => {
       title: 'Nền tảng',
       dataIndex: 'targeting',
       key: 'publisher_platforms',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (targeting) => {
         const targetingData = targeting ? JSON.parse(targeting) : null
         return (
@@ -95,7 +97,7 @@ const AdSetManagement: FC = () => {
       title: 'Vị trí hiển thị trên facebook',
       dataIndex: 'targeting',
       key: 'facebook_positions',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (targeting) => {
         const targetingData = targeting ? JSON.parse(targeting) : null
         const facebookPositionData = targetingData?.facebook_positions?.map((item: string) => handleFacebookPosition(item))
@@ -115,7 +117,7 @@ const AdSetManagement: FC = () => {
       title: 'Nền tảng hiển thị',
       dataIndex: 'targeting',
       key: 'device_platforms',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (targeting) => {
         const targetingData = targeting ? JSON.parse(targeting) : null;
         const deviceData = targetingData?.device_platforms?.map((item: string) => handleDevice(item));
@@ -132,14 +134,14 @@ const AdSetManagement: FC = () => {
       title: 'Id Fanpage',
       dataIndex: 'promoteObjectPageId',
       key: 'page_id',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => value || '-',
       width: 200
     },
     {
       title: 'Ngân sách',
       key: 'budget',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (record) => {
         if (record.dailyBudget) {
           return (
@@ -171,7 +173,7 @@ const AdSetManagement: FC = () => {
       title: 'Ngân sách còn lại của nhóm quảng cáo',
       dataIndex: 'budgetRemaining',
       key: 'budgetRemaining',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (value) => formatNumberWithCommasNotZero(convertStringToRoundNumber(value)),
       width: 200
     },
@@ -185,7 +187,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'impressions',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.impressions)) || '-',
       width: 150,
     },
@@ -199,7 +201,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'clicks',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.clicks)) || '-',
       width: 150,
     },
@@ -215,7 +217,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'spend',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.spend)) || '-'
     },
     {
@@ -230,7 +232,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'ctr',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => Number(insight?.ctr) ? Number(insight?.ctr).toFixed(2) : '-'
     },
     {
@@ -245,7 +247,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'cpm',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.cpm)) || '-'
     },
     {
@@ -260,7 +262,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'cpc',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.cpc)) || '-'
     },
     {
@@ -275,8 +277,8 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'reach',
-      className: styles['center-cell'],
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.reach)) || '-'
+      className: cx('center-cell'),
+      render: (insight) => insight?.reach === 'Kéo dữ liệu thất bại' ? insight?.reach : formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.reach)) || '-'
     },
     {
       title:
@@ -290,8 +292,8 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'frequency',
-      className: styles['center-cell'],
-      render: (insight) => Number(insight?.frequency) ? Number(insight?.frequency).toFixed(1) : '-'
+      className: cx('center-cell'),
+      render: (insight) => insight?.frequency === 'Kéo dữ liệu thất bại' ? insight?.frequency : Number(insight?.frequency).toFixed(1) || '-'
     },
     {
       title:
@@ -305,7 +307,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'totalMessagingConnection',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) =>
         formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionTotalMessagingConnection)) || '-'
     },
@@ -321,7 +323,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'costPerResult',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.costPerAction)) || '-'
     },
     {
@@ -336,7 +338,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'conversationStarted7d',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.onsiteConversionMessagingConversationStarted7d)) || '-'
     },
     {
@@ -351,7 +353,7 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'postEngagement',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.postEngagement)) || '-'
     },
     {
@@ -366,24 +368,24 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'pageEngagement',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.pageEngagement)) || '-'
     },
-    {
-      title:
-        <Tooltip
-          title='Số lượt xem hình ảnh trên quảng cáo của bạn'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt xem hình ảnh
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'photoView',
-      className: styles['center-cell'],
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.photoView)) || '-'
-    },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Số lượt xem hình ảnh trên quảng cáo của bạn'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt xem hình ảnh
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'photoView',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.photoView)) || '-'
+    // },
     {
       title:
         <Tooltip
@@ -396,81 +398,81 @@ const AdSetManagement: FC = () => {
         </Tooltip>,
       dataIndex: 'insight',
       key: 'videoPlay',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoPlay)) || '-'
     },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát video trong tối thiểu 3 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 3 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát video trong tối thiểu 3 giây
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoView',
-      className: styles['center-cell'],
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoView)) || '-'
-    },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát video trong tối thiểu 10 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 10 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát video trong tối thiểu 10 giây
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoView10s',
-      className: styles['center-cell'],
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video10sView)) || '-'
-    },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát video trong tối thiểu 30 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 30 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát video trong tối thiểu 30 giây
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoView30s',
-      className: styles['center-cell'],
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video30sView)) || '-'
-    },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát 100% thời lượng video, bao gồm lượt phát tua nhanh đến điểm này'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát 100% thời lượng video
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoCompleteView',
-      className: styles['center-cell'],
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoCompleteView)) || '-'
-    },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát video trong tối thiểu 3 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 3 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát video trong tối thiểu 3 giây
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoView',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoView)) || '-'
+    // },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát video trong tối thiểu 10 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 10 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát video trong tối thiểu 10 giây
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoView10s',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video10sView)) || '-'
+    // },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát video trong tối thiểu 30 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 30 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát video trong tối thiểu 30 giây
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoView30s',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video30sView)) || '-'
+    // },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát 100% thời lượng video, bao gồm lượt phát tua nhanh đến điểm này'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát 100% thời lượng video
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoCompleteView',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoCompleteView)) || '-'
+    // },
     {
       title: 'Thời gian chạy nhóm quảng cáo',
       dataIndex: 'startTime',
       key: 'startTime',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (startTime) => <span>{formatDateTime(startTime) || '-'}</span>
     },
     {
       title: 'Thời gian cập nhật dữ liệu',
       dataIndex: 'updateDataTime',
       key: 'updateDataTime',
-      className: styles['center-cell'],
+      className: cx('center-cell'),
       render: (updateDataTime) => <span>{formatDateTime(updateDataTime) || '-'}</span>
     },
   ];
@@ -544,7 +546,7 @@ const AdSetManagement: FC = () => {
           <>
             <Link to={`/${advertisementUrl}`}>
               <DollarOutlined />
-              <span className={styles["breadcrumb-item"]}>Tài khoản quảng cáo</span>
+              <span className={cx("breadcrumb-item")}>Tài khoản quảng cáo</span>
             </Link>
           </>
         )
@@ -555,7 +557,7 @@ const AdSetManagement: FC = () => {
             <Link to={`/${campaignsUrl}`}>
               <ProjectOutlined />
               <Tooltip title={`Chiến dịch tài khoản: ${breadCrumbName.accountName}`} placement="bottom">
-                <span className={styles["breadcrumb-item"]}>Chiến dịch</span>
+                <span className={cx("breadcrumb-item")}>Chiến dịch</span>
               </Tooltip>
             </Link>
           </>
@@ -566,7 +568,7 @@ const AdSetManagement: FC = () => {
           <>
             <ClusterOutlined />
             <Tooltip title={`Nhóm quảng cáo chiến dịch: ${breadCrumbName.campaignName}`} placement="bottom">
-              <span className={styles["breadcrumb-item"]}>Nhóm quảng cáo</span>
+              <span className={cx("breadcrumb-item")}>Nhóm quảng cáo</span>
             </Tooltip>
           </>
         )
@@ -575,9 +577,9 @@ const AdSetManagement: FC = () => {
   }, [param.accountId, param.campaignId])
 
   return (
-    <div className={styles["container"]}>
-      <div className={styles["detail-information"]}>
-        <Breadcrumb items={breadCrumbData} className={styles["breadcrumb"]} />
+    <div>
+      <div className={cx("detail-information")}>
+        <Breadcrumb items={breadCrumbData} />
         <RangePicker
           allowClear={false}
           format={"DD-MM-YYYY"}

@@ -2,6 +2,7 @@
 import { Button, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import styles from './style.module.scss'
+import classNames from "classnames/bind";
 import { SelectType } from "../../../models/common";
 import { TypeTeamField } from "../../../models/team/team";
 import { TAgencyTable } from "../../../models/agency/agency";
@@ -31,6 +32,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
     handleCancel,
     onFinish
   } = props
+  const cx = classNames.bind(styles)
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
   const [isLoadingSelectAgency, setIsLoadingSelectAgency] = useState<boolean>(false)
@@ -132,7 +134,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
         <Form.Item
           label="Chọn hệ thống"
           name="organizationId"
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
           rules={[{ required: true, message: 'Không được để trống hệ thống' }]}
         >
           <Select
@@ -147,7 +149,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
         <Form.Item
           label="Chọn chi nhánh"
           name="branchId"
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
           rules={[{ required: true, message: 'Không được để trống chi nhánh' }]}
         >
           <Select
@@ -163,7 +165,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
           label="Tên đội nhóm"
           name="name"
           rules={[{ required: true, whitespace: true, message: 'Không được để trống tên đội nhóm' }]}
-          className={styles["custom-margin-form"]}
+          className={cx("custom-margin-form")}
         >
           <Input />
         </Form.Item>

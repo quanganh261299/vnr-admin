@@ -8,6 +8,7 @@ import { TBmUser, TBmUserField } from "../../../models/user/user";
 import { TAgencyTable } from "../../../models/agency/agency";
 import branchApi from "../../../api/branchApi";
 import styles from './style.module.scss'
+import classNames from "classnames/bind";
 import { EMAIL_REGEX } from "../../../helper/const";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -31,6 +32,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     handleCancel,
     onFinish
   } = props
+  const cx = classNames.bind(styles)
   const [selectAgencyDataModal, setSelectAgencyDataModal] = useState<SelectType[]>([])
   const [selectTeamDataModal, setSelectTeamDataModal] = useState<SelectType[]>([])
   const [selectSystemModalId, setSelectSystemModalId] = useState<string | null>(null)
@@ -138,12 +140,12 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         onValuesChange={handleFormChange}
         initialValues={{ bmsId: [''] }}
       >
-        <div className={styles["select-form"]}>
+        <div className={cx("select-form")}>
           <Form.Item
             label="Chọn hệ thống"
             name="organizationId"
             rules={[{ required: true, message: 'Bạn phải chọn hệ thống!' }]}
-            className={styles["custom-select-form"]}
+            className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
               allowClear
@@ -158,7 +160,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             label="Chọn chi nhánh"
             name="branchId"
             rules={[{ required: true, message: 'Bạn phải chọn chi nhánh!' }]}
-            className={styles["custom-select-form"]}
+            className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
               allowClear
@@ -204,7 +206,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
                         <Input />
                       </Form.Item>
                     </div>
-                    {index !== 0 && <MinusCircleOutlined onClick={() => remove(field.name)} className={styles['minus-icon']} />}
+                    {index !== 0 && <MinusCircleOutlined onClick={() => remove(field.name)} className={cx('minus-icon')} />}
                   </Flex>
 
                 )
