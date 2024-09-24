@@ -2,7 +2,11 @@ import { TCreateAdsAccount } from "../models/advertisement/advertisement";
 import axiosInstance from "./axiosClients";
 
 const advertisementApi = {
-    getListAdsAccount: (params?: { pageIndex?: number; pageSize?: number }) => {
+    getListAdsAccount: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        isDelete?: boolean;
+    }) => {
         const url = `/adsAccount`;
         return axiosInstance.get(url, { params });
     },
@@ -58,6 +62,10 @@ const advertisementApi = {
     updateAdsAccount: (data: TCreateAdsAccount) => {
         const url = "/adsAccount";
         return axiosInstance.put(url, data);
+    },
+    deleteAndRecoverAdsAccount: (id: string) => {
+        const url = `/adsAccount/${id}/toggle`;
+        return axiosInstance.put(url);
     },
     deleteAdsAccount: (id: string) => {
         const url = `/adsAccount/${id}`;

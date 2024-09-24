@@ -229,7 +229,7 @@ const MemberManagement: FC = () => {
       setIsCallbackApi(!isCallbackApi)
       setIsDeleteConfirm(false)
       setLoading({ ...loading, isBtn: false })
-      success('Xóa đội nhóm thành công!')
+      success('Xóa thành viên thành công!')
     }).catch((err) => {
       error(err.response.data.message)
       setLoading({ ...loading, isBtn: false })

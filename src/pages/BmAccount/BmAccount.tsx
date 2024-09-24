@@ -245,7 +245,6 @@ const SystemManagement: FC = () => {
       branchId: selectAgencyId || '',
       groupId: selectTeamId || ''
     }).then((res) => {
-      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)

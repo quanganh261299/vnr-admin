@@ -151,11 +151,11 @@ const ManagementLayout: React.FC = () => {
               icon: <TagOutlined />,
               label: <Link to='/ad-account'>Tài khoản quảng cáo</Link>,
             },
-            // {
-            //   key: 'ad-account-deleted',
-            //   icon: <TagOutlined />,
-            //   label: <Link to='/ad-account?isDeleted=true'>Tài khoản quảng cáo đã xóa</Link>,
-            // },
+            {
+              key: 'ad-account-deleted',
+              icon: <TagOutlined />,
+              label: <Link to='/ad-account?isDeleted=true'>Tài khoản quảng cáo đã xóa</Link>,
+            },
             {
               key: 'statistic',
               icon: <BarChartOutlined />,

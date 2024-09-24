@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TCampaignTable } from "../../models/advertisement/advertisement"
 import { DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleEffectiveStatus, handleObjective } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleBuyingType, handleObjective, handleStatus } from "../../helper/const"
 import dayjs, { Dayjs } from "dayjs"
 import useDateRangeStore from "../../store/dateRangeStore"
 
@@ -47,11 +47,11 @@ const CampaignsManagment: FC = () => {
     },
     {
       title: 'Trạng thái chiến dịch',
-      dataIndex: 'effectiveStatus',
-      key: 'effectiveStatus',
+      dataIndex: 'status',
+      key: 'status',
       className: cx('center-cell'),
-      render: (value) => handleEffectiveStatus(value),
-      width: 180
+      render: (value) => handleStatus(value),
+      width: 210
     },
     {
       title: 'Ngân sách',

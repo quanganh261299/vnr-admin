@@ -34,7 +34,7 @@ const AdAccount: FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
   const [searchParams] = useSearchParams()
-  const isDeleted = !!searchParams.get('isDeleted')
+  const [isDeleted, setIsDeleted] = useState<boolean>(!!searchParams.get('isDeleted'))
 
   const columns: TableProps<TAdUserTable>['columns'] = [
     {
@@ -213,16 +213,30 @@ const AdAccount: FC = () => {
 
   const handleConfirmDelete = () => {
     setLoading({ ...loading, isBtn: true })
-    advertisementApi.deleteAdsAccount(dataRecord?.accountId as string).then(() => {
-      setIsCallbackApi(!isCallbackApi)
-      setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
-      setLoading({ ...loading, isBtn: false })
-      success('Xóa tài khoản quảng cáo thành công!')
-    }).catch((err) => {
-      error(err.response.data.message)
-      setLoading({ ...loading, isBtn: false })
-      setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
-    })
+    if (!isDeleted) {
+      advertisementApi.deleteAndRecoverAdsAccount(dataRecord?.accountId as string).then(() => {
+        setIsCallbackApi(!isCallbackApi)
+        setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
+        setLoading({ ...loading, isBtn: false })
+        success('Xóa tài khoản quảng cáo thành công!')
+      }).catch((err) => {
+        error(err.response.data.message)
+        setLoading({ ...loading, isBtn: false })
+        setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
+      })
+    }
+    else {
+      advertisementApi.deleteAdsAccount(dataRecord?.accountId as string).then(() => {
+        setIsCallbackApi(!isCallbackApi)
+        setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
+        setLoading({ ...loading, isBtn: false })
+        success('Xóa tài khoản quảng cáo khỏi hệ thống thành công!')
+      }).catch((err) => {
+        error(err.response.data.message)
+        setLoading({ ...loading, isBtn: false })
+        setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
+      })
+    }
   }
 
   const handleCancelDelete = () => setModal((prevState) => ({ ...prevState, isDeleteModalOpen: false }))
@@ -233,7 +247,17 @@ const AdAccount: FC = () => {
   }
 
   const handleConfirmRecover = () => {
-    setModal((prevState) => ({ ...prevState, isRecoverModalOpen: false }))
+    setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
+    advertisementApi.deleteAndRecoverAdsAccount(dataRecord?.accountId as string).then(() => {
+      setIsCallbackApi(!isCallbackApi)
+      setModal((prevState) => ({ ...prevState, isRecoverModalOpen: false }))
+      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+      success('Khôi phục tài khoản thành công!')
+    }).catch((err) => {
+      error(err.response.data.message)
+      setLoading((prevLoading) => ({ ...prevLoading, isBtn: false }))
+      setModal((prevState) => ({ ...prevState, isRecoverModalOpen: false }))
+    })
   }
 
   const handleCancelRecover = () => setModal((prevState) => ({ ...prevState, isRecoverModalOpen: false }))
@@ -253,8 +277,16 @@ const AdAccount: FC = () => {
   };
 
   useEffect(() => {
+    setIsDeleted(!!searchParams.get('isDeleted'))
+  }, [searchParams])
+
+  useEffect(() => {
     setLoading({ ...loading, isTable: true })
-    advertisementApi.getListAdsAccount({ pageIndex: currentPage, pageSize: DEFAULT_PAGE_SIZE }).then((res) => {
+    advertisementApi.getListAdsAccount({
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      isDelete: isDeleted
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -272,7 +304,7 @@ const AdAccount: FC = () => {
       error(err.response.data.message)
       setLoading({ ...loading, isTable: false })
     })
-  }, [currentPage, isCallbackApi])
+  }, [currentPage, isCallbackApi, isDeleted])
 
   return (
     <>
@@ -323,7 +355,7 @@ const AdAccount: FC = () => {
         cancelText={'Cancel'}
         handleOk={handleConfirmRecover}
         handleCancel={handleCancelRecover}
-        description={`Bạn có muốn khôi phục tài khoản ${dataRecord?.name} không?`}
+        description={`Bạn có muốn khôi phục tài khoản ${dataRecord?.name || `id: ${dataRecord?.accountId}`} không?`}
         isLoadingBtn={loading.isBtn}
       />
       <DeleteModal
@@ -333,7 +365,7 @@ const AdAccount: FC = () => {
         cancelText={'Cancel'}
         handleOk={handleConfirmDelete}
         handleCancel={handleCancelDelete}
-        description={isDeleted ? `Bạn có chắc muốn xóa hoàn toàn tài khoản ${dataRecord?.name} không?` : `Bạn có chắc muốn xóa tài khoản ${dataRecord?.name} không?`}
+        description={isDeleted ? `Bạn có chắc muốn xóa hoàn toàn tài khoản ${dataRecord?.name || `id: ${dataRecord?.accountId}`} không?` : `Bạn có chắc muốn xóa tài khoản ${dataRecord?.name || `id: ${dataRecord?.accountId}`} không?`}
         isLoadingBtn={loading.isBtn}
       />
     </>

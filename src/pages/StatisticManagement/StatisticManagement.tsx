@@ -459,6 +459,7 @@ const StatisticManagement: FC = () => {
             onChange={(dates) => handleRangeChange(dates)}
             placeholder={["Bắt đầu", "Kết thúc"]}
             value={dateRange}
+            maxDate={dayjs()}
           />
         </div>
       </div>
