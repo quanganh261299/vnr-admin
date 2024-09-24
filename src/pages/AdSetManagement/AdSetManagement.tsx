@@ -278,7 +278,7 @@ const AdSetManagement: FC = () => {
       dataIndex: 'insight',
       key: 'reach',
       className: cx('center-cell'),
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.reach)) || '-'
+      render: (insight) => insight?.reach === 'Kéo dữ liệu thất bại' ? insight?.reach : formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.reach)) || '-'
     },
     {
       title:
@@ -293,7 +293,7 @@ const AdSetManagement: FC = () => {
       dataIndex: 'insight',
       key: 'frequency',
       className: cx('center-cell'),
-      render: (insight) => Number(insight?.frequency) ? Number(insight?.frequency).toFixed(1) : '-'
+      render: (insight) => insight?.frequency === 'Kéo dữ liệu thất bại' ? insight?.frequency : Number(insight?.frequency).toFixed(1) || '-'
     },
     {
       title:
