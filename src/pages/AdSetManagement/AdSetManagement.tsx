@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { TAdSetsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, InfoCircleOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommas, formatNumberWithCommasNotZero, handleDevice, handleEffectiveStatus, handleFacebookPosition } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommas, formatNumberWithCommasNotZero, handleDevice, handleStatus, handleFacebookPosition } from "../../helper/const"
 import useDateRangeStore from "../../store/dateRangeStore"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -39,11 +39,27 @@ const AdSetManagement: FC = () => {
       fixed: 'left'
     },
     {
-      title: 'Trạng thái nhóm quảng cáo',
+      title: 'Effective statsus',
       dataIndex: 'effectiveStatus',
       key: 'effectiveStatus',
       className: cx('center-cell'),
-      render: (value) => handleEffectiveStatus(value),
+      render: (value) => handleStatus(value),
+      width: 210
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      className: cx('center-cell'),
+      render: (value) => handleStatus(value),
+      width: 210
+    },
+    {
+      title: 'Configured Status',
+      dataIndex: 'configuredStatus',
+      key: 'configuredStatus',
+      className: cx('center-cell'),
+      render: (value) => handleStatus(value),
       width: 210
     },
     {

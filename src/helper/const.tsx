@@ -65,7 +65,7 @@ export const convertStringToRoundNumber = (number: string) => {
     else return 0
 }
 
-export const handleEffectiveStatus = (value: string) => {
+export const handleStatus = (value: string) => {
 
     let status = ''
 

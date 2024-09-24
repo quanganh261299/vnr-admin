@@ -6,7 +6,7 @@ import { Link, useLocation, useParams } from "react-router-dom"
 import { TAdsTable } from "../../models/advertisement/advertisement"
 import { ClusterOutlined, DollarOutlined, InfoCircleOutlined, NotificationOutlined, ProjectOutlined } from "@ant-design/icons"
 import advertisementApi from "../../api/advertisementApi"
-import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleCallToActionType, handleEffectiveStatus } from "../../helper/const"
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatDateTime, formatDateYMD, formatNumberWithCommasNotZero, handleCallToActionType, handleStatus } from "../../helper/const"
 import useDateRangeStore from "../../store/dateRangeStore"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -41,7 +41,7 @@ const AdManagement: FC = () => {
       dataIndex: 'effectiveStatus',
       key: 'effectiveStatus',
       className: cx('center-cell'),
-      render: (value) => handleEffectiveStatus(value),
+      render: (value) => handleStatus(value),
       width: 200,
     },
     {
