@@ -54,7 +54,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
       form.resetFields();
     },
     saveReset: () => {
-      form.resetFields(['name', 'description']);
+      form.resetFields(['name', 'email', 'phone', 'description']);
     }
   }));
 
