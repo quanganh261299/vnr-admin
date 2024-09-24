@@ -39,25 +39,9 @@ const AdSetManagement: FC = () => {
       fixed: 'left'
     },
     {
-      title: 'Effective statsus',
-      dataIndex: 'effectiveStatus',
-      key: 'effectiveStatus',
-      className: cx('center-cell'),
-      render: (value) => handleStatus(value),
-      width: 210
-    },
-    {
-      title: 'Status',
+      title: 'Trạng thái nhóm quảng cáo',
       dataIndex: 'status',
       key: 'status',
-      className: cx('center-cell'),
-      render: (value) => handleStatus(value),
-      width: 210
-    },
-    {
-      title: 'Configured Status',
-      dataIndex: 'configuredStatus',
-      key: 'configuredStatus',
       className: cx('center-cell'),
       render: (value) => handleStatus(value),
       width: 210

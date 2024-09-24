@@ -38,11 +38,11 @@ const AdManagement: FC = () => {
     },
     {
       title: 'Trạng thái quảng cáo',
-      dataIndex: 'effectiveStatus',
-      key: 'effectiveStatus',
+      dataIndex: 'status',
+      key: 'status',
       className: cx('center-cell'),
       render: (value) => handleStatus(value),
-      width: 200,
+      width: 210
     },
     {
       title: 'Nội dung quảng cáo',

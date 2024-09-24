@@ -47,11 +47,11 @@ const CampaignsManagment: FC = () => {
     },
     {
       title: 'Trạng thái chiến dịch',
-      dataIndex: 'effectiveStatus',
-      key: 'effectiveStatus',
+      dataIndex: 'status',
+      key: 'status',
       className: cx('center-cell'),
       render: (value) => handleStatus(value),
-      width: 180
+      width: 210
     },
     {
       title: 'Ngân sách',
