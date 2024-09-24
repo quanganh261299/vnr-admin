@@ -371,21 +371,21 @@ const AdSetManagement: FC = () => {
       className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.pageEngagement)) || '-'
     },
-    {
-      title:
-        <Tooltip
-          title='Số lượt xem hình ảnh trên quảng cáo của bạn'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt xem hình ảnh
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'photoView',
-      className: cx('center-cell'),
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.photoView)) || '-'
-    },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Số lượt xem hình ảnh trên quảng cáo của bạn'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt xem hình ảnh
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'photoView',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.photoView)) || '-'
+    // },
     {
       title:
         <Tooltip
@@ -401,66 +401,66 @@ const AdSetManagement: FC = () => {
       className: cx('center-cell'),
       render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoPlay)) || '-'
     },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát video trong tối thiểu 3 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 3 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát video trong tối thiểu 3 giây
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoView',
-      className: cx('center-cell'),
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoView)) || '-'
-    },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát video trong tối thiểu 10 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 10 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát video trong tối thiểu 10 giây
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoView10s',
-      className: cx('center-cell'),
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video10sView)) || '-'
-    },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát video trong tối thiểu 30 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 30 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát video trong tối thiểu 30 giây
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoView30s',
-      className: cx('center-cell'),
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video30sView)) || '-'
-    },
-    {
-      title:
-        <Tooltip
-          title='Lượt phát 100% thời lượng video, bao gồm lượt phát tua nhanh đến điểm này'
-        >
-          <Flex gap={'small'} align="center">
-            <InfoCircleOutlined />
-            Lượt phát 100% thời lượng video
-          </Flex>
-        </Tooltip>,
-      dataIndex: 'insight',
-      key: 'videoCompleteView',
-      className: cx('center-cell'),
-      render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoCompleteView)) || '-'
-    },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát video trong tối thiểu 3 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 3 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát video trong tối thiểu 3 giây
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoView',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoView)) || '-'
+    // },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát video trong tối thiểu 10 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 10 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát video trong tối thiểu 10 giây
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoView10s',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video10sView)) || '-'
+    // },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát video trong tối thiểu 30 giây hoặc gần hết toàn bộ thời lượng nếu video dài dưới 30 giây. Với mỗi lượt hiển thị video, chúng tôi sẽ tính riêng lượt phát video và loại trừ thời gian phát lại video'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát video trong tối thiểu 30 giây
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoView30s',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.video30sView)) || '-'
+    // },
+    // {
+    //   title:
+    //     <Tooltip
+    //       title='Lượt phát 100% thời lượng video, bao gồm lượt phát tua nhanh đến điểm này'
+    //     >
+    //       <Flex gap={'small'} align="center">
+    //         <InfoCircleOutlined />
+    //         Lượt phát 100% thời lượng video
+    //       </Flex>
+    //     </Tooltip>,
+    //   dataIndex: 'insight',
+    //   key: 'videoCompleteView',
+    //   className: cx('center-cell'),
+    //   render: (insight) => formatNumberWithCommasNotZero(convertStringToRoundNumber(insight?.videoCompleteView)) || '-'
+    // },
     {
       title: 'Thời gian chạy nhóm quảng cáo',
       dataIndex: 'startTime',
