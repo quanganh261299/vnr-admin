@@ -80,6 +80,7 @@ const BmHomePage: React.FC = () => {
           onChange={(dates) => handleRangeChange(dates)}
           placeholder={["Bắt đầu", "Kết thúc"]}
           value={dateRange}
+          maxDate={dayjs()}
         />
         <div className={cx("btn-list")}>
           <Button
