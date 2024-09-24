@@ -1,4 +1,5 @@
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import logo from '../../assets/images/login-admin.png'
 import { Button, Form, FormProps, Input, message, Spin, Typography } from 'antd';
 import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
@@ -9,6 +10,7 @@ import { LoginType } from '../../models/common';
 import authApi from '../../api/authApi';
 
 const Login = () => {
+  const cx = classNames.bind(styles)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
@@ -40,14 +42,14 @@ const Login = () => {
 
   return (
     <>
-      <div className={styles["container"]}>
+      <div className={cx("container")}>
         {contextHolder}
-        <img src={logo} alt='Vinara Group' className={styles['logo']} />
+        <img src={logo} alt='Vinara Group' className={cx('logo')} />
         <Form
           name="basic"
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          className={styles["login-form"]}
+          className={cx("login-form")}
           autoComplete="off"
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 32 }}
@@ -82,7 +84,7 @@ const Login = () => {
             <Input.Password />
           </Form.Item>
           <Form.Item>
-            <div className={styles["login-container"]}>
+            <div className={cx("login-container")}>
               <Button type="primary" htmlType="submit">
                 Đăng nhập
               </Button>

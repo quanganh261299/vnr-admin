@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Space, Table, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { TSystemUser, TUser, TUserOption } from '../../models/user/user';
@@ -11,6 +12,7 @@ import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const SystemAccount: FC = () => {
+  const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TUser[]>([])
   const [dataRecord, setDataRecord] = useState<TUser | null>(null)
@@ -184,13 +186,13 @@ const SystemAccount: FC = () => {
         <Button
           icon={<PlusOutlined />}
           type="primary"
-          className={styles['btn']}
+          className={cx('btn')}
           onClick={() => handleShowModal()}
         >
           Thêm tài khoản hệ thống
         </Button>
       </Tooltip>
-      <div className={styles["container"]}>
+      <div>
         <Table
           columns={columns}
           dataSource={dataTable}

@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import ReactECharts from 'echarts-for-react';
 import styles from './style.module.scss'
+import classNames from "classnames/bind";
 import { DatePicker, Select, Spin } from "antd";
 import { formatDateYMD, statisticType } from "../../helper/const";
 import dayjs, { Dayjs } from "dayjs";
@@ -15,6 +16,7 @@ import { TypeTeamTable } from "../../models/team/team";
 import statisticApi from "../../api/statisticApi";
 
 const StatisticManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [totalAmountSpentData, setTotalAmountSpentData] = useState<TBarChartData>({ x: [], y: [] })
   const [highestEmployeeResultData, setHighestEmployeeResultData] = useState<TBarChartData>({ x: [], y: [] })
   const [totalCostPerResultData, setTotalCostPerResultData] = useState<TBarChartData>({ x: [], y: [] })
@@ -405,16 +407,16 @@ const StatisticManagement: FC = () => {
 
   return (
     <>
-      <div className={styles['statistic-filter']}>
+      <div className={cx('statistic-filter')}>
         <Select
           showSearch
           placeholder="Chọn loại biểu đồ"
           options={statisticType}
           onChange={handleChangeBarChartType}
           defaultValue={1}
-          className={styles['statistic-type']}
+          className={cx('statistic-type')}
         />
-        <div className={styles['statistic-filter-system']}>
+        <div className={cx('statistic-filter-system')}>
           <Select
             allowClear
             showSearch
@@ -423,7 +425,7 @@ const StatisticManagement: FC = () => {
             onChange={onChangeSystem}
             options={selectSystemData}
             value={selectSystemId}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
           />
@@ -435,7 +437,7 @@ const StatisticManagement: FC = () => {
             onChange={onChangeAgency}
             options={selectAgencyData}
             value={selectAgencyId || null}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={loading.isSelectAgency}
           />
@@ -447,7 +449,7 @@ const StatisticManagement: FC = () => {
             onChange={onChangeTeam}
             options={selectTeamData}
             value={selectTeamId || null}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
           />
@@ -460,7 +462,7 @@ const StatisticManagement: FC = () => {
           />
         </div>
       </div>
-      <h1 className={styles['title']}>{title}</h1>
+      <h1 className={cx('title')}>{title}</h1>
       <Spin spinning={loading.isBarChart}>
         <ReactECharts
           option={optionBarChart}

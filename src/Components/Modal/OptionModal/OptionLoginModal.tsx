@@ -1,6 +1,7 @@
 import { Button, Modal } from "antd";
 import { FC } from "react";
 import styles from './style.module.scss'
+import classNames from "classnames/bind";
 import { FacebookOutlined, SwapLeftOutlined } from "@ant-design/icons";
 
 interface Props {
@@ -29,16 +30,17 @@ const OptionLoginModal: FC<Props> = (props: Props) => {
     setIsFBLogin,
     loginFB
   } = props
+  const cx = classNames.bind(styles)
   return (
     <Modal
-      title={<div className={`${styles["center-text"]} ${styles["heading"]}`}>{title}</div>}
+      title={<div className={cx("center-text", "heading")}>{title}</div>}
       open={isOpen}
       closable={false}
       maskClosable={false}
       centered
       footer={() => (
         <>
-          <div className={styles["btn-container"]}>
+          <div className={cx("btn-container")}>
             {
               isFBLogin ? (
                 <>
@@ -82,7 +84,7 @@ const OptionLoginModal: FC<Props> = (props: Props) => {
         </>
       )}
     >
-      <p className={`${styles["center-text"]} ${styles["desc"]}`}>{description}</p>
+      <p className={cx("center-text", "desc")}>{description}</p>
     </Modal>
   )
 }

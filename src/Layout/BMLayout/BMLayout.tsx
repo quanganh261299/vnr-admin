@@ -64,7 +64,7 @@ const BMLayout: React.FC = () => {
       <Header className={styles["header"]}>
         <h1 className={styles["title"]}>Business Management</h1>
         <div className={styles['facebook-profile']}>
-          <img src={profileFacebook?.picture.data.url} alt="avatar" className={styles["fb-img"]} />
+          <img src={profileFacebook?.picture?.data?.url} alt="avatar" className={styles["fb-img"]} />
           <h1 className={styles["facebook-name"]}>{profileFacebook?.name}</h1>
         </div>
       </Header>

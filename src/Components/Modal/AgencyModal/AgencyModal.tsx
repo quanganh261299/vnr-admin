@@ -2,6 +2,8 @@ import { Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle } from "react"
 import { TAgencyField } from "../../../models/agency/agency";
 import { SelectType } from "../../../models/common";
+import styles from './style.module.scss'
+import classNames from "classnames/bind";
 
 interface Props {
   isModalOpen: boolean,
@@ -23,6 +25,7 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
     onFinish,
     isLoadingBtn
   } = props
+  const cx = classNames.bind(styles)
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
@@ -65,7 +68,7 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
         <Form.Item
           label="Chọn hệ thống"
           name="organizationId"
-          className="custom-margin-form"
+          className={cx("custom-margin-form")}
           rules={[{ required: true, message: 'Không được để trống hệ thống' }]}
         >
           <Select
@@ -80,7 +83,7 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
           label="Tên chi nhánh"
           name="name"
           rules={[{ required: true, whitespace: true, message: 'Không được để trống tên chi nhánh' }]}
-          className="custom-margin-form"
+          className={cx("custom-margin-form")}
         >
           <Input />
         </Form.Item>

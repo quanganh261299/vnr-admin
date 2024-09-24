@@ -4,11 +4,13 @@ import BmApi from "../../api/BmApi"
 import { useNavigate } from "react-router-dom"
 import { FacebookFilled, LogoutOutlined } from "@ant-design/icons"
 import styles from './style.module.scss'
+import classNames from "classnames/bind"
 import logo from '../../assets/images/logo.png'
 import { formatDateYMD } from "../../helper/const"
 import dayjs, { Dayjs } from "dayjs"
 
 const BmHomePage: React.FC = () => {
+  const cx = classNames.bind(styles)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const [messageApi, contextHolder] = message.useMessage()
@@ -70,8 +72,8 @@ const BmHomePage: React.FC = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
-        <img src={logo} alt="VINARA" className={styles["img-logo"]} />
+      <div className={cx("container")}>
+        <img src={logo} alt="VINARA" className={cx("img-logo")} />
         <RangePicker
           allowClear={false}
           format={"DD-MM-YYYY"}
@@ -79,7 +81,7 @@ const BmHomePage: React.FC = () => {
           placeholder={["Bắt đầu", "Kết thúc"]}
           value={dateRange}
         />
-        <div className={styles["btn-list"]}>
+        <div className={cx("btn-list")}>
           <Button
             type="primary"
             onClick={getDataFromFacebook}

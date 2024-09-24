@@ -1,13 +1,8 @@
-.custom-margin-form,
-.custom-select-form {
-    margin-bottom: 12px !important;
+.select-container {
+    display: flex;
+    column-gap: 15px;
 }
 
 .custom-select-form {
     flex: 1;
-}
-
-.select-form {
-    display: flex;
-    column-gap: 10px;
 }

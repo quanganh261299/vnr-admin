@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
+import classNames from 'classnames/bind';
 import { Button, message, Select, Space, Table, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
@@ -15,6 +16,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
 
 const TeamManagement: FC = () => {
+  const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataRecord, setDataRecord] = useState<TypeTeamField | null>(null)
   const [totalData, setTotalData] = useState<number>(0);
@@ -277,17 +279,17 @@ const TeamManagement: FC = () => {
   return (
     <>
       {contextHolder}
-      <div className={styles["container"]}>
+      <div>
         <Tooltip title="Thêm đội nhóm">
           <Button
             icon={<PlusOutlined />}
-            type="primary" className={styles['btn']}
+            type="primary" className={cx('btn')}
             onClick={() => handleShowModal()}
           >
             Thêm đội nhóm
           </Button>
         </Tooltip>
-        <div className={styles['team-container']}>
+        <div className={cx('team-container')}>
           <Select
             allowClear
             showSearch
@@ -295,7 +297,7 @@ const TeamManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeSystem}
             options={selectSystemData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={'Không có dữ liệu'}
             loading={loading.isSelectSystem}
             value={selectSystemId || null}
@@ -307,7 +309,7 @@ const TeamManagement: FC = () => {
             optionFilterProp="label"
             onChange={onChangeAgency}
             options={selectAgencyData}
-            className={styles["select-system-item"]}
+            className={cx("select-system-item")}
             notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={loading.isSelectAgency}
             value={selectAgencyId || null}
