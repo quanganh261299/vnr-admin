@@ -231,14 +231,6 @@ const StatisticManagement: FC = () => {
   const [optionBarChart, setOptionBarChart] = useState<any>(totalAmountSpent)
 
   const handleChangeBarChartType = (value: number) => {
-    setSelectAgencyData([])
-    setSelectTeamData([])
-    setSelectSystemId(null)
-    setSelectAgencyId(null)
-    setSelectTeamId(null)
-    setDateRange([dayjs(yesterday), dayjs(yesterday)])
-    setStartTime(formatDateYMD(yesterday))
-    setEndTime(formatDateYMD(yesterday))
     switch (value) {
       case 1: {
         setBarChartType(1)

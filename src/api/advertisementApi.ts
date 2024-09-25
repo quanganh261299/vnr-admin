@@ -59,6 +59,14 @@ const advertisementApi = {
         const url = "/adsAccount";
         return axiosInstance.post(url, data);
     },
+    createAdsAccountByExcel: (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        const url = "/adsAccount/excel";
+        return axiosInstance.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    },
     updateAdsAccount: (data: TCreateAdsAccount) => {
         const url = "/adsAccount";
         return axiosInstance.put(url, data);

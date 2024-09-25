@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
 import { Button, message, Space, Table, Tag, Tooltip, Upload } from 'antd';
-import type { FormProps, TableProps } from 'antd';
+import type { FormProps, TableProps, UploadFile } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
 import advertisementApi from '../../api/advertisementApi';
@@ -12,6 +12,7 @@ import { useSearchParams } from 'react-router-dom';
 import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { UploadChangeParam } from 'antd/es/upload';
 
 const AdAccount: FC = () => {
   const cx = classNames.bind(styles)
@@ -262,6 +263,17 @@ const AdAccount: FC = () => {
 
   const handleCancelRecover = () => setModal((prevState) => ({ ...prevState, isRecoverModalOpen: false }))
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleUploadFile = (info: UploadChangeParam<UploadFile<any>>) => {
+    const file = info.file.originFileObj
+    if (file) {
+      advertisementApi.createAdsAccountByExcel(file).then(() => {
+        console.log('thành công')
+      }).catch((err) => console.log('err', err))
+    }
+    else error('File chưa đúng định dạng')
+  }
+
   const success = (message: string) => {
     messageApi.open({
       type: 'success',
@@ -328,6 +340,8 @@ const AdAccount: FC = () => {
                 showUploadList={false}
                 maxCount={1}
                 className={cx('btn', 'btn-excel')}
+                customRequest={() => { }}
+                onChange={(data) => handleUploadFile(data)}
               >
                 <Button
                   icon={<UploadOutlined />}
