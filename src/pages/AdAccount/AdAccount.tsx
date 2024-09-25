@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
-import { Button, message, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, message, Space, Table, Tag, Tooltip, Upload } from 'antd';
 import type { FormProps, TableProps } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
 import advertisementApi from '../../api/advertisementApi';
 import { TAdUserTable } from '../../models/user/user';
@@ -311,16 +311,33 @@ const AdAccount: FC = () => {
       {contextHolder}
       {
         !isDeleted && (
-          <Tooltip title='Thêm tài khoản hệ thống'>
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              className={cx('btn')}
-              onClick={() => handleShowModal()}
-            >
-              Thêm tài khoản quảng cáo
-            </Button>
-          </Tooltip>
+          <>
+            <Tooltip title='Thêm tài khoản hệ thống'>
+              <Button
+                icon={<PlusOutlined />}
+                type="primary"
+                className={cx('btn')}
+                onClick={() => handleShowModal()}
+              >
+                Thêm tài khoản quảng cáo
+              </Button>
+            </Tooltip>
+            <Tooltip title='Thêm nhiều tài khoản qua file excel'>
+              <Upload
+                accept=".xls,.xlsx,.csv"
+                showUploadList={false}
+                maxCount={1}
+                className={cx('btn', 'btn-excel')}
+              >
+                <Button
+                  icon={<UploadOutlined />}
+                  type="dashed"
+                >
+                  Thêm tài khoản quảng cáo qua file excel
+                </Button>
+              </Upload>
+            </Tooltip>
+          </>
         )
       }
       <div>
