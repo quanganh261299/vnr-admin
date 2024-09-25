@@ -1,4 +1,4 @@
-import { Button, DatePicker, message, Spin } from "antd"
+import { Button, DatePicker, Flex, message, Spin } from "antd"
 import { useState } from "react"
 import BmApi from "../../api/BmApi"
 import { useNavigate } from "react-router-dom"
@@ -14,16 +14,13 @@ const BmHomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const [messageApi, contextHolder] = message.useMessage()
-  const { RangePicker } = DatePicker
   const currentDate = new Date()
   const yesterday = new Date(currentDate)
   yesterday.setDate(currentDate.getDate() - 1)
-  const [startTime, setStartTime] = useState<string>(formatDateYMD(currentDate))
-  const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    dayjs(yesterday),
-    dayjs(currentDate),
-  ])
+  const [startTime, setStartTime] = useState<string>('')
+  const [endTime, setEndTime] = useState<string>('')
+  const [startDate, setStartDate] = useState<Dayjs | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
 
   const getDataFromFacebook = () => {
@@ -43,17 +40,21 @@ const BmHomePage: React.FC = () => {
     navigate('/loginBM')
   }
 
-  const handleRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
-    if (dates !== null) {
-      setDateRange(dates);
-      if (dates[0] !== null && dates[1] !== null) {
-        const startTime = formatDateYMD(dates[0].toDate());
-        const endTime = formatDateYMD(dates[1].toDate());
-        setStartTime(startTime);
-        setEndTime(endTime);
-      }
+  const onChangeStart = (date: Dayjs | null) => {
+    if (date) {
+      setEndDate(null)
+      setEndTime('')
+      setStartDate(date)
+      setStartTime(formatDateYMD(date.toDate()))
     }
-  };
+  }
+
+  const onChangeEnd = (date: Dayjs | null) => {
+    if (date) {
+      setEndDate(date)
+      setEndTime(formatDateYMD(date.toDate()))
+    }
+  }
 
   const success = (message: string) => {
     messageApi.open({
@@ -74,19 +75,32 @@ const BmHomePage: React.FC = () => {
       {contextHolder}
       <div className={cx("container")}>
         <img src={logo} alt="VINARA" className={cx("img-logo")} />
-        <RangePicker
-          allowClear={false}
-          format={"DD-MM-YYYY"}
-          onChange={(dates) => handleRangeChange(dates)}
-          placeholder={["Bắt đầu", "Kết thúc"]}
-          value={dateRange}
-          maxDate={dayjs()}
-        />
+        <Flex gap={'small'} align="center">
+          <DatePicker
+            allowClear={false}
+            format={"DD-MM-YYYY"}
+            placeholder="Bắt đầu"
+            maxDate={dayjs()}
+            onChange={onChangeStart}
+          />
+          <span>~</span>
+          <DatePicker
+            allowClear={false}
+            format={"DD-MM-YYYY"}
+            placeholder="Kết thúc"
+            disabled={!startDate}
+            onChange={onChangeEnd}
+            value={endDate}
+            minDate={startDate}
+            maxDate={startDate?.add(7, 'day')}
+          />
+        </Flex>
         <div className={cx("btn-list")}>
           <Button
             type="primary"
             onClick={getDataFromFacebook}
             icon={<FacebookFilled />}
+            disabled={!startTime || !endTime}
           >
             Lấy dữ liệu từ Facebook
           </Button>

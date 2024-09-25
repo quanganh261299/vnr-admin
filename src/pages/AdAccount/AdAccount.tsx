@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
-import { Button, message, Space, Table, Tag, Tooltip } from 'antd';
-import type { FormProps, TableProps } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined } from '@ant-design/icons';
+import { Button, message, Space, Table, Tag, Tooltip, Upload } from 'antd';
+import type { FormProps, TableProps, UploadFile } from 'antd';
+import { DeleteOutlined, EditOutlined, FileExcelOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
 import advertisementApi from '../../api/advertisementApi';
 import { TAdUserTable } from '../../models/user/user';
@@ -12,6 +12,7 @@ import { useSearchParams } from 'react-router-dom';
 import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { UploadChangeParam } from 'antd/es/upload';
 
 const AdAccount: FC = () => {
   const cx = classNames.bind(styles)
@@ -25,7 +26,8 @@ const AdAccount: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
-    isSaveBtn: false
+    isSaveBtn: false,
+    isUpload: false
   })
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
@@ -262,6 +264,29 @@ const AdAccount: FC = () => {
 
   const handleCancelRecover = () => setModal((prevState) => ({ ...prevState, isRecoverModalOpen: false }))
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleUploadFile = (info: UploadChangeParam<UploadFile<any>>) => {
+    setLoading((prevLoading) => ({ ...prevLoading, isUpload: true }))
+    const file = info.file.originFileObj
+    if (file) {
+      advertisementApi.createAdsAccountByExcel(file).then(() => {
+        setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
+        success('Thêm tài khoản quảng cáo thành công!')
+        setIsCallbackApi(!isCallbackApi)
+      }).catch((err) => {
+        setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
+        const errorArr = JSON.parse(err.response.data.message)
+        errorArr.slice(0, 9).forEach((element: { RowIndex: number; ErrorMessage: string }) => {
+          error(element.ErrorMessage)
+        });
+      })
+    }
+    else {
+      setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
+      error('File chưa đúng định dạng')
+    }
+  }
+
   const success = (message: string) => {
     messageApi.open({
       type: 'success',
@@ -311,16 +336,48 @@ const AdAccount: FC = () => {
       {contextHolder}
       {
         !isDeleted && (
-          <Tooltip title='Thêm tài khoản hệ thống'>
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              className={cx('btn')}
-              onClick={() => handleShowModal()}
-            >
-              Thêm tài khoản quảng cáo
-            </Button>
-          </Tooltip>
+          <>
+            <Tooltip title='Thêm tài khoản hệ thống'>
+              <Button
+                icon={<PlusOutlined />}
+                type="primary"
+                className={cx('btn')}
+                onClick={() => handleShowModal()}
+              >
+                Thêm tài khoản quảng cáo
+              </Button>
+            </Tooltip>
+            <Tooltip title='Thêm nhiều tài khoản qua file excel'>
+              <Upload
+                accept=".xls,.xlsx,.csv"
+                showUploadList={false}
+                maxCount={1}
+                className={cx('btn', 'btn-excel')}
+                customRequest={() => { }}
+                onChange={(data) => handleUploadFile(data)}
+              >
+                <Button
+                  icon={<UploadOutlined />}
+                  type="dashed"
+                  loading={loading.isUpload}
+                >
+                  Import tài khoản quảng cáo
+                </Button>
+              </Upload>
+            </Tooltip>
+            <a href={`/sample.xlsx`} download={'sample.xlsx'}>
+              <Tooltip title='File excel mẫu'>
+                <Button
+                  icon={<FileExcelOutlined />}
+                  type='primary'
+                  style={{ color: 'white', background: 'green' }}
+                  className={cx('btn', 'btn-excel')}
+                >
+                  File mẫu
+                </Button>
+              </Tooltip>
+            </a>
+          </>
         )
       }
       <div>
