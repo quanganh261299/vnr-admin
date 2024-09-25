@@ -55,20 +55,17 @@ const LoginBM = () => {
             Login BM
           </Button>
         </div>
-        <FacebookLogin
-          // appId="27101359412813286"
+        <FacebookLogin  
           appId='1040182517579604'
           scope='ads_management, ads_read, public_profile, email, business_management'
           className="fb-login-special-btn"
           onSuccess={(response) => {
-            console.log('success!')
             authApi.loginFB(response.accessToken).then((res) => {
               storeAuthFBStatus(res.data.data.accessToken)
               setIsLoading(false)
               window.location.href = '/bm-homepage'
             })
               .catch((err) => {
-                console.log('failure!')
                 setIsLoading(false)
                 error(err.response.data.message)
               })
