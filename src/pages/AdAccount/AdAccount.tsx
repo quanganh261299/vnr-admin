@@ -3,7 +3,7 @@ import styles from './style.module.scss'
 import classNames from 'classnames/bind';
 import { Button, message, Space, Table, Tag, Tooltip, Upload } from 'antd';
 import type { FormProps, TableProps, UploadFile } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, FileExcelOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
 import advertisementApi from '../../api/advertisementApi';
 import { TAdUserTable } from '../../models/user/user';
@@ -26,7 +26,8 @@ const AdAccount: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
-    isSaveBtn: false
+    isSaveBtn: false,
+    isUpload: false
   })
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
@@ -265,13 +266,25 @@ const AdAccount: FC = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleUploadFile = (info: UploadChangeParam<UploadFile<any>>) => {
+    setLoading((prevLoading) => ({ ...prevLoading, isUpload: true }))
     const file = info.file.originFileObj
     if (file) {
       advertisementApi.createAdsAccountByExcel(file).then(() => {
-        console.log('thành công')
-      }).catch((err) => console.log('err', err))
+        setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
+        success('Thêm tài khoản quảng cáo thành công!')
+        setIsCallbackApi(!isCallbackApi)
+      }).catch((err) => {
+        setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
+        const errorArr = JSON.parse(err.response.data.message)
+        errorArr.slice(0, 9).forEach((element: { RowIndex: number; ErrorMessage: string }) => {
+          error(element.ErrorMessage)
+        });
+      })
     }
-    else error('File chưa đúng định dạng')
+    else {
+      setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
+      error('File chưa đúng định dạng')
+    }
   }
 
   const success = (message: string) => {
@@ -346,11 +359,24 @@ const AdAccount: FC = () => {
                 <Button
                   icon={<UploadOutlined />}
                   type="dashed"
+                  loading={loading.isUpload}
                 >
-                  Thêm tài khoản quảng cáo qua file excel
+                  Import tài khoản quảng cáo
                 </Button>
               </Upload>
             </Tooltip>
+            <a href={`/sample.xlsx`} download={'sample.xlsx'}>
+              <Tooltip title='File excel mẫu'>
+                <Button
+                  icon={<FileExcelOutlined />}
+                  type='primary'
+                  style={{ color: 'white', background: 'green' }}
+                  className={cx('btn', 'btn-excel')}
+                >
+                  File mẫu
+                </Button>
+              </Tooltip>
+            </a>
           </>
         )
       }
