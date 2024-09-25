@@ -58,7 +58,7 @@ const BMLayout: React.FC = () => {
         localStorage.removeItem('profileFacebook')
         navigate('/loginBM')
       })
-  }, 5 * 60 * 1000)
+  }, 2 * 60 * 1000)
 
   scheduleNextFetch();
 
