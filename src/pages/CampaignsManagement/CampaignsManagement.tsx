@@ -209,7 +209,7 @@ const CampaignsManagment: FC = () => {
       dataIndex: 'insight',
       key: 'frequency',
       className: cx('center-cell'),
-      render: (insight) => insight?.frequency === 'Kéo dữ liệu thất bại' ? insight?.frequency : Number(insight?.frequency).toFixed(1) || '-'
+      render: (insight) => insight?.frequency === 'Kéo dữ liệu thất bại' ? insight?.frequency : Number(insight?.frequency) ? Number(insight?.frequency).toFixed(1) : '-'
     },
     {
       title:
