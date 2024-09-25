@@ -55,7 +55,7 @@ const LoginBM = () => {
             Login BM
           </Button>
         </div>
-        <FacebookLogin  
+        <FacebookLogin
           appId='1040182517579604'
           scope='ads_management, ads_read, public_profile, email, business_management'
           className="fb-login-special-btn"
