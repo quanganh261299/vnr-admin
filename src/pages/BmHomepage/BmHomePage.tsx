@@ -17,9 +17,10 @@ const BmHomePage: React.FC = () => {
   const currentDate = new Date()
   const yesterday = new Date(currentDate)
   yesterday.setDate(currentDate.getDate() - 1)
-  const [startTime, setStartTime] = useState<string>(formatDateYMD(currentDate))
-  const [endTime, setEndTime] = useState<string>(formatDateYMD(yesterday))
+  const [startTime, setStartTime] = useState<string>('')
+  const [endTime, setEndTime] = useState<string>('')
   const [startDate, setStartDate] = useState<Dayjs | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Dayjs | null>(null)
 
 
   const getDataFromFacebook = () => {
@@ -41,6 +42,8 @@ const BmHomePage: React.FC = () => {
 
   const onChangeStart = (date: Dayjs | null) => {
     if (date) {
+      setEndDate(null)
+      setEndTime('')
       setStartDate(date)
       setStartTime(formatDateYMD(date.toDate()))
     }
@@ -48,6 +51,7 @@ const BmHomePage: React.FC = () => {
 
   const onChangeEnd = (date: Dayjs | null) => {
     if (date) {
+      setEndDate(date)
       setEndTime(formatDateYMD(date.toDate()))
     }
   }
@@ -86,6 +90,7 @@ const BmHomePage: React.FC = () => {
             placeholder="Kết thúc"
             disabled={!startDate}
             onChange={onChangeEnd}
+            value={endDate}
             minDate={startDate}
             maxDate={startDate?.add(7, 'day')}
           />
@@ -95,6 +100,7 @@ const BmHomePage: React.FC = () => {
             type="primary"
             onClick={getDataFromFacebook}
             icon={<FacebookFilled />}
+            disabled={!startTime || !endTime}
           >
             Lấy dữ liệu từ Facebook
           </Button>
