@@ -10,6 +10,7 @@ import SystemAccountModal from '../../Components/Modal/SystemAccountModal/System
 import { SelectType } from '../../models/common';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { useTranslation } from 'react-i18next';
 
 const SystemAccount: FC = () => {
   const cx = classNames.bind(styles)
@@ -27,6 +28,7 @@ const SystemAccount: FC = () => {
   const [selectAccountData, setSelectAccountData] = useState<SelectType[]>([])
   const [messageApi, contextHolder] = message.useMessage();
   const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
+  const { t } = useTranslation();
 
   const columns: TableProps<TUser>['columns'] = [
     {
@@ -150,9 +152,9 @@ const SystemAccount: FC = () => {
   useEffect(() => {
     userApi.getRole().then((res) => {
       setSelectAccountData(
-        res.data.data.filter((item: TUserOption) => item.name === 'ADMIN').map((item: TUserOption) => ({
+        res.data.data.map((item: TUserOption) => ({
           value: item.id,
-          label: item.name
+          label: t(`roles.${item.name}`)
         }))
       )
     })
