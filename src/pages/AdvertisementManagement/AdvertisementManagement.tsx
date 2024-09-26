@@ -15,9 +15,17 @@ import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
 import advertisementApi from '../../api/advertisementApi';
-import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking, hasRole, ROLE } from '../../helper/const';
 
-const AdvertisementManagement: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+  groupId: string | null
+}
+
+const AdvertisementManagement: FC<Props> = (props) => {
+  const { role, organizationId, branchId, groupId } = props
   const cx = classNames.bind(styles)
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
@@ -189,13 +197,13 @@ const AdvertisementManagement: FC = () => {
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
     })
-    if (selectSystemId) {
+    if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectSystem: false,
         isSelectAgency: true
       }))
-      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -240,14 +248,14 @@ const AdvertisementManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId, selectTeamId])
+  }, [selectSystemId, selectAgencyId, selectTeamId, organizationId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     advertisementApi.getListAdsAccountActive({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      organizationId: selectSystemId || '',
+      organizationId: selectSystemId || organizationId || '',
       branchId: selectAgencyId || '',
       groupId: selectTeamId || '',
       employeeId: selectMemberId || ''
@@ -275,18 +283,20 @@ const AdvertisementManagement: FC = () => {
     <>
       <div>
         <div className={cx('select-container')}>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChangeSystem}
-            options={selectSystemData}
-            className={cx("select-system-item")}
-            loading={loading.isSelectSystem}
-            value={selectSystemId || null}
-            notFoundContent={'Không có dữ liệu'}
-          />
+          {role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChangeSystem}
+              options={selectSystemData}
+              className={cx("select-system-item")}
+              loading={loading.isSelectSystem}
+              value={selectSystemId || null}
+              notFoundContent={'Không có dữ liệu'}
+            />
+          }
           <Select
             allowClear
             showSearch

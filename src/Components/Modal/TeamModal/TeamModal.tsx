@@ -7,8 +7,11 @@ import { SelectType } from "../../../models/common";
 import { TypeTeamField } from "../../../models/team/team";
 import { TAgencyTable } from "../../../models/agency/agency";
 import branchApi from "../../../api/branchApi";
+import { hasRole, ROLE } from "../../../helper/const";
 
 interface Props {
+  role: string | null,
+  organizationId: string | null,
   isModalOpen: boolean,
   handleOk: () => void,
   handleSave: () => void,
@@ -22,6 +25,8 @@ interface Props {
 
 const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
   const {
+    role,
+    organizationId,
     isModalOpen,
     editingData,
     selectSystemData,
@@ -47,6 +52,9 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
     },
     saveReset: () => {
       form.resetFields(['name', 'description']);
+    },
+    organizationReset: () => {
+      form.resetFields(['name', 'branchId', 'description'])
     }
   }));
 
@@ -64,9 +72,9 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
   }
 
   useEffect(() => {
-    if (selectSystemModalId) {
+    if (selectSystemModalId || organizationId) {
       setIsLoadingSelectAgency(true)
-      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId || organizationId || '' }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -76,7 +84,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
         setIsLoadingSelectAgency(false)
       })
     }
-  }, [selectSystemModalId])
+  }, [selectSystemModalId, organizationId])
 
   useEffect(() => {
     if (editingData) {
@@ -87,12 +95,16 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
         organizationId: editingData.branch?.organizationId,
         branchId: editingData.branchId
       });
-    } else {
+    }
+    else {
       form.resetFields();
       setSelectSystemModalId(null)
       setSelectAgencyDataModal([])
+      if (!hasRole([ROLE.ADMIN], String(role))) {
+        form.setFieldsValue({ organizationId: organizationId });
+      }
     }
-  }, [editingData, form]);
+  }, [editingData, form, role, organizationId]);
 
   return (
     <Modal
@@ -144,6 +156,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
             options={selectSystemData}
             onClear={clearSelectSystemModalId}
             notFoundContent={'Không có dữ liệu'}
+            disabled={!hasRole([ROLE.ADMIN], String(role))}
           />
         </Form.Item>
         <Form.Item

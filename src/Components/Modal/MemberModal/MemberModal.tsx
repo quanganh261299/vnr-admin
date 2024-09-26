@@ -9,9 +9,11 @@ import branchApi from "../../../api/branchApi";
 import { TAgencyTable } from "../../../models/agency/agency";
 import groupApi from "../../../api/groupApi";
 import { TypeTeamTable } from "../../../models/team/team";
-import { EMAIL_REGEX, PHONE_REGEX } from "../../../helper/const";
+import { EMAIL_REGEX, hasRole, PHONE_REGEX, ROLE } from "../../../helper/const";
 
 interface Props {
+  role: string | null,
+  organizationId: string | null
   isModalOpen: boolean,
   handleSave: () => void,
   handleOk: () => void,
@@ -25,6 +27,8 @@ interface Props {
 
 const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
   const {
+    role,
+    organizationId,
     isModalOpen,
     editingData,
     selectSystemData,
@@ -55,6 +59,9 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
     },
     saveReset: () => {
       form.resetFields(['name', 'email', 'phone', 'description']);
+    },
+    organizationReset: () => {
+      form.resetFields(['name', 'branchId', 'groupId', 'phone', 'email', 'description'])
     }
   }));
 
@@ -83,9 +90,9 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
   }
 
   useEffect(() => {
-    if (selectSystemModalId) {
+    if (selectSystemModalId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId || organizationId || '' }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -107,7 +114,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemModalId, selectAgencyModalId])
+  }, [selectSystemModalId, selectAgencyModalId, organizationId])
 
   useEffect(() => {
     if (editingData) {
@@ -128,8 +135,11 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
       setSelectAgencyModalId(null)
       setSelectAgencyDataModal([])
       setSelectTeamDataModal([])
+      if (!hasRole([ROLE.ADMIN], String(role))) {
+        form.setFieldsValue({ organizationId: organizationId });
+      }
     }
-  }, [editingData, form]);
+  }, [editingData, form, role, organizationId]);
 
   return (
     <Modal
@@ -182,6 +192,7 @@ const MemberModal = forwardRef<{ submit: () => void; reset: () => void; saveRese
               options={selectSystemData}
               onClear={clearSelectSystemModalId}
               notFoundContent={'Không có dữ liệu'}
+              disabled={!hasRole([ROLE.ADMIN], String(role))}
             />
           </Form.Item>
           <Form.Item

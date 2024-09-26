@@ -13,9 +13,16 @@ import organizationApi from '../../api/organizationApi';
 import { TSystemTable } from '../../models/system/system';
 import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
-import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 
-const TeamManagement: FC = () => {
+interface Props {
+  role: string | null,
+  organizationId: string | null,
+  branchId: string | null,
+}
+
+const TeamManagement: FC<Props> = (props) => {
+  const { organizationId, branchId, role } = props
   const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataRecord, setDataRecord] = useState<TypeTeamField | null>(null)
@@ -37,7 +44,7 @@ const TeamManagement: FC = () => {
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
-  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
+  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void; organizationReset: () => void }>(null);
 
   const columns: TableProps<TypeTeamTable>['columns'] = [
     {
@@ -163,9 +170,8 @@ const TeamManagement: FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
-    if (modalRef.current) {
-      modalRef.current.reset();
-    }
+    if (!hasRole([ROLE.ADMIN], String(role))) modalRef.current?.organizationReset();
+    else modalRef.current?.reset();
   }
 
   const handleShowModal = (data: TypeTeamField | null = null) => {
@@ -235,9 +241,9 @@ const TeamManagement: FC = () => {
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
     })
-    if (selectSystemId) {
+    if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -254,7 +260,7 @@ const TeamManagement: FC = () => {
     groupApi.getListGroup({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      organizationId: selectSystemId || '',
+      organizationId: selectSystemId || organizationId || '',
       branchId: selectAgencyId || ''
     }).then((res) => {
       const data = res.data.data
@@ -290,18 +296,21 @@ const TeamManagement: FC = () => {
           </Button>
         </Tooltip>
         <div className={cx('team-container')}>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChangeSystem}
-            options={selectSystemData}
-            className={cx("select-system-item")}
-            notFoundContent={'Không có dữ liệu'}
-            loading={loading.isSelectSystem}
-            value={selectSystemId || null}
-          />
+          {
+            role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChangeSystem}
+              options={selectSystemData}
+              className={cx("select-system-item")}
+              notFoundContent={'Không có dữ liệu'}
+              loading={loading.isSelectSystem}
+              value={selectSystemId || null}
+            />
+          }
           <Select
             allowClear
             showSearch
@@ -329,6 +338,8 @@ const TeamManagement: FC = () => {
         />
       </div>
       <TeamModal
+        organizationId={organizationId}
+        role={role}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

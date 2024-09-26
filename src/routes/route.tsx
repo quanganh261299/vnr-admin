@@ -18,9 +18,12 @@ import BmAccount from "../pages/BmAccount/BmAccount";
 import BMLayout from "../Layout/BMLayout/BMLayout";
 import BmHomePage from "../pages/BmHomepage/BmHomePage";
 import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
-import { handleRole, ROLE } from "../helper/const";
+import { hasRole, ROLE } from "../helper/const";
 
 const role = localStorage.getItem('role')
+const organizationId = localStorage.getItem('organizationId') || null
+const branchId = localStorage.getItem('branchId') || null
+const groupId = localStorage.getItem('groupId') || null
 export const route = [
   {
     path: "/login",
@@ -43,27 +46,39 @@ export const route = [
     children: [
       {
         index: true,
-        element: role && handleRole([ROLE.ADMIN], role) ? <SystemManagement /> : <ErrorPage />
+        element: role && hasRole([ROLE.ADMIN], role) ? <SystemManagement /> : <ErrorPage />
       },
       {
         path: '/agency',
         element:
-          role && handleRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) ? <AgencyManagement /> : <ErrorPage />
+          role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role)
+            ?
+            <AgencyManagement role={role} organizationId={organizationId} />
+            :
+            <ErrorPage />
       },
       {
         path: '/team',
         element:
-          role && handleRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) ? <TeamManagement /> : <ErrorPage />
+          role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
+            ?
+            <TeamManagement role={role} organizationId={organizationId} branchId={branchId} />
+            :
+            <ErrorPage />
       },
       {
         path: '/member',
         element:
           role
-            && handleRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP], role) ? <MemberManagement /> : <ErrorPage />
+            && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP], role)
+            ?
+            <MemberManagement role={role} organizationId={organizationId} branchId={branchId} groupId={groupId} />
+            :
+            <ErrorPage />
       },
       {
         path: '/advertisement-account',
-        element: <AdvertisementManagement />,
+        element: <AdvertisementManagement role={role} organizationId={organizationId} branchId={branchId} groupId={groupId} />,
       },
       {
         path: '/advertisement-account/:accountId/campaigns',
@@ -79,7 +94,7 @@ export const route = [
       },
       {
         path: '/account',
-        element: role && handleRole([ROLE.ADMIN], role) ? <SystemAccount /> : <ErrorPage />
+        element: role && hasRole([ROLE.ADMIN], role) ? <SystemAccount /> : <ErrorPage />
       },
       {
         path: '/ad-account',

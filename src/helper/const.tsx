@@ -246,7 +246,7 @@ export const handleDisplay = (roles: string[], role: string) => {
     else return 'none'
 }
 
-export const handleRole = (roles: string[], role: string) => {
+export const hasRole = (roles: string[], role: string) => {
     return roles.includes(role)
 }
 
