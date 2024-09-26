@@ -55,7 +55,8 @@ const MemberManagement: FC<Props> = (props) => {
     reset: () => void;
     saveReset: () => void;
     organizationReset: () => void;
-    branchReset: () => void
+    branchReset: () => void;
+    groupReset: () => void;
   }>(null);
 
 
@@ -216,9 +217,12 @@ const MemberManagement: FC<Props> = (props) => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
-    if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) modalRef.current?.branchReset();
-    else if (!hasRole([ROLE.ADMIN], String(role))) modalRef.current?.organizationReset();
-    else modalRef.current?.reset();
+    switch (role) {
+      case ROLE.ADMIN: return modalRef.current?.reset();
+      case ROLE.ORGANIZATION: return modalRef.current?.organizationReset();
+      case ROLE.BRANCH: return modalRef.current?.branchReset();
+      case ROLE.GROUP: return modalRef.current?.groupReset();
+    }
   }
 
   const handleShowModal = (data: TMemberField | null = null) => {
@@ -322,7 +326,7 @@ const MemberManagement: FC<Props> = (props) => {
       pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || organizationId || '',
       branchId: selectAgencyId || branchId || '',
-      groupId: selectTeamId || ''
+      groupId: selectTeamId || groupId || ''
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -340,7 +344,7 @@ const MemberManagement: FC<Props> = (props) => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi, branchId, organizationId])
+  }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi, branchId, organizationId, groupId])
 
   return (
     <>
@@ -385,18 +389,21 @@ const MemberManagement: FC<Props> = (props) => {
               loading={loading.isSelectAgency}
             />
           }
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn đội nhóm"
-            optionFilterProp="label"
-            onChange={onChangeTeam}
-            options={selectTeamData}
-            value={selectTeamId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
-            loading={loading.isSelectTeam}
-          />
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn đội nhóm"
+              optionFilterProp="label"
+              onChange={onChangeTeam}
+              options={selectTeamData}
+              value={selectTeamId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              loading={loading.isSelectTeam}
+            />
+          }
         </div>
         <Table
           columns={columns}
@@ -415,6 +422,7 @@ const MemberManagement: FC<Props> = (props) => {
         role={role}
         organizationId={organizationId}
         branchId={branchId}
+        groupId={groupId}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

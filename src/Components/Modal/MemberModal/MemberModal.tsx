@@ -15,6 +15,7 @@ interface Props {
   role: string | null,
   organizationId: string | null,
   branchId: string | null,
+  groupId: string | null,
   isModalOpen: boolean,
   handleSave: () => void,
   handleOk: () => void,
@@ -32,11 +33,13 @@ const MemberModal = forwardRef<{
   saveReset: () => void;
   organizationReset: () => void;
   branchReset: () => void;
+  groupReset: () => void;
 }, Props>((props, ref) => {
   const {
     role,
     organizationId,
     branchId,
+    groupId,
     isModalOpen,
     editingData,
     selectSystemData,
@@ -73,6 +76,9 @@ const MemberModal = forwardRef<{
     },
     branchReset: () => {
       form.resetFields(['name', 'groupId', 'phone', 'email', 'description']);
+    },
+    groupReset: () => {
+      form.resetFields(['name', 'phone', 'email', 'description']);
     }
   }));
 
@@ -152,9 +158,11 @@ const MemberModal = forwardRef<{
       if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) {
         form.setFieldsValue({ branchId: branchId })
       }
-
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))) {
+        form.setFieldsValue({ groupId: groupId })
+      }
     }
-  }, [editingData, form, role, organizationId, branchId]);
+  }, [editingData, form, role, organizationId, branchId, groupId]);
 
   return (
     <Modal
@@ -241,6 +249,7 @@ const MemberModal = forwardRef<{
             options={selectTeamDataModal}
             notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
+            disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))}
           />
         </Form.Item>
         <Form.Item<TMemberField>

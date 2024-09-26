@@ -238,7 +238,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
         isSelectTeam: false,
         isSelectMember: true
       }))
-      employeeApi.getListEmployee({ groupId: selectTeamId }).then((res) => {
+      employeeApi.getListEmployee({ groupId: selectTeamId || groupId || '' }).then((res) => {
         setSelectMemberData(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -248,7 +248,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId, selectTeamId, organizationId, branchId])
+  }, [selectSystemId, selectAgencyId, selectTeamId, organizationId, branchId, groupId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
@@ -257,7 +257,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
       pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || organizationId || '',
       branchId: selectAgencyId || branchId || '',
-      groupId: selectTeamId || '',
+      groupId: selectTeamId || groupId || '',
       employeeId: selectMemberId || ''
     }
     ).then((res) => {
@@ -311,18 +311,20 @@ const AdvertisementManagement: FC<Props> = (props) => {
               notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             />
           }
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn đội nhóm"
-            optionFilterProp="label"
-            onChange={onChangeTeam}
-            options={selectTeamData}
-            className={cx("select-system-item")}
-            loading={loading.isSelectTeam}
-            value={selectTeamId || null}
-            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
-          />
+          {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn đội nhóm"
+              optionFilterProp="label"
+              onChange={onChangeTeam}
+              options={selectTeamData}
+              className={cx("select-system-item")}
+              loading={loading.isSelectTeam}
+              value={selectTeamId || null}
+              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+            />
+          }
           <Select
             allowClear
             showSearch
@@ -333,7 +335,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
             className={cx("select-system-item")}
             loading={loading.isSelectMember}
             value={selectMemberId || null}
-            notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            notFoundContent={selectTeamId || groupId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
           />
         </div>
         <Table
