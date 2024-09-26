@@ -22,7 +22,6 @@ const Login = () => {
       .then((res) => {
         storeAuthStatus(res.data.data.accessToken, res.data.data.role, res.data.data.identifyId)
         setIsLoading(false)
-        window.location.href = handleHomePageLink(res.data.data.role)
       })
       .catch((err) => {
         setIsLoading(false)
@@ -36,9 +35,9 @@ const Login = () => {
 
   useEffect(() => {
     if (getAuthStatus()) {
-      navigate('/', { replace: true })
+      navigate(handleHomePageLink(String(localStorage.getItem('role'))), { replace: true })
     }
-  }, [localStorage.getItem('isAllowed'), localStorage.getItem('token')])
+  }, [localStorage.getItem('token'), localStorage.getItem('role')])
 
   return (
     <>

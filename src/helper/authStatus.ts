@@ -11,7 +11,6 @@ export const storeAuthStatus = (
 ) => {
     localStorage.setItem("role", role);
     localStorage.setItem("token", token);
-    localStorage.setItem("isAllowed", "true");
     switch (role) {
         case ROLE.ORGANIZATION:
             return localStorage.setItem("organizationId", identifyId);
@@ -29,17 +28,14 @@ export const storeAuthStatus = (
 export const storeAuthFBStatus = (token: string) => {
     localStorage.setItem("isBM", "true");
     localStorage.setItem("BmToken", token);
-    localStorage.setItem("isAllowed", "true");
 };
 
 export const getAuthStatus = () => {
-    const auth =
-        localStorage.getItem("isAllowed") && localStorage.getItem("token");
+    const auth = localStorage.getItem("token");
     return !!auth;
 };
 
 export const getAuthFbStatus = () => {
-    const auth =
-        localStorage.getItem("isAllowed") && localStorage.getItem("BmToken");
+    const auth = localStorage.getItem("BmToken");
     return !!auth;
 };
