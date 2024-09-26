@@ -17,7 +17,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
 import { Footer } from 'antd/es/layout/layout';
@@ -37,11 +37,10 @@ const ManagementLayout: React.FC = () => {
   const [headerName, setHeaderName] = useState<string>('Quản lí hệ thống')
   const role = localStorage.getItem('role')
   const { t } = useTranslation()
-  const navigate = useNavigate();
 
   const Logout = () => {
     clearAuthStatus()
-    navigate('/login')
+    window.location.href = '/login'
   }
 
   const dropDownItems: MenuProps['items'] = [

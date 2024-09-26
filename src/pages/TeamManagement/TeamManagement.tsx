@@ -260,7 +260,7 @@ const TeamManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-  }, [selectSystemId])
+  }, [selectSystemId, organizationId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
@@ -287,7 +287,7 @@ const TeamManagement: FC<Props> = (props) => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
 
-  }, [selectSystemId, selectAgencyId, currentPage, isCallbackApi])
+  }, [selectSystemId, selectAgencyId, currentPage, isCallbackApi, organizationId, branchId])
 
   return (
     <>

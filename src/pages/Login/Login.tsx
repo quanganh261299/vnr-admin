@@ -35,7 +35,7 @@ const Login = () => {
 
   useEffect(() => {
     if (getAuthStatus()) {
-      navigate(handleHomePageLink(String(localStorage.getItem('role'))), { replace: true })
+      window.location.href = handleHomePageLink(String(localStorage.getItem('role')))
     }
   }, [localStorage.getItem('token'), localStorage.getItem('role')])
 

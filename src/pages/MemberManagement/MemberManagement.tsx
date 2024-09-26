@@ -313,7 +313,7 @@ const MemberManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId, organizationId])
+  }, [selectSystemId, selectAgencyId, organizationId, branchId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
