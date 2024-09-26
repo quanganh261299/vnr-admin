@@ -5,7 +5,7 @@ import { Button, Form, FormProps, Input, message, Spin, Typography } from 'antd'
 import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { EMAIL_REGEX } from '../../helper/const';
+import { EMAIL_REGEX, handleHomePageLink } from '../../helper/const';
 import { LoginType } from '../../models/common';
 import authApi from '../../api/authApi';
 
@@ -20,9 +20,9 @@ const Login = () => {
     setIsLoading(true)
     authApi.login(values)
       .then((res) => {
-        storeAuthStatus(res.data.data.accessToken, res.data.data.role)
+        storeAuthStatus(res.data.data.accessToken, res.data.data.role, res.data.data.identifyId)
         setIsLoading(false)
-        window.location.href = '/'
+        window.location.href = handleHomePageLink(res.data.data.role)
       })
       .catch((err) => {
         setIsLoading(false)

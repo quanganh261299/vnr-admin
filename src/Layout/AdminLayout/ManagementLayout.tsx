@@ -24,6 +24,7 @@ import { Footer } from 'antd/es/layout/layout';
 import logo from '../../assets/images/logo.png'
 import avatar from '../../assets/images/avatar.png'
 import { clearAuthStatus } from '../../helper/authStatus';
+import { handleDisplay, ROLE } from '../../helper/const';
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,6 +34,7 @@ const ManagementLayout: React.FC = () => {
   const location = useLocation();
   const [current, setCurrent] = useState<string>('system');
   const [headerName, setHeaderName] = useState<string>('Quản lí hệ thống')
+  const role = localStorage.getItem('role')
   const navigate = useNavigate();
 
   const Logout = () => {
@@ -113,21 +115,25 @@ const ManagementLayout: React.FC = () => {
               key: 'system-nav',
               icon: <AppstoreOutlined />,
               label: 'Hệ thống',
+              style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) },
               children: [
                 {
                   key: 'system',
                   icon: <SettingOutlined />,
                   label: <Link to='/'>Quản lí hệ thống</Link>,
+                  style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
                 },
                 {
                   key: 'agency',
                   icon: <ApartmentOutlined />,
                   label: <Link to='/agency'>Quản lí chi nhánh</Link>,
+                  style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION], String(role)) }
                 },
                 {
                   key: 'team',
                   icon: <TeamOutlined />,
                   label: <Link to='/team'>Quản lí đội nhóm</Link>,
+                  style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) }
                 },
                 {
                   key: 'member',
@@ -135,6 +141,12 @@ const ManagementLayout: React.FC = () => {
                   label: <Link to='/member'>Quản lí thành viên</Link>,
                 },
               ]
+            },
+            {
+              key: 'member',
+              icon: <UserOutlined />,
+              label: <Link to='/member'>Quản lí thành viên</Link>,
+              style: { display: handleDisplay([ROLE.GROUP], String(role)) }
             },
             {
               key: 'advertisement-account',
@@ -145,6 +157,7 @@ const ManagementLayout: React.FC = () => {
               key: 'account',
               icon: <CrownOutlined />,
               label: <Link to='/account'>Tài khoản hệ thống</Link>,
+              style: { display: handleDisplay(['ADMIN'], String(role)) }
             },
             {
               key: 'ad-account',

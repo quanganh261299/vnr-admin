@@ -2,9 +2,10 @@ export const clearAuthStatus = () => {
     localStorage.clear();
 };
 
-export const storeAuthStatus = (token: string, role: string) => {
+export const storeAuthStatus = (token: string, role: string, identifyId: string) => {
     localStorage.setItem("role", role);
     localStorage.setItem("token", token);
+    localStorage.setItem('identifyId', identifyId)
     localStorage.setItem("isAllowed", "true");
 };
 

@@ -20,8 +20,9 @@ import BmHomePage from "../pages/BmHomepage/BmHomePage";
 import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
 import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
 import TermsOfUse from "../pages/TermsOfUse/TermsOfUse";
+import { handleRole, ROLE } from "../helper/const";
 
-
+const role = localStorage.getItem('role')
 export const route = [
   {
     path: "/login",
@@ -41,24 +42,34 @@ export const route = [
   },
   {
     path: "/",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['admin']} userRole="admin" />,
+    element:
+      <ProtectedRoute
+        isAllowed={getAuthStatus()}
+        layout={ManagementLayout}
+        roles={[ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP]}
+        userRole={String(role)}
+      />,
     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        element: <SystemManagement />
+        element: role && handleRole([ROLE.ADMIN], role) ? <SystemManagement /> : <ErrorPage />
       },
       {
         path: '/agency',
-        element: <AgencyManagement />
+        element:
+          role && handleRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) ? <AgencyManagement /> : <ErrorPage />
       },
       {
         path: '/team',
-        element: <TeamManagement />
+        element:
+          role && handleRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) ? <TeamManagement /> : <ErrorPage />
       },
       {
         path: '/member',
-        element: <MemberManagement />
+        element:
+          role
+            && handleRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP], role) ? <MemberManagement /> : <ErrorPage />
       },
       {
         path: '/advertisement-account',
@@ -78,7 +89,7 @@ export const route = [
       },
       {
         path: '/account',
-        element: <SystemAccount />
+        element: role && handleRole([ROLE.ADMIN], role) ? <SystemAccount /> : <ErrorPage />
       },
       {
         path: '/ad-account',
