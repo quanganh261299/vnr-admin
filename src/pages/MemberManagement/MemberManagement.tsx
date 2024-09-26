@@ -50,7 +50,13 @@ const MemberManagement: FC<Props> = (props) => {
   })
   const [messageApi, contextHolder] = message.useMessage();
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
-  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void; organizationReset: () => void }>(null);
+  const modalRef = useRef<{
+    submit: () => void;
+    reset: () => void;
+    saveReset: () => void;
+    organizationReset: () => void;
+    branchReset: () => void
+  }>(null);
 
 
   const columns: TableProps<TMemberTable>['columns'] = [
@@ -210,7 +216,8 @@ const MemberManagement: FC<Props> = (props) => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
-    if (!hasRole([ROLE.ADMIN], String(role))) modalRef.current?.organizationReset();
+    if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) modalRef.current?.branchReset();
+    else if (!hasRole([ROLE.ADMIN], String(role))) modalRef.current?.organizationReset();
     else modalRef.current?.reset();
   }
 
@@ -294,9 +301,9 @@ const MemberManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyId) {
+    if (selectAgencyId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -314,7 +321,7 @@ const MemberManagement: FC<Props> = (props) => {
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || organizationId || '',
-      branchId: selectAgencyId || '',
+      branchId: selectAgencyId || branchId || '',
       groupId: selectTeamId || ''
     }).then((res) => {
       const data = res.data.data
@@ -333,7 +340,7 @@ const MemberManagement: FC<Props> = (props) => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi])
+  }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi, branchId, organizationId])
 
   return (
     <>
@@ -363,18 +370,21 @@ const MemberManagement: FC<Props> = (props) => {
               loading={loading.isSelectSystem}
             />
           }
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            value={selectAgencyId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-            loading={loading.isSelectAgency}
-          />
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              value={selectAgencyId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              loading={loading.isSelectAgency}
+            />
+          }
           <Select
             allowClear
             showSearch
@@ -404,6 +414,7 @@ const MemberManagement: FC<Props> = (props) => {
       <MemberModal
         role={role}
         organizationId={organizationId}
+        branchId={branchId}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

@@ -44,7 +44,13 @@ const TeamManagement: FC<Props> = (props) => {
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
-  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void; organizationReset: () => void }>(null);
+  const modalRef = useRef<{
+    submit: () => void;
+    reset: () => void;
+    saveReset: () => void;
+    organizationReset: () => void;
+    branchReset: () => void;
+  }>(null);
 
   const columns: TableProps<TypeTeamTable>['columns'] = [
     {
@@ -170,7 +176,8 @@ const TeamManagement: FC<Props> = (props) => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
-    if (!hasRole([ROLE.ADMIN], String(role))) modalRef.current?.organizationReset();
+    if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) modalRef.current?.branchReset();
+    else if (!hasRole([ROLE.ADMIN], String(role))) modalRef.current?.organizationReset();
     else modalRef.current?.reset();
   }
 
@@ -261,7 +268,7 @@ const TeamManagement: FC<Props> = (props) => {
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || organizationId || '',
-      branchId: selectAgencyId || ''
+      branchId: selectAgencyId || branchId || ''
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -311,18 +318,21 @@ const TeamManagement: FC<Props> = (props) => {
               value={selectSystemId || null}
             />
           }
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            className={cx("select-system-item")}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-            loading={loading.isSelectAgency}
-            value={selectAgencyId || null}
-          />
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              className={cx("select-system-item")}
+              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              loading={loading.isSelectAgency}
+              value={selectAgencyId || null}
+            />
+          }
         </div>
         <Table
           columns={columns}
@@ -339,6 +349,7 @@ const TeamManagement: FC<Props> = (props) => {
       </div>
       <TeamModal
         organizationId={organizationId}
+        branchId={branchId}
         role={role}
         ref={modalRef}
         isModalOpen={isModalOpen}

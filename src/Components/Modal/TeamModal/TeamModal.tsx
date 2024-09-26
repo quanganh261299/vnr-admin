@@ -12,6 +12,7 @@ import { hasRole, ROLE } from "../../../helper/const";
 interface Props {
   role: string | null,
   organizationId: string | null,
+  branchId: string | null
   isModalOpen: boolean,
   handleOk: () => void,
   handleSave: () => void,
@@ -27,6 +28,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
   const {
     role,
     organizationId,
+    branchId,
     isModalOpen,
     editingData,
     selectSystemData,
@@ -55,6 +57,9 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
     },
     organizationReset: () => {
       form.resetFields(['name', 'branchId', 'description'])
+    },
+    branchReset: () => {
+      form.resetFields(['name', 'description']);
     }
   }));
 
@@ -103,8 +108,11 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
       if (!hasRole([ROLE.ADMIN], String(role))) {
         form.setFieldsValue({ organizationId: organizationId });
       }
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) {
+        form.setFieldsValue({ branchId: branchId })
+      }
     }
-  }, [editingData, form, role, organizationId]);
+  }, [editingData, form, role, organizationId, branchId]);
 
   return (
     <Modal
@@ -172,6 +180,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
             options={selectAgencyDataModal}
             notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             loading={isLoadingSelectAgency}
+            disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
           />
         </Form.Item>
         <Form.Item<TypeTeamField>

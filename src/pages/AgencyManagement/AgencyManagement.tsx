@@ -215,7 +215,7 @@ const AgencyManagement: FC<Props> = (props) => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
 
     })
-  }, [selectSystemId, currentPage, isCallbackApi])
+  }, [selectSystemId, currentPage, isCallbackApi, organizationId])
 
   return (
     <>

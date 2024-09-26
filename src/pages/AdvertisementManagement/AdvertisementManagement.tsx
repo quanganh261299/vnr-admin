@@ -213,14 +213,14 @@ const AdvertisementManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyId) {
+    if (selectAgencyId || branchId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectSystem: false,
         isSelectAgency: false,
         isSelectTeam: true
       }))
-      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -248,7 +248,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId, selectTeamId, organizationId])
+  }, [selectSystemId, selectAgencyId, selectTeamId, organizationId, branchId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
@@ -256,7 +256,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
       organizationId: selectSystemId || organizationId || '',
-      branchId: selectAgencyId || '',
+      branchId: selectAgencyId || branchId || '',
       groupId: selectTeamId || '',
       employeeId: selectMemberId || ''
     }
@@ -277,7 +277,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId])
+  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, organizationId, branchId])
 
   return (
     <>
@@ -297,18 +297,20 @@ const AdvertisementManagement: FC<Props> = (props) => {
               notFoundContent={'Không có dữ liệu'}
             />
           }
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            className={cx("select-system-item")}
-            loading={loading.isSelectAgency}
-            value={selectAgencyId || null}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-          />
+          {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              className={cx("select-system-item")}
+              loading={loading.isSelectAgency}
+              value={selectAgencyId || null}
+              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+            />
+          }
           <Select
             allowClear
             showSearch
