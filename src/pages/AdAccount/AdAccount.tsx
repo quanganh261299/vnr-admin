@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
-import { Button, message, Space, Table, Tag, Tooltip, Upload } from 'antd';
+import { Button, message, Modal, Space, Table, Tag, Tooltip, Upload } from 'antd';
 import type { FormProps, TableProps, UploadFile } from 'antd';
 import { DeleteOutlined, EditOutlined, FileExcelOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
@@ -276,8 +276,27 @@ const AdAccount: FC = () => {
       }).catch((err) => {
         setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
         const errorArr = JSON.parse(err.response.data.message)
-        errorArr.slice(0, 9).forEach((element: { RowIndex: number; ErrorMessage: string }) => {
-          error(element.ErrorMessage)
+        Modal.error({
+          title: 'Thông báo lỗi',
+          content: (
+            <div>
+              {errorArr.slice(0, 9).map((element: { RowIndex: number; ErrorMessage: string }) => (
+                <div key={element.RowIndex}>{element.ErrorMessage}</div>
+              ))}
+            </div>
+          ),
+          footer: (
+            <div className={cx('btn-ok')}>
+              <Button
+                onClick={() => Modal.destroyAll()}
+                type='primary'
+              >
+                Close
+              </Button>
+            </div>
+          ),
+          closable: true,
+          centered: true,
         });
       })
     }
