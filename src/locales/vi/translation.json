@@ -1,9 +1,9 @@
 {
     "roles": {
-        "ADMIN": "Admin",
-        "ORGANIZATION": "Hệ thống",
-        "BRANCH": "Chi nhánh",
-        "GROUP": "Đội nhóm",
+        "ADMIN": "ADMIN",
+        "ORGANIZATION": "HỆ THỐNG",
+        "BRANCH": "CHI NHÁNH",
+        "GROUP": "ĐỘI NHÓM",
         "BM": "BM"
     }
 }

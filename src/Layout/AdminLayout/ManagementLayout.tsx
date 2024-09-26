@@ -25,6 +25,7 @@ import logo from '../../assets/images/logo.png'
 import avatar from '../../assets/images/avatar.png'
 import { clearAuthStatus } from '../../helper/authStatus';
 import { handleDisplay, ROLE } from '../../helper/const';
+import { useTranslation } from 'react-i18next';
 
 const { Header, Sider, Content } = Layout;
 
@@ -35,6 +36,7 @@ const ManagementLayout: React.FC = () => {
   const [current, setCurrent] = useState<string>('system');
   const [headerName, setHeaderName] = useState<string>('Quản lí hệ thống')
   const role = localStorage.getItem('role')
+  const { t } = useTranslation()
   const navigate = useNavigate();
 
   const Logout = () => {
@@ -200,7 +202,7 @@ const ManagementLayout: React.FC = () => {
             <div className={cx("user-infor")}>
               <div className={cx("user-detail")}>
                 <img src={avatar} alt="avatar" className={cx("avatar")} />
-                <span>Hello, admin</span>
+                <span>QUYỀN: {t(`roles.${role}`)}</span>
               </div>
               <CaretDownOutlined className={cx("user-icon")} />
             </div>
