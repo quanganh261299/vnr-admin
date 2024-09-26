@@ -18,8 +18,6 @@ import BmAccount from "../pages/BmAccount/BmAccount";
 import BMLayout from "../Layout/BMLayout/BMLayout";
 import BmHomePage from "../pages/BmHomepage/BmHomePage";
 import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
-import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
-import TermsOfUse from "../pages/TermsOfUse/TermsOfUse";
 import { handleRole, ROLE } from "../helper/const";
 
 const role = localStorage.getItem('role')
@@ -31,14 +29,6 @@ export const route = [
   {
     path: '/loginBM',
     element: <LoginBM />
-  },
-  {
-    path: '/privacy-policy',
-    element: <PrivacyPolicy />
-  },
-  {
-    path: '/terms-of-use',
-    element: <TermsOfUse />
   },
   {
     path: "/",
