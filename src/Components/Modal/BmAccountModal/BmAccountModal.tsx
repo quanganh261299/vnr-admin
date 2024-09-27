@@ -9,10 +9,14 @@ import { TAgencyTable } from "../../../models/agency/agency";
 import branchApi from "../../../api/branchApi";
 import styles from './style.module.scss'
 import classNames from "classnames/bind";
-import { EMAIL_REGEX } from "../../../helper/const";
+import { EMAIL_REGEX, hasRole, ROLE } from "../../../helper/const";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 interface Props {
+  role: string | null,
+  organizationId: string | null,
+  branchId: string | null,
+  groupId: string | null,
   isModalOpen: boolean,
   handleOk: () => void,
   handleCancel: () => void,
@@ -24,6 +28,10 @@ interface Props {
 
 const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
   const {
+    role,
+    organizationId,
+    branchId,
+    groupId,
     isModalOpen,
     editingData,
     isLoadingBtn,
@@ -91,13 +99,22 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
       });
     } else {
       form.resetFields();
+      if (!hasRole([ROLE.ADMIN], String(role))) {
+        form.setFieldsValue({ organizationId: organizationId });
+      }
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) {
+        form.setFieldsValue({ branchId: branchId })
+      }
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))) {
+        form.setFieldsValue({ groupId: groupId })
+      }
     }
-  }, [editingData, form]);
+  }, [editingData, form, organizationId, branchId, groupId, role]);
 
   useEffect(() => {
-    if (selectSystemModalId) {
+    if (selectSystemModalId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId || organizationId || '' }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -107,9 +124,9 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyModalId) {
+    if (selectAgencyModalId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyModalId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyModalId || branchId || '' }).then((res) => {
         setSelectTeamDataModal(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -119,7 +136,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemModalId, selectAgencyModalId])
+  }, [selectSystemModalId, selectAgencyModalId, organizationId, branchId])
 
   return (
     <Modal
@@ -154,6 +171,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
               options={selectSystemData}
               onClear={clearSelectSystemModalId}
               notFoundContent={'Không có dữ liệu'}
+              disabled={!hasRole([ROLE.ADMIN], String(role))}
             />
           </Form.Item>
           <Form.Item
@@ -170,6 +188,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
               onClear={clearSelectAgencyModalId}
               notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
+              disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
             />
           </Form.Item>
         </div>
@@ -186,6 +205,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             options={selectTeamDataModal}
             notFoundContent={selectAgencyModalId ? 'Không có dữ liệu ' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
+            disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))}
           />
         </Form.Item>
 

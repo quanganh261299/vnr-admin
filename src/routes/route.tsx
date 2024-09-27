@@ -130,7 +130,13 @@ export const route = [
       },
       {
         path: '/bm-account',
-        element: <BmAccount />
+        element:
+          <BmAccount
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       },
       {
         path: '/statistic',

@@ -15,9 +15,17 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
-import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 
-const SystemManagement: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+  groupId: string | null
+}
+
+const SystemManagement: FC<Props> = (props) => {
+  const { role, organizationId, branchId, groupId } = props
   const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TBmUser[]>([])
@@ -210,9 +218,9 @@ const SystemManagement: FC = () => {
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
     })
-    if (selectSystemId) {
+    if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -222,9 +230,9 @@ const SystemManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyId) {
+    if (selectAgencyId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -234,16 +242,16 @@ const SystemManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId])
+  }, [selectSystemId, selectAgencyId, organizationId, branchId])
 
   useEffect(() => {
     setLoading({ ...loading, isTable: true })
     userApi.getListBmUser({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      organizationId: selectSystemId || '',
-      branchId: selectAgencyId || '',
-      groupId: selectTeamId || ''
+      organizationId: selectSystemId || organizationId || '',
+      branchId: selectAgencyId || branchId || '',
+      groupId: selectTeamId || groupId || ''
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -261,7 +269,7 @@ const SystemManagement: FC = () => {
     }).catch(() => {
       setLoading({ ...loading, isTable: false })
     })
-  }, [currentPage, isCallbackApi, selectSystemId, selectAgencyId, selectTeamId])
+  }, [currentPage, isCallbackApi, selectSystemId, selectAgencyId, selectTeamId, organizationId, branchId, groupId])
 
   return (
     <>
@@ -278,41 +286,47 @@ const SystemManagement: FC = () => {
           </Button>
         </Tooltip>
         <div className={cx("bm-container")}>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChangeSystem}
-            options={selectSystemData}
-            className={cx("select-system-item")}
-            notFoundContent={'Không có dữ liệu'}
-            loading={loading.isSelectSystem}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            value={selectAgencyId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-            loading={loading.isSelectAgency}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn đội nhóm"
-            optionFilterProp="label"
-            onChange={onChangeTeam}
-            options={selectTeamData}
-            value={selectTeamId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
-            loading={loading.isSelectTeam}
-          />
+          {role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChangeSystem}
+              options={selectSystemData}
+              className={cx("select-system-item")}
+              notFoundContent={'Không có dữ liệu'}
+              loading={loading.isSelectSystem}
+            />
+          }
+          {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              value={selectAgencyId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              loading={loading.isSelectAgency}
+            />
+          }
+          {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn đội nhóm"
+              optionFilterProp="label"
+              onChange={onChangeTeam}
+              options={selectTeamData}
+              value={selectTeamId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              loading={loading.isSelectTeam}
+            />
+          }
         </div>
         <Table
           columns={columns}
@@ -328,6 +342,10 @@ const SystemManagement: FC = () => {
         />
       </div>
       <BmAccountModal
+        role={role}
+        organizationId={organizationId}
+        branchId={branchId}
+        groupId={groupId}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}
