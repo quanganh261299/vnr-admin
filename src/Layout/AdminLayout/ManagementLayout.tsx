@@ -158,7 +158,7 @@ const ManagementLayout: React.FC = () => {
               key: 'account',
               icon: <CrownOutlined />,
               label: <Link to='/account'>Tài khoản hệ thống</Link>,
-              style: { display: handleDisplay(['ADMIN'], String(role)) }
+              style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) }
             },
             {
               key: 'ad-account',

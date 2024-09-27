@@ -94,7 +94,13 @@ export const route = [
       },
       {
         path: '/account',
-        element: role && hasRole([ROLE.ADMIN], role) ? <SystemAccount /> : <ErrorPage />
+        element:
+          role
+            && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
+            ?
+            <SystemAccount role={role} />
+            :
+            <ErrorPage />
       },
       {
         path: '/ad-account',
