@@ -164,9 +164,9 @@ const SystemAccount: FC<Props> = (props) => {
     setLoading((prevLoading) => ({ ...prevLoading, isSelect: true }))
     userApi.getRole().then((res) => {
       let data = res.data.data
-      if (role !== 'ADMIN') {
+      if (role === ROLE.ORGANIZATION) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data = res.data.data.filter((item: any) => item.name !== role && item.name !== ROLE.ADMIN)
+        data = res.data.data.filter((item: any) => item.name !== ROLE.ORGANIZATION && item.name !== ROLE.ADMIN)
       }
       setSelectAccountData(
         data.map((item: TUserOption) => ({
@@ -243,6 +243,7 @@ const SystemAccount: FC<Props> = (props) => {
         />
       </div>
       <SystemAccountModal
+        role={role}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

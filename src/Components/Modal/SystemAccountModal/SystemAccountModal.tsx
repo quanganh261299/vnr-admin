@@ -14,6 +14,7 @@ import { EMAIL_REGEX, hasRole, ROLE } from "../../../helper/const";
 import { useTranslation } from "react-i18next";
 
 interface Props {
+  role: string | null,
   isModalOpen: boolean,
   handleOk: () => void,
   handleCancel: () => void,
@@ -25,6 +26,7 @@ interface Props {
 
 const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
   const {
+    role,
     isModalOpen,
     editingData,
     isLoadingBtn,
@@ -140,8 +142,11 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
     } else {
       setRoleId('')
       form.resetFields();
+      if (role === ROLE.BRANCH) {
+        form.setFieldValue('roleId', selectAccountData.find((item) => item.label === t(`roles.${ROLE.GROUP}`))?.value)
+      }
     }
-  }, [editingData, form]);
+  }, [editingData, form, role, selectAccountData, t]);
 
   return (
     <Modal
@@ -172,6 +177,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
             placeholder="Chọn role"
             options={selectAccountData}
             notFoundContent={'Không có dữ liệu'}
+            disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
           />
         </Form.Item>
 
