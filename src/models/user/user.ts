@@ -8,6 +8,9 @@ export type TUser = {
         id: string;
         name: string;
     };
+    organizationId?: string;
+    branchId?: string;
+    groupId?: string;
 };
 
 export type TUserOption = {
@@ -20,6 +23,9 @@ export type TSystemUser = {
     email: string;
     password?: string;
     roleId?: string;
+    organizationId?: string;
+    branchId?: string;
+    groupId?: string;
 };
 
 export type TAdUser = {
