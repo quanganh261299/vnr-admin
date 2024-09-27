@@ -20,7 +20,9 @@ const Login = () => {
     setIsLoading(true)
     authApi.login(values)
       .then((res) => {
-        storeAuthStatus(res.data.data.accessToken, res.data.data.role, res.data.data.identifyId)
+        console.log('res', res)
+        const { accessToken, role, organizationId, branchId, groupId } = res.data.data
+        storeAuthStatus(accessToken, role, organizationId, branchId, groupId)
         setIsLoading(false)
       })
       .catch((err) => {

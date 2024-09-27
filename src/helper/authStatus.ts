@@ -7,17 +7,22 @@ export const clearAuthStatus = () => {
 export const storeAuthStatus = (
     token: string,
     role: string,
-    identifyId: string
+    organizationId: string,
+    branchId: string,
+    groupId: string
 ) => {
     localStorage.setItem("role", role);
     localStorage.setItem("token", token);
     switch (role) {
         case ROLE.ORGANIZATION:
-            return localStorage.setItem("organizationId", identifyId);
+            return localStorage.setItem("organizationId", organizationId);
         case ROLE.BRANCH:
-            return localStorage.setItem("branchId", identifyId);
+            localStorage.setItem("organizationId", organizationId);
+            return localStorage.setItem("branchId", branchId);
         case ROLE.GROUP:
-            return localStorage.setItem("groupId", identifyId);
+            localStorage.setItem("organizationId", organizationId);
+            localStorage.setItem("branchId", branchId);
+            return localStorage.setItem("groupId", groupId);
         default:
             localStorage.removeItem("organizationId");
             localStorage.removeItem("branchId");
