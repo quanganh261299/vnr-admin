@@ -143,6 +143,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
       setRoleId('')
       form.resetFields();
       if (role === ROLE.BRANCH) {
+        setRoleId(String(selectAccountData.find((item) => item.label === t(`roles.${ROLE.GROUP}`))?.value))
         form.setFieldValue('roleId', selectAccountData.find((item) => item.label === t(`roles.${ROLE.GROUP}`))?.value)
       }
     }

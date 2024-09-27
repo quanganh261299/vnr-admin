@@ -53,7 +53,10 @@ export const route = [
         element:
           role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role)
             ?
-            <AgencyManagement role={role} organizationId={organizationId} />
+            <AgencyManagement
+              role={role}
+              organizationId={organizationId}
+            />
             :
             <ErrorPage />
       },
@@ -62,7 +65,11 @@ export const route = [
         element:
           role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
             ?
-            <TeamManagement role={role} organizationId={organizationId} branchId={branchId} />
+            <TeamManagement
+              role={role}
+              organizationId={organizationId}
+              branchId={branchId}
+            />
             :
             <ErrorPage />
       },
@@ -72,13 +79,24 @@ export const route = [
           role
             && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP], role)
             ?
-            <MemberManagement role={role} organizationId={organizationId} branchId={branchId} groupId={groupId} />
+            <MemberManagement
+              role={role}
+              organizationId={organizationId}
+              branchId={branchId}
+              groupId={groupId}
+            />
             :
             <ErrorPage />
       },
       {
         path: '/advertisement-account',
-        element: <AdvertisementManagement role={role} organizationId={organizationId} branchId={branchId} groupId={groupId} />,
+        element:
+          <AdvertisementManagement
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />,
       },
       {
         path: '/advertisement-account/:accountId/campaigns',
@@ -116,7 +134,13 @@ export const route = [
       },
       {
         path: '/statistic',
-        element: <StatisticManagement />
+        element:
+          <StatisticManagement
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       }
     ]
   },

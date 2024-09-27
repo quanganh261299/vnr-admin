@@ -9,7 +9,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import SystemAccountModal from '../../Components/Modal/SystemAccountModal/SystemAccountModal';
 import { SelectType } from '../../models/common';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import { DEFAULT_PAGE_SIZE, ROLE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -216,17 +216,19 @@ const SystemAccount: FC<Props> = (props) => {
           Thêm tài khoản hệ thống
         </Button>
       </Tooltip>
-      <Select
-        allowClear
-        showSearch
-        placeholder="Chọn role"
-        optionFilterProp="label"
-        onChange={onChange}
-        options={selectAccountData}
-        loading={loading.isSelect}
-        notFoundContent={'Không có dữ liệu'}
-        className={cx('select-form')}
-      />
+      {role && hasRole([ROLE.ADMIN], role) &&
+        <Select
+          allowClear
+          showSearch
+          placeholder="Chọn role"
+          optionFilterProp="label"
+          onChange={onChange}
+          options={selectAccountData}
+          loading={loading.isSelect}
+          notFoundContent={'Không có dữ liệu'}
+          className={cx('select-form')}
+        />
+      }
 
       <div>
         <Table
