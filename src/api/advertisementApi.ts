@@ -6,6 +6,10 @@ const advertisementApi = {
         pageIndex?: number;
         pageSize?: number;
         isDelete?: boolean;
+        organizationId?: string;
+        branchId?: string;
+        groupId?: string;
+        employeeId?: string;
     }) => {
         const url = `/adsAccount`;
         return axiosInstance.get(url, { params });

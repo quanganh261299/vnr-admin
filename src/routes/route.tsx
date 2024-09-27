@@ -122,11 +122,23 @@ export const route = [
       },
       {
         path: '/ad-account',
-        element: <AdAccount />
+        element:
+          <AdAccount
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       },
       {
         path: '/ad-account?isDeleted=true',
-        element: <AdAccount />
+        element:
+          <AdAccount
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       },
       {
         path: '/bm-account',

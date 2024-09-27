@@ -230,7 +230,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-    if (selectTeamId) {
+    if (selectTeamId || groupId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectSystem: false,
@@ -277,7 +277,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, organizationId, branchId])
+  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, organizationId, branchId, groupId])
 
   return (
     <>
