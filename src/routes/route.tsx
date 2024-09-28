@@ -19,6 +19,7 @@ import BMLayout from "../Layout/BMLayout/BMLayout";
 import BmHomePage from "../pages/BmHomepage/BmHomePage";
 import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
 import { hasRole, ROLE } from "../helper/const";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 const role = localStorage.getItem('role')
 const organizationId = localStorage.getItem('organizationId') || null
@@ -46,6 +47,10 @@ export const route = [
     children: [
       {
         index: true,
+        element: role && hasRole([ROLE.ADMIN], role) ? <Dashboard /> : <ErrorPage />
+      },
+      {
+        path: '/system',
         element: role && hasRole([ROLE.ADMIN], role) ? <SystemManagement /> : <ErrorPage />
       },
       {

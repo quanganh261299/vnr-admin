@@ -24,7 +24,7 @@ import { Footer } from 'antd/es/layout/layout';
 import logo from '../../assets/images/logo.png'
 import avatar from '../../assets/images/avatar.png'
 import { clearAuthStatus } from '../../helper/authStatus';
-import { handleDisplay, ROLE } from '../../helper/const';
+import { handleDisplay, hasRole, ROLE } from '../../helper/const';
 import { useTranslation } from 'react-i18next';
 
 const { Header, Sider, Content } = Layout;
@@ -57,6 +57,10 @@ const ManagementLayout: React.FC = () => {
 
   useEffect(() => {
     if (location.pathname === '/') {
+      setHeaderName('Dashboard')
+      setCurrent('dashboard')
+    }
+    else if (location.pathname.includes('/system')) {
       setHeaderName('Quản lí hệ thống')
       setCurrent('system')
     }
@@ -74,6 +78,9 @@ const ManagementLayout: React.FC = () => {
     }
     else if (location.pathname.includes('/member')) {
       setHeaderName('Quản lí thành viên')
+      if (role && hasRole([ROLE.GROUP], role)) {
+        setCurrent('member-separated')
+      }
       setCurrent('member')
     }
     else if (location.pathname.includes('/advertisement-account')) {
@@ -97,7 +104,7 @@ const ManagementLayout: React.FC = () => {
       setCurrent('statistic')
     }
     else setCurrent('')
-  }, [location])
+  }, [location, role])
 
   return (
     <Layout>
@@ -108,10 +115,16 @@ const ManagementLayout: React.FC = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultOpenKeys={['system-nav']}
+          defaultOpenKeys={role && hasRole([ROLE.ADMIN], role) ? [] : ['system-nav']}
           selectedKeys={[current]}
           className='menu'
           items={[
+            {
+              key: 'dashboard',
+              icon: <UserOutlined />,
+              label: <Link to='/'>Dashboard</Link>,
+              style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
+            },
             {
               key: 'system-nav',
               icon: <AppstoreOutlined />,
@@ -121,7 +134,7 @@ const ManagementLayout: React.FC = () => {
                 {
                   key: 'system',
                   icon: <SettingOutlined />,
-                  label: <Link to='/'>Quản lí hệ thống</Link>,
+                  label: <Link to='/system'>Quản lí hệ thống</Link>,
                   style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
                 },
                 {
@@ -144,7 +157,7 @@ const ManagementLayout: React.FC = () => {
               ]
             },
             {
-              key: 'member',
+              key: 'member-separated',
               icon: <UserOutlined />,
               label: <Link to='/member'>Quản lí thành viên</Link>,
               style: { display: handleDisplay([ROLE.GROUP], String(role)) }
