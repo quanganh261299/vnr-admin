@@ -267,6 +267,7 @@ const MemberModal = forwardRef<{
             { required: true, whitespace: true, message: 'Không được để trống tên email' },
             { pattern: EMAIL_REGEX, message: 'Email không hợp lệ' }
           ]}
+          getValueFromEvent={(event) => event.target.value.trim()}
           className={cx("custom-margin-form")}
         >
           <Input />
@@ -274,6 +275,7 @@ const MemberModal = forwardRef<{
         <Form.Item<TMemberField>
           label="Số điện thoại"
           name="phone"
+          getValueFromEvent={(event) => event.target.value.trim()}
           rules={[
             { required: true, whitespace: true, message: 'Không được để trống số điện thoại' },
             { pattern: PHONE_REGEX, message: 'Số điện thoại không hợp lệ, bắt đầu từ 0 và có 9 - 11 số' }
