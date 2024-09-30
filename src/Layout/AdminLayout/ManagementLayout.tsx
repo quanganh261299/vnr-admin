@@ -5,6 +5,7 @@ import {
   BarChartOutlined,
   CaretDownOutlined,
   CrownOutlined,
+  DashboardOutlined,
   DollarOutlined,
   IdcardOutlined,
   LoginOutlined,
@@ -121,7 +122,7 @@ const ManagementLayout: React.FC = () => {
           items={[
             {
               key: 'dashboard',
-              icon: <UserOutlined />,
+              icon: <DashboardOutlined />,
               label: <Link to='/'>Dashboard</Link>,
               style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
             },

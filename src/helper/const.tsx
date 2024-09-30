@@ -65,7 +65,7 @@ export const formatNumberWithCommasNotZero = (number: number | string) => {
     else return 0
 };
 
-export const convertStringToRoundNumber = (number: string) => {
+export const convertStringToRoundNumber = (number: string | number) => {
     if (number) {
         return Math.round(Number(number))
     }

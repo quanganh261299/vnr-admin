@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import styles from './style.module.scss'
 import classNames from "classnames/bind";
 import { DatePicker, Select, Spin } from "antd";
-import { formatDateYMD, hasRole, ROLE, statisticType } from "../../helper/const";
+import { convertStringToRoundNumber, formatDateYMD, hasRole, ROLE, statisticType } from "../../helper/const";
 import dayjs, { Dayjs } from "dayjs";
 import { TBarChartData } from "../../models/statistic/statistic";
 import { SelectType } from "../../models/common";
@@ -86,7 +86,7 @@ const StatisticManagement: FC<Props> = (props) => {
       {
         type: 'bar',
         barMaxWidth: 50,
-        data: totalAmountSpentData?.y?.length ? totalAmountSpentData.y : []
+        data: totalAmountSpentData?.y?.length ? totalAmountSpentData.y.map((item) => convertStringToRoundNumber(item)) : []
       }
     ]
   };
@@ -123,7 +123,7 @@ const StatisticManagement: FC<Props> = (props) => {
       {
         type: 'bar',
         barMaxWidth: 50,
-        data: highestEmployeeResultData?.y?.length ? highestEmployeeResultData.y : []
+        data: highestEmployeeResultData?.y?.length ? highestEmployeeResultData.y.map((item) => convertStringToRoundNumber(item)) : []
       }
     ]
   };
@@ -160,7 +160,7 @@ const StatisticManagement: FC<Props> = (props) => {
       {
         type: 'bar',
         barMaxWidth: 50,
-        data: totalCostPerResultData?.y?.length ? totalCostPerResultData.y : []
+        data: totalCostPerResultData?.y?.length ? totalCostPerResultData.y.map((item) => convertStringToRoundNumber(item)) : []
       }
     ]
   };
@@ -197,7 +197,7 @@ const StatisticManagement: FC<Props> = (props) => {
       {
         type: 'bar',
         barMaxWidth: 50,
-        data: totalResultCampaignData?.y?.length ? totalResultCampaignData.y : [],
+        data: totalResultCampaignData?.y?.length ? totalResultCampaignData.y.map((item) => convertStringToRoundNumber(item)) : [],
       }
     ]
   };
