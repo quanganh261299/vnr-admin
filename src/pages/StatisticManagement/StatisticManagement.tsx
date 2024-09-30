@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import styles from './style.module.scss'
 import classNames from "classnames/bind";
 import { DatePicker, Select, Spin } from "antd";
-import { formatDateYMD, statisticType } from "../../helper/const";
+import { formatDateYMD, hasRole, ROLE, statisticType } from "../../helper/const";
 import dayjs, { Dayjs } from "dayjs";
 import { TBarChartData } from "../../models/statistic/statistic";
 import { SelectType } from "../../models/common";
@@ -15,7 +15,15 @@ import groupApi from "../../api/groupApi";
 import { TypeTeamTable } from "../../models/team/team";
 import statisticApi from "../../api/statisticApi";
 
-const StatisticManagement: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+  groupId: string | null
+}
+
+const StatisticManagement: FC<Props> = (props) => {
+  const { role, organizationId, branchId, groupId } = props
   const cx = classNames.bind(styles)
   const [totalAmountSpentData, setTotalAmountSpentData] = useState<TBarChartData>({ x: [], y: [] })
   const [highestEmployeeResultData, setHighestEmployeeResultData] = useState<TBarChartData>({ x: [], y: [] })
@@ -305,9 +313,9 @@ const StatisticManagement: FC = () => {
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
     })
-    if (selectSystemId) {
+    if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -317,9 +325,9 @@ const StatisticManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyId) {
+    if (selectAgencyId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -329,7 +337,7 @@ const StatisticManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId])
+  }, [selectSystemId, selectAgencyId, organizationId, branchId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isBarChart: true }))
@@ -338,9 +346,9 @@ const StatisticManagement: FC = () => {
         statisticApi.getTotalAmountSpent({
           start: `${startTime}T01:00:00`,
           end: `${endTime}T23:59:59`,
-          organizationId: selectSystemId || '',
-          branchId: selectAgencyId || '',
-          groupId: selectTeamId || ''
+          organizationId: selectSystemId || organizationId || '',
+          branchId: selectAgencyId || branchId || '',
+          groupId: selectTeamId || groupId || ''
         }).then((res) => {
           setTotalAmountSpentData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
@@ -351,9 +359,9 @@ const StatisticManagement: FC = () => {
         statisticApi.getHighestResultEmployee({
           start: `${startTime}T01:00:00`,
           end: `${endTime}T23:59:59`,
-          organizationId: selectSystemId || '',
-          branchId: selectAgencyId || '',
-          groupId: selectTeamId || ''
+          organizationId: selectSystemId || organizationId || '',
+          branchId: selectAgencyId || branchId || '',
+          groupId: selectTeamId || groupId || ''
         }).then((res) => {
           setHighestEmployeeResultData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
@@ -364,9 +372,9 @@ const StatisticManagement: FC = () => {
         statisticApi.getTotalCostPerResult({
           start: `${startTime}T01:00:00`,
           end: `${endTime}T23:59:59`,
-          organizationId: selectSystemId || '',
-          branchId: selectAgencyId || '',
-          groupId: selectTeamId || ''
+          organizationId: selectSystemId || organizationId || '',
+          branchId: selectAgencyId || branchId || '',
+          groupId: selectTeamId || groupId || ''
         }).then((res) => {
           setTotalCostPerResultData(res.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
@@ -377,16 +385,16 @@ const StatisticManagement: FC = () => {
         statisticApi.getTotalResultCampaign({
           start: `${startTime}T01:00:00`,
           end: `${endTime}T23:59:59`,
-          organizationId: selectSystemId || '',
-          branchId: selectAgencyId || '',
-          groupId: selectTeamId || ''
+          organizationId: selectSystemId || organizationId || '',
+          branchId: selectAgencyId || branchId || '',
+          groupId: selectTeamId || groupId || ''
         }).then((res) => {
           setTotalResultCampaignData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
         })
       }
     }
-  }, [startTime, endTime, selectSystemId, selectAgencyId, selectTeamId, barChartType])
+  }, [startTime, endTime, selectSystemId, selectAgencyId, selectTeamId, barChartType, organizationId, branchId, groupId])
 
   useEffect(() => {
     switch (barChartType) {
@@ -409,42 +417,51 @@ const StatisticManagement: FC = () => {
           className={cx('statistic-type')}
         />
         <div className={cx('statistic-filter-system')}>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChangeSystem}
-            options={selectSystemData}
-            value={selectSystemId}
-            className={cx("select-system-item")}
-            notFoundContent={'Không có dữ liệu'}
-            loading={loading.isSelectSystem}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            value={selectAgencyId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-            loading={loading.isSelectAgency}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn đội nhóm"
-            optionFilterProp="label"
-            onChange={onChangeTeam}
-            options={selectTeamData}
-            value={selectTeamId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
-            loading={loading.isSelectTeam}
-          />
+          {
+            role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChangeSystem}
+              options={selectSystemData}
+              value={selectSystemId}
+              className={cx("select-system-item")}
+              notFoundContent={'Không có dữ liệu'}
+              loading={loading.isSelectSystem}
+            />
+          }
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              value={selectAgencyId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              loading={loading.isSelectAgency}
+            />
+          }
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn đội nhóm"
+              optionFilterProp="label"
+              onChange={onChangeTeam}
+              options={selectTeamData}
+              value={selectTeamId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectAgencyId || branchId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              loading={loading.isSelectTeam}
+            />
+          }
           <RangePicker
             allowClear={false}
             format={"DD-MM-YYYY"}
@@ -452,6 +469,7 @@ const StatisticManagement: FC = () => {
             placeholder={["Bắt đầu", "Kết thúc"]}
             value={dateRange}
             maxDate={dayjs()}
+            className={cx('select-range')}
           />
         </div>
       </div>

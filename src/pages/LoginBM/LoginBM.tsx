@@ -31,7 +31,7 @@ const LoginBM = () => {
     if (getAuthFbStatus()) {
       navigate('/bm-homepage', { replace: true })
     }
-  }, [localStorage.getItem('isAllowed'), localStorage.getItem('BmToken')])
+  }, [localStorage.getItem('BmToken')])
 
   return (
     <>

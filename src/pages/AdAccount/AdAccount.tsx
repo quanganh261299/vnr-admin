@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
-import { Button, message, Space, Table, Tag, Tooltip, Upload } from 'antd';
+import { Button, message, Modal, Select, Space, Table, Tag, Tooltip, Upload } from 'antd';
 import type { FormProps, TableProps, UploadFile } from 'antd';
 import { DeleteOutlined, EditOutlined, FileExcelOutlined, PlusOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
@@ -11,10 +11,27 @@ import AdAccountModal from '../../Components/Modal/AdAccountModal/AdAccountModal
 import { useSearchParams } from 'react-router-dom';
 import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 import { UploadChangeParam } from 'antd/es/upload';
+import { SelectType } from '../../models/common';
+import { TypeTeamTable } from '../../models/team/team';
+import groupApi from '../../api/groupApi';
+import { TAgencyTable } from '../../models/agency/agency';
+import branchApi from '../../api/branchApi';
+import { TSystemTable } from '../../models/system/system';
+import organizationApi from '../../api/organizationApi';
+import { TMemberTable } from '../../models/member/member';
+import employeeApi from '../../api/employeeApi';
 
-const AdAccount: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+  groupId: string | null
+}
+
+const AdAccount: FC<Props> = (props) => {
+  const { role, organizationId, branchId, groupId } = props
   const cx = classNames.bind(styles)
   const [modal, setModal] = useState({
     isAddModalOpen: false,
@@ -27,7 +44,11 @@ const AdAccount: FC = () => {
     isTable: false,
     isBtn: false,
     isSaveBtn: false,
-    isUpload: false
+    isUpload: false,
+    isSelectSystem: false,
+    isSelectAgency: false,
+    isSelectTeam: false,
+    isSelectMember: false
   })
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
@@ -37,6 +58,14 @@ const AdAccount: FC = () => {
   const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
   const [searchParams] = useSearchParams()
   const [isDeleted, setIsDeleted] = useState<boolean>(!!searchParams.get('isDeleted'))
+  const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
+  const [selectAgencyData, setSelectAgencyData] = useState<SelectType[]>([])
+  const [selectTeamData, setSelectTeamData] = useState<SelectType[]>([])
+  const [selectMemberData, setSelectMemberData] = useState<SelectType[]>([])
+  const [selectSystemId, setSelectSystemId] = useState<string | null>(null)
+  const [selectAgencyId, setSelectAgencyId] = useState<string | null>(null)
+  const [selectTeamId, setSelectTeamId] = useState<string | null>(null)
+  const [selectMemberId, setSelectMemberId] = useState<string | null>(null)
 
   const columns: TableProps<TAdUserTable>['columns'] = [
     {
@@ -115,6 +144,28 @@ const AdAccount: FC = () => {
       width: '10%',
     },
   ];
+
+  const onChangeSystem = (value: string) => {
+    setSelectSystemId(value)
+    setSelectAgencyId(null)
+    setSelectTeamId(null)
+    setSelectMemberId(null)
+  };
+
+  const onChangeAgency = (value: string) => {
+    setSelectAgencyId(value)
+    setSelectTeamId(null)
+    setSelectMemberId(null)
+  };
+
+  const onChangeTeam = (value: string) => {
+    setSelectTeamId(value)
+    setSelectMemberId(null)
+  };
+
+  const onChangeMember = (value: string) => {
+    setSelectMemberId(value)
+  };
 
   const onFinish: FormProps<TAdvertisementField>['onFinish'] = (values) => {
     if (!isSave) setLoading((prevLoading) => ({ ...prevLoading, isBtn: true }))
@@ -276,8 +327,27 @@ const AdAccount: FC = () => {
       }).catch((err) => {
         setLoading((prevLoading) => ({ ...prevLoading, isUpload: false }))
         const errorArr = JSON.parse(err.response.data.message)
-        errorArr.slice(0, 9).forEach((element: { RowIndex: number; ErrorMessage: string }) => {
-          error(element.ErrorMessage)
+        Modal.error({
+          title: 'Thông báo lỗi',
+          content: (
+            <div>
+              {errorArr.slice(0, 9).map((element: { RowIndex: number; ErrorMessage: string }) => (
+                <div key={element.RowIndex}>{element.ErrorMessage}</div>
+              ))}
+            </div>
+          ),
+          footer: (
+            <div className={cx('btn-ok')}>
+              <Button
+                onClick={() => Modal.destroyAll()}
+                type='primary'
+              >
+                Close
+              </Button>
+            </div>
+          ),
+          closable: true,
+          centered: true,
         });
       })
     }
@@ -306,11 +376,72 @@ const AdAccount: FC = () => {
   }, [searchParams])
 
   useEffect(() => {
+    setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: true }))
+    setSelectAgencyData([])
+    setSelectTeamData([])
+    organizationApi.getListOrganization().then((res) => {
+      setSelectSystemData(
+        res.data.data.map((item: TSystemTable) => ({
+          value: item.id,
+          label: item.name
+        }))
+      )
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
+    })
+    if (selectSystemId || organizationId) {
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
+        setSelectAgencyData(
+          res.data.data.map((item: TAgencyTable) => ({
+            value: item.id,
+            label: item.name
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
+      })
+    }
+    if (selectAgencyId || branchId) {
+      setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
+        setSelectTeamData(
+          res.data.data.map((item: TypeTeamTable) => ({
+            value: item.id,
+            label: item.name
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
+      })
+    }
+    if (selectTeamId || groupId) {
+      setLoading((prevLoading) => ({
+        ...prevLoading,
+        isSelectSystem: false,
+        isSelectAgency: false,
+        isSelectTeam: false,
+        isSelectMember: true
+      }))
+      employeeApi.getListEmployee({ groupId: selectTeamId || groupId || '' }).then((res) => {
+        setSelectMemberData(
+          res.data.data.map((item: TMemberTable) => ({
+            value: item.id,
+            label: item.name
+          }))
+        )
+        setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
+      })
+    }
+  }, [selectSystemId, selectAgencyId, organizationId, branchId, groupId, selectTeamId])
+
+  useEffect(() => {
     setLoading({ ...loading, isTable: true })
     advertisementApi.getListAdsAccount({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      isDelete: isDeleted
+      isDelete: isDeleted,
+      organizationId: selectSystemId || organizationId || '',
+      branchId: selectAgencyId || branchId || '',
+      groupId: selectTeamId || groupId || '',
+      employeeId: selectMemberId || ''
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -329,7 +460,7 @@ const AdAccount: FC = () => {
       error(err.response.data.message)
       setLoading({ ...loading, isTable: false })
     })
-  }, [currentPage, isCallbackApi, isDeleted])
+  }, [currentPage, isCallbackApi, isDeleted, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, organizationId, branchId, groupId])
 
   return (
     <>
@@ -380,6 +511,62 @@ const AdAccount: FC = () => {
           </>
         )
       }
+      {
+        role && hasRole([ROLE.ADMIN], role) &&
+        <Select
+          allowClear
+          showSearch
+          placeholder="Chọn hệ thống"
+          optionFilterProp="label"
+          onChange={onChangeSystem}
+          options={selectSystemData}
+          className={cx("select-system-item")}
+          notFoundContent={'Không có dữ liệu'}
+          loading={loading.isSelectSystem}
+        />
+      }
+      {
+        role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+        <Select
+          allowClear
+          showSearch
+          placeholder="Chọn chi nhánh"
+          optionFilterProp="label"
+          onChange={onChangeAgency}
+          options={selectAgencyData}
+          value={selectAgencyId || null}
+          className={cx("select-system-item")}
+          notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+          loading={loading.isSelectAgency}
+        />
+      }
+      {
+        role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+        <Select
+          allowClear
+          showSearch
+          placeholder="Chọn đội nhóm"
+          optionFilterProp="label"
+          onChange={onChangeTeam}
+          options={selectTeamData}
+          value={selectTeamId || null}
+          className={cx("select-system-item")}
+          notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+          loading={loading.isSelectTeam}
+        />
+      }
+      <Select
+        allowClear
+        showSearch
+        placeholder="Chọn thành viên"
+        optionFilterProp="label"
+        onChange={onChangeMember}
+        options={selectMemberData}
+        className={cx("select-system-item")}
+        loading={loading.isSelectMember}
+        value={selectMemberId || null}
+        notFoundContent={selectTeamId || groupId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+      />
       <div>
         <Table
           columns={columns}
@@ -395,6 +582,10 @@ const AdAccount: FC = () => {
         />
       </div>
       <AdAccountModal
+        role={role}
+        organizationId={organizationId}
+        branchId={branchId}
+        groupId={groupId}
         ref={modalRef}
         isModalOpen={modal.isAddModalOpen}
         handleOk={handleOk}

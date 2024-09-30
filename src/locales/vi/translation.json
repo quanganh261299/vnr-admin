@@ -1,0 +1,9 @@
+{
+    "roles": {
+        "ADMIN": "ADMIN",
+        "ORGANIZATION": "HỆ THỐNG",
+        "BRANCH": "CHI NHÁNH",
+        "GROUP": "ĐỘI NHÓM",
+        "BM": "BM"
+    }
+}

@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
-import { Button, message, Space, Table, Tooltip } from 'antd';
+import { Button, message, Select, Space, Table, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { TSystemUser, TUser, TUserOption } from '../../models/user/user';
 import userApi from '../../api/userApi';
@@ -9,9 +9,17 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import SystemAccountModal from '../../Components/Modal/SystemAccountModal/SystemAccountModal';
 import { SelectType } from '../../models/common';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
+import { useTranslation } from 'react-i18next';
 
-const SystemAccount: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+}
+
+const SystemAccount: FC<Props> = (props) => {
+  const { role, organizationId, branchId } = props
   const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TUser[]>([])
@@ -19,14 +27,17 @@ const SystemAccount: FC = () => {
   const [loading, setLoading] = useState({
     isTable: false,
     isBtn: false,
+    isSelect: false
   })
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalData, setTotalData] = useState<number>(0);
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [selectAccountData, setSelectAccountData] = useState<SelectType[]>([])
+  const [roleId, setRoleId] = useState<string | null>(null)
   const [messageApi, contextHolder] = message.useMessage();
   const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
+  const { t } = useTranslation();
 
   const columns: TableProps<TUser>['columns'] = [
     {
@@ -39,7 +50,7 @@ const SystemAccount: FC = () => {
       title: 'Vai trò',
       dataIndex: 'role',
       key: 'roleName',
-      render: (role) => <span>{role?.name}</span>,
+      render: (role) => <span>{t(`roles.${role?.name}`)}</span>,
       width: '40%'
     },
     {
@@ -133,6 +144,10 @@ const SystemAccount: FC = () => {
     setIsDeleteConfirm(false)
   }
 
+  const onChange = (value: string) => {
+    setRoleId(value)
+  };
+
   const success = (message: string) => {
     messageApi.open({
       type: 'success',
@@ -148,19 +163,30 @@ const SystemAccount: FC = () => {
   };
 
   useEffect(() => {
+    setLoading((prevLoading) => ({ ...prevLoading, isSelect: true }))
     userApi.getRole().then((res) => {
+      let data = res.data.data
+      if (role === ROLE.ORGANIZATION) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data = res.data.data.filter((item: any) => item.name !== ROLE.ORGANIZATION && item.name !== ROLE.ADMIN)
+      }
       setSelectAccountData(
-        res.data.data.filter((item: TUserOption) => item.name === 'ADMIN').map((item: TUserOption) => ({
+        data.map((item: TUserOption) => ({
           value: item.id,
-          label: item.name
+          label: t(`roles.${item.name}`)
         }))
       )
+      setLoading((prevLoading) => ({ ...prevLoading, isSelect: false }))
     })
   }, [])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
-    userApi.getListSystemUser({ pageIndex: currentPage, pageSize: DEFAULT_PAGE_SIZE }).then((res) => {
+    userApi.getListSystemUser({
+      pageIndex: currentPage,
+      pageSize: DEFAULT_PAGE_SIZE,
+      roleId: roleId || ''
+    }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -177,7 +203,7 @@ const SystemAccount: FC = () => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [currentPage, isCallbackApi])
+  }, [currentPage, isCallbackApi, roleId])
 
   return (
     <>
@@ -192,6 +218,20 @@ const SystemAccount: FC = () => {
           Thêm tài khoản hệ thống
         </Button>
       </Tooltip>
+      {role && hasRole([ROLE.ADMIN], role) &&
+        <Select
+          allowClear
+          showSearch
+          placeholder="Chọn role"
+          optionFilterProp="label"
+          onChange={onChange}
+          options={selectAccountData}
+          loading={loading.isSelect}
+          notFoundContent={'Không có dữ liệu'}
+          className={cx('select-form')}
+        />
+      }
+
       <div>
         <Table
           columns={columns}
@@ -207,6 +247,9 @@ const SystemAccount: FC = () => {
         />
       </div>
       <SystemAccountModal
+        organizationId={organizationId}
+        branchId={branchId}
+        role={role}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

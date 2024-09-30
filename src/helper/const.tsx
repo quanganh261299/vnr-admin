@@ -31,6 +31,13 @@ export const statisticType = [
     // }
 ]
 
+export const ROLE = {
+    ADMIN: 'ADMIN',
+    ORGANIZATION: 'ORGANIZATION',
+    BRANCH: 'BRANCH',
+    GROUP: 'GROUP'
+}
+
 export const formatDateTime = (dateTime: string) => {
     if (dateTime) {
         const date = new Date(dateTime);
@@ -233,4 +240,25 @@ export const convertArrayToObject = (dataArray: any) => {
         return acc;
     }, {});
 }
+
+export const handleDisplay = (roles: string[], role: string) => {
+    if (roles.includes(role)) return ''
+    else return 'none'
+}
+
+export const hasRole = (roles: string[], role: string) => {
+    return roles.includes(role)
+}
+
+export const handleHomePageLink = (role: string) => {
+    switch (role) {
+        case ROLE.ADMIN: return '/'
+        case ROLE.ORGANIZATION: return '/agency'
+        case ROLE.BRANCH: return '/team'
+        case ROLE.GROUP: return '/member'
+        default: return '/'
+    }
+}
+
+
 

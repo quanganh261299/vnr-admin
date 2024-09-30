@@ -15,9 +15,17 @@ import { TAgencyTable } from '../../models/agency/agency';
 import employeeApi from '../../api/employeeApi';
 import { TMemberTable } from '../../models/member/member';
 import advertisementApi from '../../api/advertisementApi';
-import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, formatDateTime, formatNumberWithCommas, handleAccountStatus, handleDisableReason, handleTypeCardBanking, hasRole, ROLE } from '../../helper/const';
 
-const AdvertisementManagement: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+  groupId: string | null
+}
+
+const AdvertisementManagement: FC<Props> = (props) => {
+  const { role, organizationId, branchId, groupId } = props
   const cx = classNames.bind(styles)
   const [dataTable, setDataTable] = useState<TAdvertisementTable[]>([])
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
@@ -189,13 +197,13 @@ const AdvertisementManagement: FC = () => {
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
     })
-    if (selectSystemId) {
+    if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectSystem: false,
         isSelectAgency: true
       }))
-      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -205,14 +213,14 @@ const AdvertisementManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyId) {
+    if (selectAgencyId || branchId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectSystem: false,
         isSelectAgency: false,
         isSelectTeam: true
       }))
-      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -222,7 +230,7 @@ const AdvertisementManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-    if (selectTeamId) {
+    if (selectTeamId || groupId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectSystem: false,
@@ -230,7 +238,7 @@ const AdvertisementManagement: FC = () => {
         isSelectTeam: false,
         isSelectMember: true
       }))
-      employeeApi.getListEmployee({ groupId: selectTeamId }).then((res) => {
+      employeeApi.getListEmployee({ groupId: selectTeamId || groupId || '' }).then((res) => {
         setSelectMemberData(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -240,16 +248,16 @@ const AdvertisementManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId, selectTeamId])
+  }, [selectSystemId, selectAgencyId, selectTeamId, organizationId, branchId, groupId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     advertisementApi.getListAdsAccountActive({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      organizationId: selectSystemId || '',
-      branchId: selectAgencyId || '',
-      groupId: selectTeamId || '',
+      organizationId: selectSystemId || organizationId || '',
+      branchId: selectAgencyId || branchId || '',
+      groupId: selectTeamId || groupId || '',
       employeeId: selectMemberId || ''
     }
     ).then((res) => {
@@ -269,48 +277,54 @@ const AdvertisementManagement: FC = () => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId])
+  }, [currentPage, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, organizationId, branchId, groupId])
 
   return (
     <>
       <div>
         <div className={cx('select-container')}>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChangeSystem}
-            options={selectSystemData}
-            className={cx("select-system-item")}
-            loading={loading.isSelectSystem}
-            value={selectSystemId || null}
-            notFoundContent={'Không có dữ liệu'}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            className={cx("select-system-item")}
-            loading={loading.isSelectAgency}
-            value={selectAgencyId || null}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn đội nhóm"
-            optionFilterProp="label"
-            onChange={onChangeTeam}
-            options={selectTeamData}
-            className={cx("select-system-item")}
-            loading={loading.isSelectTeam}
-            value={selectTeamId || null}
-            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
-          />
+          {role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChangeSystem}
+              options={selectSystemData}
+              className={cx("select-system-item")}
+              loading={loading.isSelectSystem}
+              value={selectSystemId || null}
+              notFoundContent={'Không có dữ liệu'}
+            />
+          }
+          {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              className={cx("select-system-item")}
+              loading={loading.isSelectAgency}
+              value={selectAgencyId || null}
+              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+            />
+          }
+          {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn đội nhóm"
+              optionFilterProp="label"
+              onChange={onChangeTeam}
+              options={selectTeamData}
+              className={cx("select-system-item")}
+              loading={loading.isSelectTeam}
+              value={selectTeamId || null}
+              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+            />
+          }
           <Select
             allowClear
             showSearch
@@ -321,7 +335,7 @@ const AdvertisementManagement: FC = () => {
             className={cx("select-system-item")}
             loading={loading.isSelectMember}
             value={selectMemberId || null}
-            notFoundContent={selectTeamId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            notFoundContent={selectTeamId || groupId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
           />
         </div>
         <Table

@@ -5,7 +5,7 @@ import { Button, Form, FormProps, Input, message, Spin, Typography } from 'antd'
 import { getAuthStatus, storeAuthStatus } from '../../helper/authStatus';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { EMAIL_REGEX } from '../../helper/const';
+import { EMAIL_REGEX, handleHomePageLink } from '../../helper/const';
 import { LoginType } from '../../models/common';
 import authApi from '../../api/authApi';
 
@@ -20,9 +20,10 @@ const Login = () => {
     setIsLoading(true)
     authApi.login(values)
       .then((res) => {
-        storeAuthStatus(res.data.data.accessToken, res.data.data.role)
+        console.log('res', res)
+        const { accessToken, role, organizationId, branchId, groupId } = res.data.data
+        storeAuthStatus(accessToken, role, organizationId, branchId, groupId)
         setIsLoading(false)
-        window.location.href = '/'
       })
       .catch((err) => {
         setIsLoading(false)
@@ -36,9 +37,9 @@ const Login = () => {
 
   useEffect(() => {
     if (getAuthStatus()) {
-      navigate('/', { replace: true })
+      window.location.href = handleHomePageLink(String(localStorage.getItem('role')))
     }
-  }, [localStorage.getItem('isAllowed'), localStorage.getItem('token')])
+  }, [localStorage.getItem('token'), localStorage.getItem('role')])
 
   return (
     <>

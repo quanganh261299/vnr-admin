@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   userRole = '',
   children
 }) => {
-  const hasAccess = roles.length === 0 || roles.includes(userRole);
+  const hasAccess = roles.includes(userRole);
 
   return isAllowed && hasAccess ? (
     Layout ? (

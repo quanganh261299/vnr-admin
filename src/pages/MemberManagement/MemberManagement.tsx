@@ -15,9 +15,17 @@ import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
 import groupApi from '../../api/groupApi';
 import { TypeTeamTable } from '../../models/team/team';
-import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 
-const MemberManagement: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+  branchId: string | null
+  groupId: string | null
+}
+
+const MemberManagement: FC<Props> = (props) => {
+  const { role, organizationId, branchId, groupId } = props
   const cx = classNames.bind(styles);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataRecord, setDataRecord] = useState<TMemberField | null>(null)
@@ -42,7 +50,14 @@ const MemberManagement: FC = () => {
   })
   const [messageApi, contextHolder] = message.useMessage();
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
-  const modalRef = useRef<{ submit: () => void; reset: () => void; saveReset: () => void }>(null);
+  const modalRef = useRef<{
+    submit: () => void;
+    reset: () => void;
+    saveReset: () => void;
+    organizationReset: () => void;
+    branchReset: () => void;
+    groupReset: () => void;
+  }>(null);
 
 
   const columns: TableProps<TMemberTable>['columns'] = [
@@ -202,8 +217,11 @@ const MemberManagement: FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false)
     setDataRecord(null)
-    if (modalRef.current) {
-      modalRef.current.reset();
+    switch (role) {
+      case ROLE.ADMIN: return modalRef.current?.reset();
+      case ROLE.ORGANIZATION: return modalRef.current?.organizationReset();
+      case ROLE.BRANCH: return modalRef.current?.branchReset();
+      case ROLE.GROUP: return modalRef.current?.groupReset();
     }
   }
 
@@ -275,9 +293,9 @@ const MemberManagement: FC = () => {
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
     })
-    if (selectSystemId) {
+    if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
         setSelectAgencyData(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -287,9 +305,9 @@ const MemberManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyId) {
+    if (selectAgencyId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyId || branchId || '' }).then((res) => {
         setSelectTeamData(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -299,16 +317,16 @@ const MemberManagement: FC = () => {
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemId, selectAgencyId])
+  }, [selectSystemId, selectAgencyId, organizationId, branchId])
 
   useEffect(() => {
     setLoading((prevLoading) => ({ ...prevLoading, isTable: true }))
     employeeApi.getListEmployee({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      organizationId: selectSystemId || '',
-      branchId: selectAgencyId || '',
-      groupId: selectTeamId || ''
+      organizationId: selectSystemId || organizationId || '',
+      branchId: selectAgencyId || branchId || '',
+      groupId: selectTeamId || groupId || ''
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -326,7 +344,7 @@ const MemberManagement: FC = () => {
     }).catch(() => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
     })
-  }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi])
+  }, [selectSystemId, selectAgencyId, selectTeamId, currentPage, isCallbackApi, branchId, organizationId, groupId])
 
   return (
     <>
@@ -342,41 +360,50 @@ const MemberManagement: FC = () => {
           </Button>
         </Tooltip>
         <div className={cx('member-container')}>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChangeSystem}
-            options={selectSystemData}
-            className={cx("select-system-item")}
-            notFoundContent={'Không có dữ liệu'}
-            loading={loading.isSelectSystem}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn chi nhánh"
-            optionFilterProp="label"
-            onChange={onChangeAgency}
-            options={selectAgencyData}
-            value={selectAgencyId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
-            loading={loading.isSelectAgency}
-          />
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn đội nhóm"
-            optionFilterProp="label"
-            onChange={onChangeTeam}
-            options={selectTeamData}
-            value={selectTeamId || null}
-            className={cx("select-system-item")}
-            notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
-            loading={loading.isSelectTeam}
-          />
+          {
+            role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChangeSystem}
+              options={selectSystemData}
+              className={cx("select-system-item")}
+              notFoundContent={'Không có dữ liệu'}
+              loading={loading.isSelectSystem}
+            />
+          }
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn chi nhánh"
+              optionFilterProp="label"
+              onChange={onChangeAgency}
+              options={selectAgencyData}
+              value={selectAgencyId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              loading={loading.isSelectAgency}
+            />
+          }
+          {
+            role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn đội nhóm"
+              optionFilterProp="label"
+              onChange={onChangeTeam}
+              options={selectTeamData}
+              value={selectTeamId || null}
+              className={cx("select-system-item")}
+              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              loading={loading.isSelectTeam}
+            />
+          }
         </div>
         <Table
           columns={columns}
@@ -392,6 +419,10 @@ const MemberManagement: FC = () => {
         />
       </div>
       <MemberModal
+        role={role}
+        organizationId={organizationId}
+        branchId={branchId}
+        groupId={groupId}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

@@ -4,8 +4,11 @@ import { TAgencyField } from "../../../models/agency/agency";
 import { SelectType } from "../../../models/common";
 import styles from './style.module.scss'
 import classNames from "classnames/bind";
+import { hasRole, ROLE } from "../../../helper/const";
 
 interface Props {
+  role: string | null,
+  organizationId: string | null,
   isModalOpen: boolean,
   handleOk: () => void,
   handleCancel: () => void,
@@ -15,8 +18,10 @@ interface Props {
   isLoadingBtn?: boolean
 }
 
-const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
+const AgencyModal = forwardRef<{ submit: () => void; reset: () => void; organizationReset: () => void }, Props>((props, ref) => {
   const {
+    role,
+    organizationId,
     isModalOpen,
     editingData,
     selectSystemData,
@@ -34,6 +39,9 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
     },
     reset: () => {
       form.resetFields();
+    },
+    organizationReset: () => {
+      form.resetFields(['name', 'description'])
     }
   }));
 
@@ -44,8 +52,12 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
         description: editingData?.description,
         organizationId: editingData.organization?.id
       });
-    } else {
+    }
+    else {
       form.resetFields();
+      if (!hasRole([ROLE.ADMIN], String(role))) {
+        form.setFieldsValue({ organizationId: organizationId });
+      }
     }
   }, [editingData, form]);
 
@@ -77,6 +89,7 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
             placeholder="Chọn hệ thống"
             options={selectSystemData}
             notFoundContent={'Không có dữ liệu'}
+            disabled={!hasRole([ROLE.ADMIN], String(role))}
           />
         </Form.Item>
         <Form.Item<TAgencyField>

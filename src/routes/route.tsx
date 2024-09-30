@@ -18,10 +18,13 @@ import BmAccount from "../pages/BmAccount/BmAccount";
 import BMLayout from "../Layout/BMLayout/BMLayout";
 import BmHomePage from "../pages/BmHomepage/BmHomePage";
 import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
-import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
-import TermsOfUse from "../pages/TermsOfUse/TermsOfUse";
+import { hasRole, ROLE } from "../helper/const";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
-
+const role = localStorage.getItem('role')
+const organizationId = localStorage.getItem('organizationId') || null
+const branchId = localStorage.getItem('branchId') || null
+const groupId = localStorage.getItem('groupId') || null
 export const route = [
   {
     path: "/login",
@@ -32,37 +35,73 @@ export const route = [
     element: <LoginBM />
   },
   {
-    path: '/privacy-policy',
-    element: <PrivacyPolicy />
-  },
-  {
-    path: '/terms-of-use',
-    element: <TermsOfUse />
-  },
-  {
     path: "/",
-    element: <ProtectedRoute isAllowed={getAuthStatus()} layout={ManagementLayout} roles={['admin']} userRole="admin" />,
+    element:
+      <ProtectedRoute
+        isAllowed={getAuthStatus()}
+        layout={ManagementLayout}
+        roles={[ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP]}
+        userRole={String(role)}
+      />,
     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        element: <SystemManagement />
+        element: role && hasRole([ROLE.ADMIN], role) ? <Dashboard /> : <ErrorPage />
+      },
+      {
+        path: '/system',
+        element: role && hasRole([ROLE.ADMIN], role) ? <SystemManagement /> : <ErrorPage />
       },
       {
         path: '/agency',
-        element: <AgencyManagement />
+        element:
+          role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role)
+            ?
+            <AgencyManagement
+              role={role}
+              organizationId={organizationId}
+            />
+            :
+            <ErrorPage />
       },
       {
         path: '/team',
-        element: <TeamManagement />
+        element:
+          role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
+            ?
+            <TeamManagement
+              role={role}
+              organizationId={organizationId}
+              branchId={branchId}
+            />
+            :
+            <ErrorPage />
       },
       {
         path: '/member',
-        element: <MemberManagement />
+        element:
+          role
+            && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP], role)
+            ?
+            <MemberManagement
+              role={role}
+              organizationId={organizationId}
+              branchId={branchId}
+              groupId={groupId}
+            />
+            :
+            <ErrorPage />
       },
       {
         path: '/advertisement-account',
-        element: <AdvertisementManagement />,
+        element:
+          <AdvertisementManagement
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />,
       },
       {
         path: '/advertisement-account/:accountId/campaigns',
@@ -78,23 +117,57 @@ export const route = [
       },
       {
         path: '/account',
-        element: <SystemAccount />
+        element:
+          role
+            && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
+            ?
+            <SystemAccount
+              role={role}
+              organizationId={organizationId}
+              branchId={branchId}
+            />
+            :
+            <ErrorPage />
       },
       {
         path: '/ad-account',
-        element: <AdAccount />
+        element:
+          <AdAccount
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       },
       {
         path: '/ad-account?isDeleted=true',
-        element: <AdAccount />
+        element:
+          <AdAccount
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       },
       {
         path: '/bm-account',
-        element: <BmAccount />
+        element:
+          <BmAccount
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       },
       {
         path: '/statistic',
-        element: <StatisticManagement />
+        element:
+          <StatisticManagement
+            role={role}
+            organizationId={organizationId}
+            branchId={branchId}
+            groupId={groupId}
+          />
       }
     ]
   },

@@ -1,27 +1,46 @@
+import { ROLE } from "./const";
+
 export const clearAuthStatus = () => {
     localStorage.clear();
 };
 
-export const storeAuthStatus = (token: string, role: string) => {
+export const storeAuthStatus = (
+    token: string,
+    role: string,
+    organizationId: string,
+    branchId: string,
+    groupId: string
+) => {
     localStorage.setItem("role", role);
     localStorage.setItem("token", token);
-    localStorage.setItem("isAllowed", "true");
+    switch (role) {
+        case ROLE.ORGANIZATION:
+            return localStorage.setItem("organizationId", organizationId);
+        case ROLE.BRANCH:
+            localStorage.setItem("organizationId", organizationId);
+            return localStorage.setItem("branchId", branchId);
+        case ROLE.GROUP:
+            localStorage.setItem("organizationId", organizationId);
+            localStorage.setItem("branchId", branchId);
+            return localStorage.setItem("groupId", groupId);
+        default:
+            localStorage.removeItem("organizationId");
+            localStorage.removeItem("branchId");
+            localStorage.removeItem("groupId");
+    }
 };
 
 export const storeAuthFBStatus = (token: string) => {
     localStorage.setItem("isBM", "true");
     localStorage.setItem("BmToken", token);
-    localStorage.setItem("isAllowed", "true");
 };
 
 export const getAuthStatus = () => {
-    const auth =
-        localStorage.getItem("isAllowed") && localStorage.getItem("token");
+    const auth = localStorage.getItem("token");
     return !!auth;
 };
 
 export const getAuthFbStatus = () => {
-    const auth =
-        localStorage.getItem("isAllowed") && localStorage.getItem("BmToken");
+    const auth = localStorage.getItem("BmToken");
     return !!auth;
 };

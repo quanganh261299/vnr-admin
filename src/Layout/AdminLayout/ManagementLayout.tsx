@@ -17,13 +17,15 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import styles from './style.module.scss'
 import classNames from 'classnames/bind';
 import { Footer } from 'antd/es/layout/layout';
 import logo from '../../assets/images/logo.png'
 import avatar from '../../assets/images/avatar.png'
 import { clearAuthStatus } from '../../helper/authStatus';
+import { handleDisplay, hasRole, ROLE } from '../../helper/const';
+import { useTranslation } from 'react-i18next';
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,11 +35,12 @@ const ManagementLayout: React.FC = () => {
   const location = useLocation();
   const [current, setCurrent] = useState<string>('system');
   const [headerName, setHeaderName] = useState<string>('Quản lí hệ thống')
-  const navigate = useNavigate();
+  const role = localStorage.getItem('role')
+  const { t } = useTranslation()
 
   const Logout = () => {
     clearAuthStatus()
-    navigate('/login')
+    window.location.href = '/login'
   }
 
   const dropDownItems: MenuProps['items'] = [
@@ -54,6 +57,10 @@ const ManagementLayout: React.FC = () => {
 
   useEffect(() => {
     if (location.pathname === '/') {
+      setHeaderName('Dashboard')
+      setCurrent('dashboard')
+    }
+    else if (location.pathname.includes('/system')) {
       setHeaderName('Quản lí hệ thống')
       setCurrent('system')
     }
@@ -71,6 +78,9 @@ const ManagementLayout: React.FC = () => {
     }
     else if (location.pathname.includes('/member')) {
       setHeaderName('Quản lí thành viên')
+      if (role && hasRole([ROLE.GROUP], role)) {
+        setCurrent('member-separated')
+      }
       setCurrent('member')
     }
     else if (location.pathname.includes('/advertisement-account')) {
@@ -94,7 +104,7 @@ const ManagementLayout: React.FC = () => {
       setCurrent('statistic')
     }
     else setCurrent('')
-  }, [location])
+  }, [location, role])
 
   return (
     <Layout>
@@ -105,29 +115,39 @@ const ManagementLayout: React.FC = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultOpenKeys={['system-nav']}
+          defaultOpenKeys={role && hasRole([ROLE.ADMIN], role) ? [] : ['system-nav']}
           selectedKeys={[current]}
           className='menu'
           items={[
             {
+              key: 'dashboard',
+              icon: <UserOutlined />,
+              label: <Link to='/'>Dashboard</Link>,
+              style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
+            },
+            {
               key: 'system-nav',
               icon: <AppstoreOutlined />,
               label: 'Hệ thống',
+              style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) },
               children: [
                 {
                   key: 'system',
                   icon: <SettingOutlined />,
-                  label: <Link to='/'>Quản lí hệ thống</Link>,
+                  label: <Link to='/system'>Quản lí hệ thống</Link>,
+                  style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
                 },
                 {
                   key: 'agency',
                   icon: <ApartmentOutlined />,
                   label: <Link to='/agency'>Quản lí chi nhánh</Link>,
+                  style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION], String(role)) }
                 },
                 {
                   key: 'team',
                   icon: <TeamOutlined />,
                   label: <Link to='/team'>Quản lí đội nhóm</Link>,
+                  style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) }
                 },
                 {
                   key: 'member',
@@ -135,6 +155,12 @@ const ManagementLayout: React.FC = () => {
                   label: <Link to='/member'>Quản lí thành viên</Link>,
                 },
               ]
+            },
+            {
+              key: 'member-separated',
+              icon: <UserOutlined />,
+              label: <Link to='/member'>Quản lí thành viên</Link>,
+              style: { display: handleDisplay([ROLE.GROUP], String(role)) }
             },
             {
               key: 'advertisement-account',
@@ -145,6 +171,7 @@ const ManagementLayout: React.FC = () => {
               key: 'account',
               icon: <CrownOutlined />,
               label: <Link to='/account'>Tài khoản hệ thống</Link>,
+              style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) }
             },
             {
               key: 'ad-account',
@@ -187,7 +214,7 @@ const ManagementLayout: React.FC = () => {
             <div className={cx("user-infor")}>
               <div className={cx("user-detail")}>
                 <img src={avatar} alt="avatar" className={cx("avatar")} />
-                <span>Hello, admin</span>
+                <span>QUYỀN: {t(`roles.${role}`)}</span>
               </div>
               <CaretDownOutlined className={cx("user-icon")} />
             </div>

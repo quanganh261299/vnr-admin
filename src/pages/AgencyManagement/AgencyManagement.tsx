@@ -11,9 +11,15 @@ import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import branchApi from '../../api/branchApi';
 import organizationApi from '../../api/organizationApi';
 import { TSystemTable } from '../../models/system/system';
-import { DEFAULT_PAGE_SIZE } from '../../helper/const';
+import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 
-const AgencyManagement: FC = () => {
+interface Props {
+  role: string | null
+  organizationId: string | null
+}
+
+const AgencyManagement: FC<Props> = (props) => {
+  const { role, organizationId } = props
   const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TAgencyTable[]>([])
@@ -30,7 +36,7 @@ const AgencyManagement: FC = () => {
   const [isDeleteConfirm, setIsDeleteConfirm] = useState<boolean>(false)
   const [isCallbackApi, setIsCallbackApi] = useState<boolean>(false)
   const [messageApi, contextHolder] = message.useMessage();
-  const modalRef = useRef<{ submit: () => void; reset: () => void }>(null);
+  const modalRef = useRef<{ submit: () => void; reset: () => void; organizationReset: () => void }>(null);
 
   const columns: TableProps<TAgencyTable>['columns'] = [
     {
@@ -94,14 +100,15 @@ const AgencyManagement: FC = () => {
         success('Sửa chi nhánh thành công!')
       }).catch((err) => {
         setLoading({ ...loading, isBtn: false })
-        error(err.response.data.message)
+        error(err.response.data.message || err.message)
       })
     }
     else {
       branchApi.createBranch(values).then(() => {
         setIsModalOpen(false)
         setIsCallbackApi(!isCallbackApi)
-        modalRef.current?.reset();
+        if (role && hasRole([ROLE.ADMIN], role)) modalRef.current?.reset()
+        else modalRef.current?.organizationReset()
         setLoading({ ...loading, isBtn: false })
         success('Tạo chi nhánh thành công!')
       }).catch((err) => {
@@ -146,7 +153,7 @@ const AgencyManagement: FC = () => {
       setLoading({ ...loading, isBtn: false })
       success('Xóa chi nhánh thành công!')
     }).catch((err) => {
-      error(err.response.data.message)
+      error(err.response.data.message || err.message)
       setLoading({ ...loading, isBtn: false })
       setIsDeleteConfirm(false)
     })
@@ -188,7 +195,7 @@ const AgencyManagement: FC = () => {
     branchApi.getListBranch({
       pageIndex: currentPage,
       pageSize: DEFAULT_PAGE_SIZE,
-      organizationId: selectSystemId || ''
+      organizationId: selectSystemId || organizationId || ''
     }).then((res) => {
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
@@ -208,7 +215,7 @@ const AgencyManagement: FC = () => {
       setLoading((prevLoading) => ({ ...prevLoading, isTable: false }))
 
     })
-  }, [selectSystemId, currentPage, isCallbackApi])
+  }, [selectSystemId, currentPage, isCallbackApi, organizationId])
 
   return (
     <>
@@ -225,17 +232,20 @@ const AgencyManagement: FC = () => {
               Thêm chi nhánh
             </Button>
           </Tooltip>
-          <Select
-            allowClear
-            showSearch
-            placeholder="Chọn hệ thống"
-            optionFilterProp="label"
-            onChange={onChange}
-            options={selectSystemData}
-            loading={loading.isSelect}
-            className={cx("select-system")}
-            notFoundContent={'Không có dữ liệu'}
-          />
+          {
+            role && hasRole([ROLE.ADMIN], role) &&
+            <Select
+              allowClear
+              showSearch
+              placeholder="Chọn hệ thống"
+              optionFilterProp="label"
+              onChange={onChange}
+              options={selectSystemData}
+              loading={loading.isSelect}
+              className={cx("select-system")}
+              notFoundContent={'Không có dữ liệu'}
+            />
+          }
         </div>
         <Table
           columns={columns}
@@ -251,6 +261,8 @@ const AgencyManagement: FC = () => {
         />
       </div>
       <AgencyModal
+        role={role}
+        organizationId={organizationId}
         ref={modalRef}
         isModalOpen={isModalOpen}
         handleOk={handleOk}

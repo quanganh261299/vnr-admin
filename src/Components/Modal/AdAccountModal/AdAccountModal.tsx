@@ -15,8 +15,13 @@ import organizationApi from "../../../api/organizationApi";
 import { TSystemTable } from "../../../models/system/system";
 import { TAdUserTable } from "../../../models/user/user";
 import advertisementApi from "../../../api/advertisementApi";
+import { hasRole, ROLE } from "../../../helper/const";
 
 interface Props {
+  role: string | null,
+  organizationId: string | null,
+  branchId: string | null,
+  groupId: string | null,
   isModalOpen: boolean,
   handleOk: () => void,
   handleSave: () => void,
@@ -29,6 +34,10 @@ interface Props {
 
 const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveReset: () => void }, Props>((props, ref) => {
   const {
+    role,
+    organizationId,
+    branchId,
+    groupId,
     isModalOpen,
     isLoadingOkBtn,
     isLoadingSaveBtn,
@@ -142,9 +151,9 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
   }, [])
 
   useEffect(() => {
-    if (selectSystemModalId) {
+    if (selectSystemModalId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId || organizationId || '' }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -154,9 +163,9 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyModalId) {
+    if (selectAgencyModalId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyModalId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyModalId || branchId || '' }).then((res) => {
         setSelectTeamDataModal(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -166,7 +175,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-    if (selectTeamModalId) {
+    if (selectTeamModalId || groupId) {
       setLoading((prevLoading) => ({
         ...prevLoading,
         isSelectAgency: false,
@@ -174,7 +183,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         isSelectMember: true,
         isSelectBM: true,
       }))
-      employeeApi.getListEmployee({ groupId: selectTeamModalId }).then((res) => {
+      employeeApi.getListEmployee({ groupId: selectTeamModalId || groupId || '' }).then((res) => {
         setSelectMemberDataModal(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -183,7 +192,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         )
         setLoading((prevLoading) => ({ ...prevLoading, isSelectMember: false }))
       })
-      advertisementApi.getListBm(selectTeamModalId || '').then((res) => {
+      advertisementApi.getListBm(selectTeamModalId || groupId || '').then((res) => {
         setSelectBmDataModal(
           res.data.data.map((item: TMemberTable) => ({
             value: item.id,
@@ -193,7 +202,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         setLoading((prevLoading) => ({ ...prevLoading, isSelectBM: false }))
       })
     }
-  }, [selectSystemModalId, selectAgencyModalId, selectTeamModalId])
+  }, [selectSystemModalId, selectAgencyModalId, selectTeamModalId, organizationId, branchId, groupId])
 
   useEffect(() => {
     if (editingData) {
@@ -218,8 +227,17 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       setSelectTeamDataModal([])
       setSelectMemberDataModal([])
       setSelectBmDataModal([])
+      if (!hasRole([ROLE.ADMIN], String(role))) {
+        form.setFieldsValue({ organizationId: organizationId });
+      }
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) {
+        form.setFieldsValue({ branchId: branchId })
+      }
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))) {
+        form.setFieldsValue({ groupId: groupId })
+      }
     }
-  }, [editingData, form]);
+  }, [branchId, editingData, form, groupId, organizationId, role]);
 
 
   return (
@@ -273,6 +291,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
               onClear={clearSelectSystemModalId}
               notFoundContent={'Không có dữ liệu'}
               loading={loading.isSelectSystem}
+              disabled={!hasRole([ROLE.ADMIN], String(role))}
             />
           </Form.Item>
           <Form.Item
@@ -289,6 +308,8 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
               onClear={clearSelectAgencyModalId}
               notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
+              disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
+
             />
           </Form.Item>
         </div>
@@ -306,6 +327,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
             notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             loading={loading.isSelectTeam}
             onClear={clearSelectTeamModalId}
+            disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))}
           />
         </Form.Item>
         <Form.Item

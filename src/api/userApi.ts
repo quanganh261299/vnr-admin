@@ -6,7 +6,11 @@ const userApi = {
         const url = "/Role";
         return axiosInstance.get(url);
     },
-    getListSystemUser: (params?: { pageIndex?: number; pageSize?: number }) => {
+    getListSystemUser: (params?: {
+        pageIndex?: number;
+        pageSize?: number;
+        roleId?: string;
+    }) => {
         const url = "/users/system";
         return axiosInstance.get(url, { params });
     },
