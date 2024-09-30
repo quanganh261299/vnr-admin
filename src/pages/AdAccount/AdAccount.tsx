@@ -582,6 +582,10 @@ const AdAccount: FC<Props> = (props) => {
         />
       </div>
       <AdAccountModal
+        role={role}
+        organizationId={organizationId}
+        branchId={branchId}
+        groupId={groupId}
         ref={modalRef}
         isModalOpen={modal.isAddModalOpen}
         handleOk={handleOk}

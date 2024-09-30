@@ -121,7 +121,11 @@ export const route = [
           role
             && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
             ?
-            <SystemAccount role={role} />
+            <SystemAccount
+              role={role}
+              organizationId={organizationId}
+              branchId={branchId}
+            />
             :
             <ErrorPage />
       },

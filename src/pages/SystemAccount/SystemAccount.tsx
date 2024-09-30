@@ -14,10 +14,12 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
   role: string | null
+  organizationId: string | null
+  branchId: string | null
 }
 
 const SystemAccount: FC<Props> = (props) => {
-  const { role } = props
+  const { role, organizationId, branchId } = props
   const cx = classNames.bind(styles)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [dataTable, setDataTable] = useState<TUser[]>([])
@@ -245,6 +247,8 @@ const SystemAccount: FC<Props> = (props) => {
         />
       </div>
       <SystemAccountModal
+        organizationId={organizationId}
+        branchId={branchId}
         role={role}
         ref={modalRef}
         isModalOpen={isModalOpen}

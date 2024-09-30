@@ -14,6 +14,8 @@ import { EMAIL_REGEX, hasRole, ROLE } from "../../../helper/const";
 import { useTranslation } from "react-i18next";
 
 interface Props {
+  organizationId: string | null
+  branchId: string | null
   role: string | null,
   isModalOpen: boolean,
   handleOk: () => void,
@@ -26,6 +28,8 @@ interface Props {
 
 const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Props>((props, ref) => {
   const {
+    organizationId,
+    branchId,
     role,
     isModalOpen,
     editingData,
@@ -101,9 +105,9 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
   }, [])
 
   useEffect(() => {
-    if (selectSystemModalId) {
+    if (selectSystemModalId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: true }))
-      branchApi.getListBranch({ organizationId: selectSystemModalId }).then((res) => {
+      branchApi.getListBranch({ organizationId: selectSystemModalId || organizationId || '' }).then((res) => {
         setSelectAgencyDataModal(
           res.data.data.map((item: TAgencyTable) => ({
             value: item.id,
@@ -113,9 +117,9 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
         setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false }))
       })
     }
-    if (selectAgencyModalId) {
+    if (selectAgencyModalId || branchId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectAgency: false, isSelectTeam: true }))
-      groupApi.getListGroup({ branchId: selectAgencyModalId }).then((res) => {
+      groupApi.getListGroup({ branchId: selectAgencyModalId || branchId || '' }).then((res) => {
         setSelectTeamDataModal(
           res.data.data.map((item: TypeTeamTable) => ({
             value: item.id,
@@ -125,7 +129,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
         setLoading((prevLoading) => ({ ...prevLoading, isSelectTeam: false }))
       })
     }
-  }, [selectSystemModalId, selectAgencyModalId])
+  }, [selectSystemModalId, selectAgencyModalId, organizationId, branchId])
 
   useEffect(() => {
     if (editingData) {
@@ -142,12 +146,18 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
     } else {
       setRoleId('')
       form.resetFields();
+      if (!hasRole([ROLE.ADMIN], String(role))) {
+        form.setFieldsValue({ organizationId: organizationId });
+      }
+      if (!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))) {
+        form.setFieldsValue({ branchId: branchId })
+      }
       if (role === ROLE.BRANCH) {
         setRoleId(String(selectAccountData.find((item) => item.label === t(`roles.${ROLE.GROUP}`))?.value))
         form.setFieldValue('roleId', selectAccountData.find((item) => item.label === t(`roles.${ROLE.GROUP}`))?.value)
       }
     }
-  }, [editingData, form, role, selectAccountData, t]);
+  }, [editingData, form, role, selectAccountData, branchId, organizationId, t]);
 
   return (
     <Modal
@@ -200,6 +210,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
               options={selectSystemDataModal}
               onClear={clearSelectSystemModalId}
               notFoundContent={'Không có dữ liệu'}
+              disabled={!hasRole([ROLE.ADMIN], String(role))}
             />
           </Form.Item>
         }
@@ -222,6 +233,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
               onClear={clearSelectAgencyModalId}
               notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
+              disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
             />
           </Form.Item>
         }
