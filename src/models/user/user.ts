@@ -49,6 +49,10 @@ export type TAdUserTable = {
 type TBmList = {
     id: string;
     userId: string;
+    cost: number;
+    informationLogin: string;
+    sourceAccount: string;
+    typeAccount: string;
 };
 
 export type TBmUser = {
@@ -57,14 +61,19 @@ export type TBmUser = {
     group: TypeTeamTable;
     pms: TBmList[];
     chatId: string;
-    tokenTelegram: string;
 };
 
 export type TBmUserField = {
     id?: string;
     email: string;
     groupId: string;
-    bmsId: string | string[];
+    bms: {
+        bmId: string;
+        typeAccount: string;
+        sourceAccount: string;
+        cost: number;
+        informationLogin: string;
+    }[];
     chatId: string;
     tokenTelegram: string;
 };

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Flex, Form, Input, Modal, Select } from "antd"
+import { Button, Card, Flex, Form, Input, Modal, Select } from "antd"
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
 import { SelectType } from "../../../models/common";
 import groupApi from "../../../api/groupApi";
@@ -10,7 +10,8 @@ import branchApi from "../../../api/branchApi";
 import styles from './style.module.scss'
 import classNames from "classnames/bind";
 import { EMAIL_REGEX, hasRole, ROLE } from "../../../helper/const";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
 
 interface Props {
   role: string | null,
@@ -86,6 +87,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
 
   useEffect(() => {
     if (editingData) {
+      console.log('edit', editingData)
       setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
       setSelectAgencyModalId(editingData?.group?.branch.id as string)
       form.setFieldsValue({
@@ -93,9 +95,8 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: editingData.group?.branch.id,
         groupId: editingData.group.id,
         email: editingData.email,
-        bmsId: editingData.pms.map((item) => item.id),
+        bms: editingData.pms.map((item) => ({ ...item, bmId: item.id })),
         chatId: editingData.chatId,
-        tokenTelegram: editingData.tokenTelegram
       });
     } else {
       form.resetFields();
@@ -138,6 +139,15 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
     }
   }, [selectSystemModalId, selectAgencyModalId, organizationId, branchId])
 
+  useEffect(() => {
+    const modalBody = document.querySelector('.ant-modal-content'); // Lấy phần thân của modal
+    if (modalBody) {
+      modalBody.scrollIntoView({
+        block: 'start',
+      });
+    }
+  }, [isModalOpen]);
+
   return (
     <Modal
       title={editingData ? 'Sửa tài khoản BM' : 'Thêm tài khoản BM'}
@@ -155,7 +165,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         autoComplete="off"
         layout="vertical"
         onValuesChange={handleFormChange}
-        initialValues={{ bmsId: [''] }}
+        initialValues={{ bms: [''] }}
       >
         <div className={cx("select-form")}>
           <Form.Item
@@ -210,25 +220,72 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         </Form.Item>
 
 
-        <Form.List name="bmsId">
+        <Form.List name="bms">
           {(fields, { add, remove }) => (
             <>
               {fields.map((field, index) => {
                 return (
-                  <Flex align="center" gap={"small"}>
-                    <div style={{ flex: 1 }}>
+                  <Card
+                    size="small"
+                    key={field.key}
+                    title={`BM ${index + 1}`}
+                    style={{ marginBottom: '15px' }}
+                    extra={index !== 0 && (
+                      <CloseOutlined
+                        onClick={() => {
+                          remove(field.name);
+                        }}
+                      />
+                    )}
+                  >
+                    <Form.Item
+                      label={'Id BM'}
+                      name={[field.name, 'bmId']}
+                      key={`bmId-${field.key}`}
+                      rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
+                      className={cx('custom-margin-form')}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Flex gap="small">
                       <Form.Item
-                        label={index === 0 ? 'Thêm Id BM (có thể thêm nhiều)' : ''}
-                        name={[field.name]}
-                        key={field.key}
-                        rules={[{ required: true, whitespace: true, message: 'Không được để trống id BM' }]}
+                        label={'Loại tài khoản'}
+                        name={[field.name, 'typeAccount']}
+                        key={`typeAccount-${field.key}`}
+                        rules={[{ required: true, whitespace: true, message: 'Không được để trống loại tài khoản' }]}
+                        className={cx('custom-margin-form', 'flex-input')}
                       >
                         <Input />
                       </Form.Item>
-                    </div>
-                    {index !== 0 && <MinusCircleOutlined onClick={() => remove(field.name)} className={cx('minus-icon')} />}
-                  </Flex>
-
+                      <Form.Item
+                        label={'Nguồn tài khoản'}
+                        name={[field.name, 'sourceAccount']}
+                        key={`sourceAccount-${field.key}`}
+                        rules={[{ required: true, whitespace: true, message: 'Không được để trống nguồn tài khoản' }]}
+                        className={cx('custom-margin-form', 'flex-input')}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Flex>
+                    <Form.Item
+                      label={'Giá tiền'}
+                      name={[field.name, 'cost']}
+                      key={`cost-${field.key}`}
+                      rules={[{ required: true, whitespace: true, message: 'Không được để trống giá tiền' }]}
+                      className={cx('custom-margin-form')}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      label={'Thông tin đăng nhập'}
+                      name={[field.name, 'informationLogin']}
+                      key={`informationLogin-${field.key}`}
+                      rules={[{ required: true, whitespace: true, message: 'Không được để trống thông tin đăng nhập' }]}
+                      className={cx('custom-margin-form')}
+                    >
+                      <TextArea autoSize={{ minRows: 3, maxRows: 6 }} maxLength={249} />
+                    </Form.Item>
+                  </Card>
                 )
               })}
               <Form.Item>
@@ -262,18 +319,6 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         >
           <Input />
         </Form.Item>
-
-        <Form.Item
-          label="Token Telegram"
-          name="tokenTelegram"
-          rules={[
-            { required: true, whitespace: true, message: 'Không được để trống token Telegram' },
-          ]}
-          className='custom-margin-form'
-        >
-          <Input />
-        </Form.Item>
-
       </Form>
     </Modal>
   )

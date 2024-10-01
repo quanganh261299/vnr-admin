@@ -15,7 +15,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
-import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 
 interface Props {
   role: string | null
@@ -96,7 +96,7 @@ const SystemManagement: FC<Props> = (props) => {
         id: dataRecord?.id,
         email: values.email,
         groupId: values.groupId,
-        bmsId: values.bmsId,
+        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost) })),
         chatId: values.chatId,
         tokenTelegram: values.tokenTelegram
       }
@@ -114,7 +114,7 @@ const SystemManagement: FC<Props> = (props) => {
       const data = {
         email: values.email,
         groupId: values.groupId,
-        bmsId: values.bmsId,
+        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost) })),
         chatId: values.chatId,
         tokenTelegram: values.tokenTelegram
       }
