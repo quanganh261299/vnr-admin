@@ -11,7 +11,7 @@ import AdAccountModal from '../../Components/Modal/AdAccountModal/AdAccountModal
 import { useSearchParams } from 'react-router-dom';
 import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
-import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatNumberWithCommasNotZero, hasRole, ROLE } from '../../helper/const';
 import { UploadChangeParam } from 'antd/es/upload';
 import { SelectType } from '../../models/common';
 import { TypeTeamTable } from '../../models/team/team';
@@ -72,20 +72,23 @@ const AdAccount: FC<Props> = (props) => {
       title: 'Tên tài khoản QC',
       dataIndex: 'name',
       key: 'name',
-      width: '15%',
+      width: 200,
+      className: cx('center-cell'),
+      fixed: 'left',
     },
     {
       title: 'Danh sách BM',
       dataIndex: 'pms',
       key: 'pms',
-      width: '15%',
+      className: cx('center-cell'),
+      width: 200,
       render: (arr) => arr.length > 0 ? arr.map((item: { id: string }) => (<Tag>{item.id}</Tag>)) : null
     },
     {
       title: 'Tên thành viên',
       dataIndex: 'employee',
       key: 'name',
-      width: '15%',
+      width: 200,
       className: cx('center-cell'),
       render: (employee) => <span>{employee?.name}</span>
     },
@@ -94,27 +97,55 @@ const AdAccount: FC<Props> = (props) => {
       dataIndex: 'employee',
       key: 'groupName',
       className: cx('center-cell'),
+      width: 200,
       render: (employee) => <span>{employee?.group?.name}</span>,
-      width: '15%',
     },
     {
       title: 'Id tài khoản QC',
       dataIndex: 'accountId',
       key: 'accountId',
-      width: '15%',
       className: cx('center-cell'),
+      width: 200,
     },
     {
       title: 'Trạng thái tài khoản',
       dataIndex: 'isActive',
       key: 'isActive',
-      width: '15%',
       className: cx('center-cell'),
+      width: 200,
       render: (isActive) => isActive ? <Tag color='green'>Đã được kích hoạt</Tag> : <Tag color='red'>Chưa được kích hoạt</Tag>
+    },
+    {
+      title: 'Loại tài khoản',
+      dataIndex: 'typeAccount',
+      key: 'typeAccount',
+      className: cx('center-cell'),
+      width: 200,
+    },
+    {
+      title: 'Nguồn tài khoản',
+      dataIndex: 'sourceAccount',
+      key: 'sourceAccount',
+      className: cx('center-cell'),
+      width: 200,
+    },
+    {
+      title: 'Giá tiền',
+      dataIndex: 'cost',
+      key: 'cost',
+      className: cx('center-cell'),
+      render: (value) => formatNumberWithCommasNotZero(convertStringToRoundNumber(value)),
+      width: 200,
+    },
+    {
+      title: 'Thông tin đăng nhập',
+      dataIndex: 'informationLogin',
+      key: 'informationLogin',
     },
     {
       title: 'Tùy chọn',
       key: 'action',
+      className: cx('center-cell', 'horizontal-center-cell'),
       render: (_, record) => (
         <>
           {
@@ -141,7 +172,8 @@ const AdAccount: FC<Props> = (props) => {
           }
         </>
       ),
-      width: '10%',
+      width: 230,
+      fixed: 'right',
     },
   ];
 
@@ -447,7 +479,6 @@ const AdAccount: FC<Props> = (props) => {
       groupId: selectTeamId || groupId || '',
       employeeId: selectMemberId || ''
     }).then((res) => {
-      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
@@ -584,6 +615,7 @@ const AdAccount: FC<Props> = (props) => {
             position: ['bottomCenter'],
             onChange: (page) => setCurrentPage(page),
           }}
+          scroll={{ x: 2300 }}
         />
       </div>
       <AdAccountModal

@@ -74,7 +74,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       form.resetFields();
     },
     saveReset: () => {
-      form.resetFields(['id']);
+      form.resetFields(['id', 'typeAccount', 'sourceAccount', 'cost', 'informationLogin']);
     }
   }));
 
@@ -207,7 +207,6 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
 
   useEffect(() => {
     if (editingData) {
-      console.log('editingData', editingData)
       setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
       setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
       setSelectTeamModalId(String(editingData.employee?.groupId))
