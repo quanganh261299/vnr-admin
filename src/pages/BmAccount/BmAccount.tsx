@@ -6,7 +6,7 @@ import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import userApi from '../../api/userApi';
-import { TBmUser, TBmUserField } from '../../models/user/user';
+import { TBmList, TBmUser, TBmUserField } from '../../models/user/user';
 import { SelectType } from '../../models/common';
 import { TypeTeamTable } from '../../models/team/team';
 import groupApi from '../../api/groupApi';
@@ -67,7 +67,21 @@ const SystemManagement: FC<Props> = (props) => {
       title: 'Danh sách id BM',
       dataIndex: 'pms',
       key: 'pms',
-      render: (value) => value.map((item: { id: string; userId: string }) => <Tag>{item?.id}</Tag>),
+      render: (value) => value.map((item: TBmList) =>
+        <Tooltip
+          trigger={'hover'}
+          title={(
+            <>
+              <div>Loại tài khoản: {item.typeAccount}</div>
+              <div>Nguồn tài khoản: {item.sourceAccount}</div>
+              <div>Giá tiền: {item.cost}</div>
+              <div>Thông tin đăng nhập: {item.informationLogin}</div>
+            </>
+          )}
+        >
+          <Tag>{item?.id}</Tag>
+        </Tooltip>
+      ),
       width: '25%'
     },
     {

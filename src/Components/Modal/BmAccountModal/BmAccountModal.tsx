@@ -87,7 +87,6 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
 
   useEffect(() => {
     if (editingData) {
-      console.log('edit', editingData)
       setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
       setSelectAgencyModalId(editingData?.group?.branch.id as string)
       form.setFieldsValue({
@@ -95,7 +94,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: editingData.group?.branch.id,
         groupId: editingData.group.id,
         email: editingData.email,
-        bms: editingData.pms.map((item) => ({ ...item, bmId: item.id })),
+        bms: editingData.pms.map((item) => ({ ...item, bmId: item.id, cost: (item.cost || '').toString() })),
         chatId: editingData.chatId,
       });
     } else {

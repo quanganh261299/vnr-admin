@@ -46,7 +46,7 @@ export type TAdUserTable = {
     informationLogin?: string;
 };
 
-type TBmList = {
+export type TBmList = {
     id: string;
     userId: string;
     cost: number;
