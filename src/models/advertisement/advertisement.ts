@@ -29,6 +29,10 @@ export type TAdvertisementField = {
     employeeId?: string;
     id?: string;
     pms?: string[] | { value: string; label: string }[];
+    typeAccount?: string;
+    sourceAccount?: string;
+    cost?: string;
+    informationLogin?: string;
 };
 
 export type TCampaignTable = {

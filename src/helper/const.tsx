@@ -2,9 +2,11 @@
 import { AppstoreAddOutlined, BankOutlined, CloseCircleOutlined, CreditCardOutlined, DollarOutlined, GiftOutlined, PayCircleOutlined, PushpinOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 
-export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@.*$/;
 
 export const PHONE_REGEX = /^0\d{8,10}$/;
+
+export const NUMBER_REGEX = /^[0-9]*$/;
 
 export const DEFAULT_PAGE_SIZE = 10;
 
@@ -260,5 +262,11 @@ export const handleHomePageLink = (role: string) => {
     }
 }
 
-
+export const handleNumber = (event: any) => {
+    let value = event.target.value.replace(/\D/g, '');
+    if (value.startsWith('00')) {
+        value = '0';
+    }
+    return value;
+}
 

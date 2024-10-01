@@ -40,6 +40,10 @@ export type TAdUserTable = {
     employeeName: string;
     isActive?: boolean;
     pms?: string[] | { id: string }[];
+    typeAccount?: string;
+    sourceAccount?: string;
+    cost?: string;
+    informationLogin?: string;
 };
 
 type TBmList = {

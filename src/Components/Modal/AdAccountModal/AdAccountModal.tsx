@@ -15,7 +15,8 @@ import organizationApi from "../../../api/organizationApi";
 import { TSystemTable } from "../../../models/system/system";
 import { TAdUserTable } from "../../../models/user/user";
 import advertisementApi from "../../../api/advertisementApi";
-import { hasRole, ROLE } from "../../../helper/const";
+import { handleNumber, hasRole, ROLE } from "../../../helper/const";
+import TextArea from "antd/es/input/TextArea";
 
 interface Props {
   role: string | null,
@@ -206,6 +207,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
 
   useEffect(() => {
     if (editingData) {
+      console.log('editingData', editingData)
       setSelectSystemModalId(String(editingData.employee?.group?.branch?.organizationId))
       setSelectAgencyModalId(String(editingData.employee?.group?.branchId))
       setSelectTeamModalId(String(editingData.employee?.groupId))
@@ -217,6 +219,10 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         employeeId: editingData?.employee?.id,
         pms: editingData?.pms?.map((pms) => typeof pms === 'object' && pms.id),
         id: editingData?.accountId,
+        typeAccount: editingData?.typeAccount,
+        sourceAccount: editingData?.sourceAccount,
+        cost: editingData?.cost,
+        informationLogin: editingData?.informationLogin
       });
     } else {
       form.resetFields();
@@ -246,6 +252,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       open={isModalOpen}
       centered
       onCancel={handleCancel}
+      style={{ maxHeight: '520px', overflowY: 'auto' }}
       footer={(
         <Flex gap={"small"} justify="flex-end">
           <Button onClick={handleCancel}>Cancel</Button>
@@ -365,8 +372,41 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
           label="Id tài khoản quảng cáo"
           name="id"
           rules={[{ required: true, message: 'Không được để trống Id tài khoản quảng cáo' }]}
+          className={cx("custom-margin-form")}
         >
           <Input disabled={editingData ? true : false} />
+        </Form.Item>
+        <Form.Item
+          label="Loại tài khoản"
+          name="typeAccount"
+          rules={[{ required: true, message: 'Không được để trống loại tài khoản' }]}
+          className={cx("custom-margin-form")}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Nguồn tài khoản"
+          name="sourceAccount"
+          rules={[{ required: true, message: 'Không được để trống loại tài khoản' }]}
+          className={cx("custom-margin-form")}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Giá tiền"
+          name="cost"
+          rules={[{ required: true, message: 'Không được để trống giá tiền' }]}
+          className={cx("custom-margin-form")}
+          getValueFromEvent={(event) => handleNumber(event)}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Thông tin đăng nhập"
+          name="informationLogin"
+          rules={[{ required: true, message: 'Không được để trống thông tin đăng nhập' }]}
+        >
+          <TextArea autoSize={{ minRows: 6, maxRows: 10 }} maxLength={249} />
         </Form.Item>
       </Form>
     </Modal>

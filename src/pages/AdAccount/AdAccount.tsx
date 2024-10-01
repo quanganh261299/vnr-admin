@@ -177,7 +177,11 @@ const AdAccount: FC<Props> = (props) => {
         ? values.pms?.map((item: string | { value: string; label: string }) =>
           typeof item === 'string' ? item : item.value
         )
-        : values.pms
+        : values.pms,
+      typeAccount: values.typeAccount,
+      sourceAccount: values.sourceAccount,
+      cost: values.cost,
+      informationLogin: values.informationLogin
     }
 
     if (dataRecord) {
@@ -443,6 +447,7 @@ const AdAccount: FC<Props> = (props) => {
       groupId: selectTeamId || groupId || '',
       employeeId: selectMemberId || ''
     }).then((res) => {
+      console.log('res', res)
       const data = res.data.data
       if (data.length === 0 && currentPage > 1) {
         setCurrentPage(currentPage - 1)
