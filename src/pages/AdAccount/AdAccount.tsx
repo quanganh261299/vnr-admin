@@ -143,7 +143,8 @@ const AdAccount: FC<Props> = (props) => {
       key: 'informationLogin',
     },
     {
-      title: 'Tùy chọn',
+      title: <div style={{ textAlign: 'center' }}>Tùy chọn</div>,
+      align: 'center',
       key: 'action',
       className: cx('center-cell', 'horizontal-center-cell'),
       render: (_, record) => (
