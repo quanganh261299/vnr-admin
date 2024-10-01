@@ -140,7 +140,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
   }, [selectSystemModalId, selectAgencyModalId, organizationId, branchId])
 
   useEffect(() => {
-    const modalBody = document.querySelector('.ant-modal-content'); // Lấy phần thân của modal
+    const modalBody = document.querySelector('.ant-modal-content');
     if (modalBody) {
       modalBody.scrollIntoView({
         block: 'start',
