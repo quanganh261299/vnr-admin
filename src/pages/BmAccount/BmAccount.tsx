@@ -15,7 +15,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
-import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatNumberWithCommas, hasRole, ROLE } from '../../helper/const';
 
 interface Props {
   role: string | null
@@ -74,7 +74,7 @@ const SystemManagement: FC<Props> = (props) => {
             <>
               <div>Loại tài khoản: {item.typeAccount}</div>
               <div>Nguồn tài khoản: {item.sourceAccount}</div>
-              <div>Giá tiền: {item.cost}</div>
+              <div>Giá tiền: {formatNumberWithCommas(item.cost)}</div>
               <div>Thông tin đăng nhập: {item.informationLogin}</div>
             </>
           )}
