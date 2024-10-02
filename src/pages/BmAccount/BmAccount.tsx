@@ -6,7 +6,7 @@ import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import userApi from '../../api/userApi';
-import { TBmUser, TBmUserField } from '../../models/user/user';
+import { TBmList, TBmUser, TBmUserField } from '../../models/user/user';
 import { SelectType } from '../../models/common';
 import { TypeTeamTable } from '../../models/team/team';
 import groupApi from '../../api/groupApi';
@@ -15,7 +15,7 @@ import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
 import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
-import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
+import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatNumberWithCommas, hasRole, ROLE } from '../../helper/const';
 
 interface Props {
   role: string | null
@@ -67,7 +67,21 @@ const SystemManagement: FC<Props> = (props) => {
       title: 'Danh sách id BM',
       dataIndex: 'pms',
       key: 'pms',
-      render: (value) => value.map((item: { id: string; userId: string }) => <Tag>{item?.id}</Tag>),
+      render: (value) => value.map((item: TBmList) =>
+        <Tooltip
+          trigger={'hover'}
+          title={(
+            <>
+              <div>Loại tài khoản: {item.typeAccount}</div>
+              <div>Nguồn tài khoản: {item.sourceAccount}</div>
+              <div>Giá tiền: {formatNumberWithCommas(item.cost)}</div>
+              <div>Thông tin đăng nhập: {item.informationLogin}</div>
+            </>
+          )}
+        >
+          <Tag>{item?.id}</Tag>
+        </Tooltip>
+      ),
       width: '25%'
     },
     {
@@ -96,7 +110,7 @@ const SystemManagement: FC<Props> = (props) => {
         id: dataRecord?.id,
         email: values.email,
         groupId: values.groupId,
-        bmsId: values.bmsId,
+        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost) })),
         chatId: values.chatId,
         tokenTelegram: values.tokenTelegram
       }
@@ -114,7 +128,7 @@ const SystemManagement: FC<Props> = (props) => {
       const data = {
         email: values.email,
         groupId: values.groupId,
-        bmsId: values.bmsId,
+        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost) })),
         chatId: values.chatId,
         tokenTelegram: values.tokenTelegram
       }
@@ -309,7 +323,7 @@ const SystemManagement: FC<Props> = (props) => {
               options={selectAgencyData}
               value={selectAgencyId || null}
               className={cx("select-system-item")}
-              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
             />
           }
@@ -323,7 +337,7 @@ const SystemManagement: FC<Props> = (props) => {
               options={selectTeamData}
               value={selectTeamId || null}
               className={cx("select-system-item")}
-              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              notFoundContent={selectAgencyId || branchId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
               loading={loading.isSelectTeam}
             />
           }

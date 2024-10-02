@@ -82,7 +82,7 @@ const ManagementLayout: React.FC = () => {
       if (role && hasRole([ROLE.GROUP], role)) {
         setCurrent('member-separated')
       }
-      setCurrent('member')
+      else setCurrent('member')
     }
     else if (location.pathname.includes('/advertisement-account')) {
       setHeaderName('Quản lí tài khoản quảng cáo')

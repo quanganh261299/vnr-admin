@@ -29,6 +29,7 @@ const StatisticManagement: FC<Props> = (props) => {
   const [highestEmployeeResultData, setHighestEmployeeResultData] = useState<TBarChartData>({ x: [], y: [] })
   const [totalCostPerResultData, setTotalCostPerResultData] = useState<TBarChartData>({ x: [], y: [] })
   const [totalResultCampaignData, setTotalResultCampaignData] = useState<TBarChartData>({ x: [], y: [] })
+  const [totalCostOfMaterialsData, setTotalCostOfMaterialsData] = useState<TBarChartData>({ x: [], y: [] })
   const [title, setTitle] = useState<string>('Thống kê tổng tiền chi tiêu cho Facebook cá nhân')
   const [barChartType, setBarChartType] = useState<number>(1)
   const [selectSystemData, setSelectSystemData] = useState<SelectType[]>([])
@@ -202,7 +203,7 @@ const StatisticManagement: FC<Props> = (props) => {
     ]
   };
 
-  const spendingThresholdLeft = {
+  const totalCostOfMaterials = {
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -215,7 +216,7 @@ const StatisticManagement: FC<Props> = (props) => {
     xAxis: [
       {
         type: 'category',
-        data: ['Test', 'Tue2', 'Wed2', 'Thu2', 'Fri2', 'Sat2', 'Sun2', 'r12'],
+        data: totalCostOfMaterialsData?.x?.length ? totalCostOfMaterialsData.x : [],
         axisTick: {
           alignWithLabel: true
         }
@@ -223,14 +224,14 @@ const StatisticManagement: FC<Props> = (props) => {
     ],
     yAxis: [
       {
-        name: 'Budget (million USD)',
+        name: 'VND',
         type: 'value'
       }
     ],
     series: [
       {
         type: 'bar',
-        data: [1321, 5212, 2200, 3234, 3190, 1330, 220]
+        data: totalCostOfMaterialsData?.y?.length ? totalCostOfMaterialsData.y.map((item) => convertStringToRoundNumber(item)) : []
       }
     ]
   };
@@ -266,8 +267,8 @@ const StatisticManagement: FC<Props> = (props) => {
       }
       case 5: {
         setBarChartType(5)
-        setOptionBarChart(spendingThresholdLeft)
-        setTitle('Thống kê ngưỡng chi tiêu còn lại')
+        setOptionBarChart(totalCostOfMaterials)
+        setTitle('Thống kê tổng tiền mua nguyên liệu')
         break;
       }
     }
@@ -392,6 +393,19 @@ const StatisticManagement: FC<Props> = (props) => {
           setTotalResultCampaignData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
         })
+        break;
+      }
+      case 5: {
+        statisticApi.getTotalResultCampaign({
+          start: `${startTime}T01:00:00`,
+          end: `${endTime}T23:59:59`,
+          organizationId: selectSystemId || organizationId || '',
+          branchId: selectAgencyId || branchId || '',
+          groupId: selectTeamId || groupId || ''
+        }).then((res) => {
+          setTotalCostOfMaterialsData(res.data.data.data)
+          setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
+        })
       }
     }
   }, [startTime, endTime, selectSystemId, selectAgencyId, selectTeamId, barChartType, organizationId, branchId, groupId])
@@ -402,8 +416,9 @@ const StatisticManagement: FC<Props> = (props) => {
       case 2: return setOptionBarChart(highestResultEmployee);
       case 3: return setOptionBarChart(totalCostPerResult)
       case 4: return setOptionBarChart(totalResultCampaign);
+      case 5: return setOptionBarChart(totalCostOfMaterials);
     }
-  }, [totalAmountSpentData, highestEmployeeResultData, totalResultCampaignData, totalCostPerResultData, barChartType]);
+  }, [totalAmountSpentData, highestEmployeeResultData, totalResultCampaignData, totalCostPerResultData, totalCostOfMaterialsData, barChartType]);
 
   return (
     <>

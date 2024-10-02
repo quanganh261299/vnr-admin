@@ -17,6 +17,12 @@
     vertical-align: middle;
 }
 
+.horizontal-center-cell {
+    display: table-cell;
+    text-align: center;
+    padding: 0 !important;
+}
+
 .select-system-item {
     min-width: 200px;
     margin-right: 10px;
