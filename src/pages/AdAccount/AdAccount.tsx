@@ -494,8 +494,8 @@ const AdAccount: FC<Props> = (props) => {
         setLoading({ ...loading, isTable: false })
       }
     }).catch((err) => {
-      error(err.response.data.message)
       setLoading({ ...loading, isTable: false })
+      error(err.response.data.message || err.response.message)
     })
   }, [currentPage, isCallbackApi, isDeleted, selectSystemId, selectAgencyId, selectTeamId, selectMemberId, organizationId, branchId, groupId])
 

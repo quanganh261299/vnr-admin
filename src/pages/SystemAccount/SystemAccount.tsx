@@ -177,7 +177,7 @@ const SystemAccount: FC<Props> = (props) => {
         }))
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelect: false }))
-    })
+    }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isSelect: false })))
   }, [])
 
   useEffect(() => {

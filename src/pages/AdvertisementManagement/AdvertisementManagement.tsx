@@ -196,7 +196,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
         }))
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
-    })
+    }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false })))
     if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({
         ...prevLoading,

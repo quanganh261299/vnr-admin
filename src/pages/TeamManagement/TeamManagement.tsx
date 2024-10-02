@@ -247,7 +247,7 @@ const TeamManagement: FC<Props> = (props) => {
         }))
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
-    })
+    }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false })))
     if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
       branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {

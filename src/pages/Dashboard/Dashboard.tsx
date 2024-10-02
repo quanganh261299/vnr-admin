@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [highestEmployeeResultData, setHighestEmployeeResultData] = useState<TBarChartData>({ x: [], y: [] })
   const [totalCostPerResultData, setTotalCostPerResultData] = useState<TBarChartData>({ x: [], y: [] })
   const [totalResultCampaignData, setTotalResultCampaignData] = useState<TBarChartData>({ x: [], y: [] })
+  const [totalCostOfMaterialsData, setTotalCostOfMaterialsData] = useState<TBarChartData>({ x: [], y: [] })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [totalAmountSpentChart, setTotalAmountSpentChart] = useState<any>({})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +24,8 @@ const Dashboard = () => {
   const [totalCostPerResultChart, setTotalCostPerResultChart] = useState<any>({})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [totalResultCampaignChart, setTotalResultCampaignChart] = useState<any>({})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [totalCostOfMaterialsChart, setTotalCostOfMaterialsChart] = useState<any>({})
   const [loading, setLoading] = useState({
     isPieChart: false
   })
@@ -75,8 +78,9 @@ const Dashboard = () => {
       setHighestEmployeeResultData(highestEmployeeResultRes.data.data.data)
       setTotalCostPerResultData(totalCostPerResultRest.data.data)
       setTotalResultCampaignData(totalResultCampaignRes.data.data.data)
+      setTotalCostOfMaterialsData(totalAmountSpentRes.data.data.data)
       setLoading((prevLoading) => ({ ...prevLoading, isPieChart: false }))
-    }))
+    })).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isPieChart: false })))
   }, [startTime, endTime])
 
   useEffect(() => {
@@ -100,6 +104,9 @@ const Dashboard = () => {
             name: 'VND',
             type: 'pie',
             radius: '50%',
+            label: {
+              fontFamily: 'sans-serif'
+            },
             data: totalAmountSpentData.x.map((item, index) => ({
               value: totalAmountSpentData.y[index],
               name: item,
@@ -115,7 +122,7 @@ const Dashboard = () => {
         ]
       })
     }
-    if (totalAmountSpentChart) {
+    if (highestEmployeeResultData) {
       setHighestEmployeeResultChart({
         title: {
           text: 'Thống kê kết quả tin nhắn',
@@ -135,6 +142,9 @@ const Dashboard = () => {
             name: 'Kết quả',
             type: 'pie',
             radius: '50%',
+            label: {
+              fontFamily: 'sans-serif'
+            },
             data: highestEmployeeResultData.x.map((item, index) => ({
               value: highestEmployeeResultData.y[index],
               name: item,
@@ -170,8 +180,49 @@ const Dashboard = () => {
             name: 'VND',
             type: 'pie',
             radius: '50%',
+            label: {
+              fontFamily: 'sans-serif'
+            },
             data: totalCostPerResultData.x.map((item, index) => ({
               value: totalCostPerResultData.y[index],
+              name: item,
+            })),
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              }
+            },
+          }
+        ]
+      })
+    }
+    if (totalResultCampaignData) {
+      setTotalResultCampaignChart({
+        title: {
+          text: 'Thống kê tổng số lượng chiến dịch',
+          left: 'center',
+          textStyle: {
+            fontFamily: 'sans-serif'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          textStyle: {
+            fontFamily: 'sans-serif'
+          }
+        },
+        series: [
+          {
+            name: 'Chiến dịch',
+            type: 'pie',
+            radius: '50%',
+            label: {
+              fontFamily: 'sans-serif'
+            },
+            data: totalResultCampaignData.x.map((item, index) => ({
+              value: totalResultCampaignData.y[index],
               name: item,
             })),
             emphasis: {
@@ -185,40 +236,45 @@ const Dashboard = () => {
         ]
       })
     }
-    setTotalResultCampaignChart({
-      title: {
-        text: 'Thống kê tổng số lượng chiến dịch',
-        left: 'center',
-        textStyle: {
-          fontFamily: 'sans-serif'
-        }
-      },
-      tooltip: {
-        trigger: 'item',
-        textStyle: {
-          fontFamily: 'sans-serif'
-        }
-      },
-      series: [
-        {
-          name: 'Chiến dịch',
-          type: 'pie',
-          radius: '50%',
-          data: totalResultCampaignData.x.map((item, index) => ({
-            value: totalResultCampaignData.y[index],
-            name: item,
-          })),
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
+    if (totalCostOfMaterialsData) {
+      setTotalCostOfMaterialsChart({
+        title: {
+          text: 'Thống kê tổng số tiền mua nguyên liệu',
+          left: 'center',
+          textStyle: {
+            fontFamily: 'sans-serif'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          textStyle: {
+            fontFamily: 'sans-serif'
+          }
+        },
+        series: [
+          {
+            name: 'VND',
+            type: 'pie',
+            radius: '50%',
+            label: {
+              fontFamily: 'sans-serif'
+            },
+            data: totalCostOfMaterialsData.x.map((item, index) => ({
+              value: totalCostOfMaterialsData.y[index],
+              name: item,
+            })),
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
             }
           }
-        }
-      ]
-    })
-  }, [highestEmployeeResultData, totalAmountSpentData, totalCostPerResultData, totalResultCampaignData])
+        ]
+      })
+    }
+  }, [highestEmployeeResultData, totalAmountSpentData, totalCostPerResultData, totalResultCampaignData, totalCostOfMaterialsData])
 
   return (
     <>
@@ -255,6 +311,12 @@ const Dashboard = () => {
         <div className={cx('item')}>
           <ReactECharts
             option={totalResultCampaignChart}
+            style={{ height: '100%', width: '100%' }}
+          />
+        </div>
+        <div className={cx('item')}>
+          <ReactECharts
+            option={totalCostOfMaterialsChart}
             style={{ height: '100%', width: '100%' }}
           />
         </div>
