@@ -308,7 +308,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
               className={cx("select-system-item")}
               loading={loading.isSelectAgency}
               value={selectAgencyId || null}
-              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
             />
           }
           {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
@@ -322,7 +322,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
               className={cx("select-system-item")}
               loading={loading.isSelectTeam}
               value={selectTeamId || null}
-              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              notFoundContent={selectAgencyId || branchId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
             />
           }
           <Select

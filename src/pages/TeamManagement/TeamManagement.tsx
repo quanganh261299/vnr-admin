@@ -328,7 +328,7 @@ const TeamManagement: FC<Props> = (props) => {
               onChange={onChangeAgency}
               options={selectAgencyData}
               className={cx("select-system-item")}
-              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
               value={selectAgencyId || null}
             />

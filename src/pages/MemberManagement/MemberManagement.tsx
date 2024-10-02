@@ -385,7 +385,7 @@ const MemberManagement: FC<Props> = (props) => {
               options={selectAgencyData}
               value={selectAgencyId || null}
               className={cx("select-system-item")}
-              notFoundContent={selectSystemId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
               loading={loading.isSelectAgency}
             />
           }
@@ -400,7 +400,7 @@ const MemberManagement: FC<Props> = (props) => {
               options={selectTeamData}
               value={selectTeamId || null}
               className={cx("select-system-item")}
-              notFoundContent={selectAgencyId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              notFoundContent={selectAgencyId || branchId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
               loading={loading.isSelectTeam}
             />
           }
