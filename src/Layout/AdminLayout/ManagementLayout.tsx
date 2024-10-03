@@ -27,6 +27,7 @@ import avatar from '../../assets/images/avatar.png'
 import { clearAuthStatus } from '../../helper/authStatus';
 import { handleDisplay, hasRole, ROLE } from '../../helper/const';
 import { useTranslation } from 'react-i18next';
+import { EPath } from '../../routes/routesConfig';
 
 const { Header, Sider, Content } = Layout;
 
@@ -41,7 +42,7 @@ const ManagementLayout: React.FC = () => {
 
   const Logout = () => {
     clearAuthStatus()
-    window.location.href = '/login'
+    window.location.href = EPath.loginPage
   }
 
   const dropDownItems: MenuProps['items'] = [
@@ -57,50 +58,50 @@ const ManagementLayout: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (location.pathname === '/') {
+    if (location.pathname === EPath.dashboard) {
       setHeaderName('Dashboard')
       setCurrent('dashboard')
     }
-    else if (location.pathname.includes('/system')) {
+    else if (location.pathname.includes(EPath.systemManagement)) {
       setHeaderName('Quản lí hệ thống')
       setCurrent('system')
     }
-    else if (location.pathname.includes('/account')) {
+    else if (location.pathname.includes(EPath.systemAccount)) {
       setHeaderName('Tài khoản hệ thống')
       setCurrent('account')
     }
-    else if (location.pathname.includes('/agency')) {
+    else if (location.pathname.includes(EPath.agencyManagement)) {
       setHeaderName('Quản lí chi nhánh')
       setCurrent('agency')
     }
-    else if (location.pathname.includes('/team')) {
+    else if (location.pathname.includes(EPath.teamManagement)) {
       setHeaderName('Quản lí đội nhóm')
       setCurrent('team')
     }
-    else if (location.pathname.includes('/member')) {
+    else if (location.pathname.includes(EPath.memberManagement)) {
       setHeaderName('Quản lí thành viên')
       if (role && hasRole([ROLE.GROUP], role)) {
         setCurrent('member-separated')
       }
       else setCurrent('member')
     }
-    else if (location.pathname.includes('/advertisement-account')) {
+    else if (location.pathname.includes(EPath.advertisementManagement)) {
       setHeaderName('Quản lí tài khoản quảng cáo')
       setCurrent('advertisement-account')
     }
-    else if (location.pathname.includes('/ad-account') && location.search.includes('isDeleted=true')) {
+    else if (location.pathname.includes(EPath.adAccount) && location.search.includes('isDeleted=true')) {
       setHeaderName('Tài khoản quảng cáo đã xóa')
       setCurrent('ad-account-deleted')
     }
-    else if (location.pathname.includes('/ad-account')) {
+    else if (location.pathname.includes(EPath.adAccount)) {
       setHeaderName('Tài khoản quảng cáo')
       setCurrent('ad-account')
     }
-    else if (location.pathname.includes('/bm-account')) {
+    else if (location.pathname.includes(EPath.bmAccount)) {
       setHeaderName('Tài khoản BM')
       setCurrent('bm-account')
     }
-    else if (location.pathname.includes('/statistic')) {
+    else if (location.pathname.includes(EPath.statistic)) {
       setHeaderName('Thống kê')
       setCurrent('statistic')
     }
@@ -123,7 +124,7 @@ const ManagementLayout: React.FC = () => {
             {
               key: 'dashboard',
               icon: <DashboardOutlined />,
-              label: <Link to='/'>Dashboard</Link>,
+              label: <Link to={EPath.dashboard}>Dashboard</Link>,
               style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
             },
             {
@@ -135,69 +136,69 @@ const ManagementLayout: React.FC = () => {
                 {
                   key: 'system',
                   icon: <SettingOutlined />,
-                  label: <Link to='/system'>Quản lí hệ thống</Link>,
+                  label: <Link to={EPath.systemManagement}>Quản lí hệ thống</Link>,
                   style: { display: handleDisplay([ROLE.ADMIN], String(role)) }
                 },
                 {
                   key: 'agency',
                   icon: <ApartmentOutlined />,
-                  label: <Link to='/agency'>Quản lí chi nhánh</Link>,
+                  label: <Link to={EPath.agencyManagement}>Quản lí chi nhánh</Link>,
                   style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION], String(role)) }
                 },
                 {
                   key: 'team',
                   icon: <TeamOutlined />,
-                  label: <Link to='/team'>Quản lí đội nhóm</Link>,
+                  label: <Link to={EPath.teamManagement}>Quản lí đội nhóm</Link>,
                   style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) }
                 },
                 {
                   key: 'member',
                   icon: <UserOutlined />,
-                  label: <Link to='/member'>Quản lí thành viên</Link>,
+                  label: <Link to={EPath.memberManagement}>Quản lí thành viên</Link>,
                 },
               ]
             },
             {
               key: 'member-separated',
               icon: <UserOutlined />,
-              label: <Link to='/member'>Quản lí thành viên</Link>,
+              label: <Link to={EPath.memberManagement}>Quản lí thành viên</Link>,
               style: { display: handleDisplay([ROLE.GROUP], String(role)) }
             },
             {
               key: 'advertisement-account',
               icon: <DollarOutlined />,
-              label: <Link to='/advertisement-account'>Quản lí tài khoản quảng cáo</Link>,
+              label: <Link to={EPath.advertisementManagement}>Quản lí tài khoản quảng cáo</Link>,
             },
             {
               key: 'account',
               icon: <CrownOutlined />,
-              label: <Link to='/account'>Tài khoản hệ thống</Link>,
+              label: <Link to={EPath.systemAccount}>Tài khoản hệ thống</Link>,
               style: { display: handleDisplay([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role)) }
             },
             {
               key: 'ad-account',
               icon: <TagOutlined />,
-              label: <Link to='/ad-account'>Tài khoản quảng cáo</Link>,
+              label: <Link to={EPath.adAccount}>Tài khoản quảng cáo</Link>,
             },
             {
               key: 'ad-account-deleted',
               icon: <TagOutlined />,
-              label: <Link to='/ad-account?isDeleted=true'>Tài khoản quảng cáo đã xóa</Link>,
+              label: <Link to={EPath.deletedAdAccount}>Tài khoản quảng cáo đã xóa</Link>,
             },
             {
               key: 'statistic',
               icon: <BarChartOutlined />,
-              label: <Link to='/statistic'>Thống kê</Link>
+              label: <Link to={EPath.statistic}>Thống kê</Link>
             },
             {
               key: 'bm-account',
               icon: <IdcardOutlined />,
-              label: <Link to='/bm-account'>Tài khoản BM</Link>,
+              label: <Link to={EPath.bmAccount}>Tài khoản BM</Link>,
             },
             {
               key: 'login-bm',
               icon: <LoginOutlined />,
-              label: <div onClick={() => window.open('/loginBM')}>Login tài khoản BM</div>,
+              label: <div onClick={() => window.open(EPath.loginBmPage)}>Login tài khoản BM</div>,
             },
           ]}
         />

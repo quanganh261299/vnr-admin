@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { EPath } from "./routesConfig";
 
 type ProtectedRouteProps = {
   layout?: React.ElementType;
@@ -28,7 +29,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       </>
     )
   ) : (
-    <Navigate to={'/login'} replace={true} />
+    <Navigate to={EPath.loginPage} replace={true} />
   );
 };
 

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { EMAIL_REGEX, handleHomePageLink } from '../../helper/const';
 import { LoginType } from '../../models/common';
 import authApi from '../../api/authApi';
+import { EPath } from '../../routes/routesConfig';
 
 const Login = () => {
   const cx = classNames.bind(styles)
@@ -89,7 +90,7 @@ const Login = () => {
                 Đăng nhập
               </Button>
               <span>hoặc</span>
-              <Link onClick={() => navigate('/loginBM')}>Đăng nhập tài khoản BM</Link>
+              <Link onClick={() => navigate(EPath.loginBmPage)}>Đăng nhập tài khoản BM</Link>
             </div>
           </Form.Item>
         </Form>

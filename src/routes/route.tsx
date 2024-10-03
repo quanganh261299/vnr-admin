@@ -20,6 +20,7 @@ import BmHomePage from "../pages/BmHomepage/BmHomePage";
 import StatisticManagement from "../pages/StatisticManagement/StatisticManagement";
 import { hasRole, ROLE } from "../helper/const";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import { EPath } from "./routesConfig";
 
 const role = localStorage.getItem('role')
 const organizationId = localStorage.getItem('organizationId') || null
@@ -27,15 +28,15 @@ const branchId = localStorage.getItem('branchId') || null
 const groupId = localStorage.getItem('groupId') || null
 export const route = [
   {
-    path: "/login",
+    path: EPath.loginPage,
     element: <Login />,
   },
   {
-    path: '/loginBM',
+    path: EPath.loginBmPage,
     element: <LoginBM />
   },
   {
-    path: "/",
+    path: EPath.dashboard,
     element:
       <ProtectedRoute
         isAllowed={getAuthStatus()}
@@ -50,11 +51,11 @@ export const route = [
         element: role && hasRole([ROLE.ADMIN], role) ? <Dashboard /> : <ErrorPage />
       },
       {
-        path: '/system',
+        path: EPath.systemManagement,
         element: role && hasRole([ROLE.ADMIN], role) ? <SystemManagement /> : <ErrorPage />
       },
       {
-        path: '/agency',
+        path: EPath.agencyManagement,
         element:
           role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], role)
             ?
@@ -66,7 +67,7 @@ export const route = [
             <ErrorPage />
       },
       {
-        path: '/team',
+        path: EPath.teamManagement,
         element:
           role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
             ?
@@ -79,7 +80,7 @@ export const route = [
             <ErrorPage />
       },
       {
-        path: '/member',
+        path: EPath.memberManagement,
         element:
           role
             && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH, ROLE.GROUP], role)
@@ -94,7 +95,7 @@ export const route = [
             <ErrorPage />
       },
       {
-        path: '/advertisement-account',
+        path: EPath.advertisementManagement,
         element:
           <AdvertisementManagement
             role={role}
@@ -104,19 +105,19 @@ export const route = [
           />,
       },
       {
-        path: '/advertisement-account/:accountId/campaigns',
+        path: EPath.campaignManagement,
         element: <CampaignsManagment />
       },
       {
-        path: '/advertisement-account/:accountId/campaigns/:campaignId/adsets',
+        path: EPath.adSetManagement,
         element: <AdSetManagement />
       },
       {
-        path: '/advertisement-account/:accountId/campaigns/:campaignId/adsets/:adsetsId/ad',
+        path: EPath.adManagement,
         element: <AdManagement />
       },
       {
-        path: '/account',
+        path: EPath.systemAccount,
         element:
           role
             && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role)
@@ -130,7 +131,7 @@ export const route = [
             <ErrorPage />
       },
       {
-        path: '/ad-account',
+        path: EPath.adAccount,
         element:
           <AdAccount
             role={role}
@@ -140,7 +141,7 @@ export const route = [
           />
       },
       {
-        path: '/ad-account?isDeleted=true',
+        path: EPath.deletedAdAccount,
         element:
           <AdAccount
             role={role}
@@ -150,7 +151,7 @@ export const route = [
           />
       },
       {
-        path: '/bm-account',
+        path: EPath.bmAccount,
         element:
           <BmAccount
             role={role}
@@ -160,7 +161,7 @@ export const route = [
           />
       },
       {
-        path: '/statistic',
+        path: EPath.statistic,
         element:
           <StatisticManagement
             role={role}
@@ -172,7 +173,7 @@ export const route = [
     ]
   },
   {
-    path: "/bm-homepage",
+    path: EPath.bmHomePage,
     element: <ProtectedRoute isAllowed={getAuthFbStatus()} layout={BMLayout} roles={['bm']} userRole="bm" />,
     errorElement: <ErrorPage />,
     children: [

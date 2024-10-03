@@ -8,6 +8,7 @@ import { FacebookOutlined, RollbackOutlined } from '@ant-design/icons';
 import loginImg from '../../assets/images/login.png'
 import { getAuthFbStatus, storeAuthFBStatus } from '../../helper/authStatus';
 import { useEffect, useState } from 'react';
+import { EPath } from '../../routes/routesConfig';
 
 const LoginBM = () => {
   const cx = classNames.bind(styles)
@@ -29,7 +30,7 @@ const LoginBM = () => {
 
   useEffect(() => {
     if (getAuthFbStatus()) {
-      navigate('/bm-homepage', { replace: true })
+      navigate(EPath.loginBmPage, { replace: true })
     }
   }, [localStorage.getItem('BmToken')])
 
@@ -40,7 +41,7 @@ const LoginBM = () => {
         <img src={loginImg} alt='login' className={cx("login-logo")} />
         <div className={cx('btn-group')}>
           <Button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate(EPath.loginPage)}
             size='large'
             icon={<RollbackOutlined />}
           >
@@ -63,7 +64,7 @@ const LoginBM = () => {
             authApi.loginFB(response.accessToken).then((res) => {
               storeAuthFBStatus(res.data.data.accessToken)
               setIsLoading(false)
-              window.location.href = '/bm-homepage'
+              window.location.href = EPath.bmHomePage
             })
               .catch((err) => {
                 setIsLoading(false)

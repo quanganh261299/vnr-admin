@@ -313,7 +313,7 @@ const StatisticManagement: FC<Props> = (props) => {
         }))
       )
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false }))
-    })
+    }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false })))
     if (selectSystemId || organizationId) {
       setLoading((prevLoading) => ({ ...prevLoading, isSelectSystem: false, isSelectAgency: true }))
       branchApi.getListBranch({ organizationId: selectSystemId || organizationId || '' }).then((res) => {
@@ -353,7 +353,7 @@ const StatisticManagement: FC<Props> = (props) => {
         }).then((res) => {
           setTotalAmountSpentData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-        })
+        }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false })))
         break;
       }
       case 2: {
@@ -366,7 +366,7 @@ const StatisticManagement: FC<Props> = (props) => {
         }).then((res) => {
           setHighestEmployeeResultData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-        })
+        }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false })))
         break;
       }
       case 3: {
@@ -379,7 +379,7 @@ const StatisticManagement: FC<Props> = (props) => {
         }).then((res) => {
           setTotalCostPerResultData(res.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-        })
+        }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false })))
         break;
       }
       case 4: {
@@ -392,20 +392,20 @@ const StatisticManagement: FC<Props> = (props) => {
         }).then((res) => {
           setTotalResultCampaignData(res.data.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-        })
+        }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false })))
         break;
       }
       case 5: {
-        statisticApi.getTotalResultCampaign({
+        statisticApi.getTotalCostMaterial({
           start: `${startTime}T01:00:00`,
           end: `${endTime}T23:59:59`,
           organizationId: selectSystemId || organizationId || '',
           branchId: selectAgencyId || branchId || '',
           groupId: selectTeamId || groupId || ''
         }).then((res) => {
-          setTotalCostOfMaterialsData(res.data.data.data)
+          setTotalCostOfMaterialsData(res.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
-        })
+        }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false })))
       }
     }
   }, [startTime, endTime, selectSystemId, selectAgencyId, selectTeamId, barChartType, organizationId, branchId, groupId])

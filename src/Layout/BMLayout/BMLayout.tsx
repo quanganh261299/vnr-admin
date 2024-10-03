@@ -5,6 +5,7 @@ import classNames from "classnames/bind";
 import BmApi from "../../api/BmApi";
 import { formatDateYMD } from "../../helper/const";
 import { useEffect } from "react";
+import { EPath } from "../../routes/routesConfig";
 
 const BMLayout: React.FC = () => {
   const { Header, Footer, Content } = Layout;
@@ -56,7 +57,7 @@ const BMLayout: React.FC = () => {
         localStorage.removeItem('BmToken')
         localStorage.removeItem('isBM')
         localStorage.removeItem('profileFacebook')
-        navigate('/loginBM')
+        navigate(EPath.loginBmPage)
       })
   }, 2 * 60 * 1000)
 

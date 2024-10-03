@@ -41,6 +41,16 @@ const statisticApi = {
         const url = "Dashboard/campaign";
         return axiosInstance.get(url, { params });
     },
+    getTotalCostMaterial: (params: {
+        start: string;
+        end: string;
+        organizationId?: string;
+        branchId?: string;
+        groupId?: string;
+    }) => {
+        const url = "Dashboard/costMaterial";
+        return axiosInstance.get(url, { params });
+    },
 };
 
 export default statisticApi;

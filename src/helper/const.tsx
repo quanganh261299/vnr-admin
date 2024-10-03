@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppstoreAddOutlined, BankOutlined, CloseCircleOutlined, CreditCardOutlined, DollarOutlined, GiftOutlined, PayCircleOutlined, PushpinOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
+import { EPath } from "../routes/routesConfig";
 
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@.*$/;
 
@@ -254,11 +255,11 @@ export const hasRole = (roles: string[], role: string) => {
 
 export const handleHomePageLink = (role: string) => {
     switch (role) {
-        case ROLE.ADMIN: return '/'
-        case ROLE.ORGANIZATION: return '/agency'
-        case ROLE.BRANCH: return '/team'
-        case ROLE.GROUP: return '/member'
-        default: return '/'
+        case ROLE.ADMIN: return EPath.dashboard
+        case ROLE.ORGANIZATION: return EPath.agencyManagement
+        case ROLE.BRANCH: return EPath.teamManagement
+        case ROLE.GROUP: return EPath.memberManagement
+        default: return EPath.dashboard
     }
 }
 

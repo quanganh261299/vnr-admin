@@ -8,6 +8,7 @@ import classNames from "classnames/bind"
 import logo from '../../assets/images/logo.png'
 import { formatDateYMD } from "../../helper/const"
 import dayjs, { Dayjs } from "dayjs"
+import { EPath } from "../../routes/routesConfig"
 
 const BmHomePage: React.FC = () => {
   const cx = classNames.bind(styles)
@@ -37,7 +38,7 @@ const BmHomePage: React.FC = () => {
   const Logout = () => {
     localStorage.removeItem('isBM')
     localStorage.removeItem('BmToken')
-    navigate('/loginBM')
+    navigate(EPath.loginBmPage)
   }
 
   const onChangeStart = (date: Dayjs | null) => {
