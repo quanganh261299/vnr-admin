@@ -72,13 +72,17 @@ const Dashboard = () => {
       statisticApi.getTotalResultCampaign({
         start: `${startTime}T01:00:00`,
         end: `${endTime}T23:59:59`,
+      }),
+      statisticApi.getTotalCostMaterial({
+        start: `${startTime}T01:00:00`,
+        end: `${endTime}T23:59:59`,
       })
-    ]).then(axios.spread((totalAmountSpentRes, highestEmployeeResultRes, totalCostPerResultRest, totalResultCampaignRes) => {
+    ]).then(axios.spread((totalAmountSpentRes, highestEmployeeResultRes, totalCostPerResultRest, totalResultCampaignRes, totalCostMaterialRes) => {
       setTotalAmountSpentData(totalAmountSpentRes.data.data.data)
       setHighestEmployeeResultData(highestEmployeeResultRes.data.data.data)
       setTotalCostPerResultData(totalCostPerResultRest.data.data)
       setTotalResultCampaignData(totalResultCampaignRes.data.data.data)
-      setTotalCostOfMaterialsData(totalAmountSpentRes.data.data.data)
+      setTotalCostOfMaterialsData(totalCostMaterialRes.data.data)
       setLoading((prevLoading) => ({ ...prevLoading, isPieChart: false }))
     })).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isPieChart: false })))
   }, [startTime, endTime])

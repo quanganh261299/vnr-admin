@@ -396,14 +396,14 @@ const StatisticManagement: FC<Props> = (props) => {
         break;
       }
       case 5: {
-        statisticApi.getTotalResultCampaign({
+        statisticApi.getTotalCostMaterial({
           start: `${startTime}T01:00:00`,
           end: `${endTime}T23:59:59`,
           organizationId: selectSystemId || organizationId || '',
           branchId: selectAgencyId || branchId || '',
           groupId: selectTeamId || groupId || ''
         }).then((res) => {
-          setTotalCostOfMaterialsData(res.data.data.data)
+          setTotalCostOfMaterialsData(res.data.data)
           setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false }))
         }).catch(() => setLoading((prevLoading) => ({ ...prevLoading, isBarChart: false })))
       }
