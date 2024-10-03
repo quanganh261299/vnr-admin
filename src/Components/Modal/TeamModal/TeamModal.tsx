@@ -178,7 +178,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
             showSearch
             placeholder="Chọn chi nhánh"
             options={selectAgencyDataModal}
-            notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+            notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước'}
             loading={isLoadingSelectAgency}
             disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
           />

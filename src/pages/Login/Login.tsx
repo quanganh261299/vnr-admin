@@ -61,11 +61,11 @@ const Login = () => {
             rules={[
               {
                 required: true,
-                message: 'Không được để email trống!'
+                message: 'Không được để email trống'
               },
               {
                 pattern: EMAIL_REGEX,
-                message: 'Email không hợp lệ!'
+                message: 'Email không hợp lệ'
               }
             ]}
           >
@@ -78,7 +78,7 @@ const Login = () => {
             rules={[
               {
                 required: true,
-                message: 'Không được để password trống!'
+                message: 'Không được để password trống'
               },
             ]}
           >

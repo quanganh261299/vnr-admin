@@ -308,7 +308,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
               className={cx("select-system-item")}
               loading={loading.isSelectAgency}
               value={selectAgencyId || null}
-              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemId || organizationId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước'}
             />
           }
           {role && hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], role) &&
@@ -322,7 +322,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
               className={cx("select-system-item")}
               loading={loading.isSelectTeam}
               value={selectTeamId || null}
-              notFoundContent={selectAgencyId || branchId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+              notFoundContent={selectAgencyId || branchId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước'}
             />
           }
           <Select
@@ -335,7 +335,7 @@ const AdvertisementManagement: FC<Props> = (props) => {
             className={cx("select-system-item")}
             loading={loading.isSelectMember}
             value={selectMemberId || null}
-            notFoundContent={selectTeamId || groupId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            notFoundContent={selectTeamId || groupId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước'}
           />
         </div>
         <Table
