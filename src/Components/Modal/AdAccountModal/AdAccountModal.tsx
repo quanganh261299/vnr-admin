@@ -286,7 +286,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
           <Form.Item
             label="Chọn hệ thống"
             name="organizationId"
-            rules={[{ required: true, message: 'Bạn phải chọn hệ thống!' }]}
+            rules={[{ required: true, message: 'Bạn phải chọn hệ thống' }]}
             className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
@@ -303,7 +303,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
           <Form.Item
             label="Chọn chi nhánh"
             name="branchId"
-            rules={[{ required: true, message: 'Bạn phải chọn chi nhánh!' }]}
+            rules={[{ required: true, message: 'Bạn phải chọn chi nhánh' }]}
             className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
@@ -312,7 +312,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
               placeholder="Chọn chi nhánh"
               options={selectAgencyDataModal}
               onClear={clearSelectAgencyModalId}
-              notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước'}
               loading={loading.isSelectAgency}
               disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
 
@@ -322,7 +322,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         <Form.Item
           label="Chọn đội nhóm"
           name="groupId"
-          rules={[{ required: true, message: 'Bạn phải chọn đội nhóm!' }]}
+          rules={[{ required: true, message: 'Bạn phải chọn đội nhóm' }]}
           className={"custom-margin-form"}
         >
           <Select
@@ -330,7 +330,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
             showSearch
             placeholder="Chọn đội nhóm"
             options={selectTeamDataModal}
-            notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước!'}
+            notFoundContent={selectAgencyModalId ? 'Không có dữ liệu' : 'Bạn cần chọn chi nhánh trước'}
             loading={loading.isSelectTeam}
             onClear={clearSelectTeamModalId}
             disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))}
@@ -339,7 +339,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         <Form.Item
           label="Chọn thành viên"
           name="employeeId"
-          rules={[{ required: true, message: 'Bạn phải chọn thành viên!' }]}
+          rules={[{ required: true, message: 'Bạn phải chọn thành viên' }]}
           className={"custom-margin-form"}
         >
           <Select
@@ -347,14 +347,14 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
             showSearch
             placeholder="Chọn thành viên"
             options={selectMemberDataModal}
-            notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước'}
             loading={loading.isSelectMember}
           />
         </Form.Item>
         <Form.Item
           label="Chọn BM"
           name="pms"
-          rules={[{ required: true, message: 'Bạn phải chọn ít nhất một id BM!' }]}
+          rules={[{ required: true, message: 'Bạn phải chọn ít nhất một id BM' }]}
           className={"custom-margin-form"}
         >
           <Select
@@ -363,7 +363,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
             showSearch
             placeholder="Chọn ít nhất một id BM"
             options={selectBmDataModal}
-            notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước!'}
+            notFoundContent={selectTeamModalId ? 'Không có dữ liệu' : 'Bạn cần chọn đội nhóm trước'}
             loading={loading.isSelectBM}
           />
         </Form.Item>

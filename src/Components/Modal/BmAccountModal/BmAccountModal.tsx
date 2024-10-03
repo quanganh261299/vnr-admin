@@ -170,7 +170,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           <Form.Item
             label="Chọn hệ thống"
             name="organizationId"
-            rules={[{ required: true, message: 'Bạn phải chọn hệ thống!' }]}
+            rules={[{ required: true, message: 'Bạn phải chọn hệ thống' }]}
             className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
@@ -186,7 +186,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
           <Form.Item
             label="Chọn chi nhánh"
             name="branchId"
-            rules={[{ required: true, message: 'Bạn phải chọn chi nhánh!' }]}
+            rules={[{ required: true, message: 'Bạn phải chọn chi nhánh' }]}
             className={cx("custom-select-form", "custom-margin-form")}
           >
             <Select
@@ -195,7 +195,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
               placeholder="Chọn chi nhánh"
               options={selectAgencyDataModal}
               onClear={clearSelectAgencyModalId}
-              notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước!'}
+              notFoundContent={selectSystemModalId ? 'Không có dữ liệu' : 'Bạn cần chọn hệ thống trước'}
               loading={loading.isSelectAgency}
               disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION], String(role))}
             />
@@ -204,7 +204,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         <Form.Item
           label="Chọn đội nhóm"
           name="groupId"
-          rules={[{ required: true, message: 'Bạn phải chọn đội nhóm!' }]}
+          rules={[{ required: true, message: 'Bạn phải chọn đội nhóm' }]}
           className={"custom-margin-form"}
         >
           <Select
@@ -212,7 +212,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
             showSearch
             placeholder="Chọn đội nhóm"
             options={selectTeamDataModal}
-            notFoundContent={selectAgencyModalId ? 'Không có dữ liệu ' : 'Bạn cần chọn chi nhánh trước!'}
+            notFoundContent={selectAgencyModalId ? 'Không có dữ liệu ' : 'Bạn cần chọn chi nhánh trước'}
             loading={loading.isSelectTeam}
             disabled={!hasRole([ROLE.ADMIN, ROLE.ORGANIZATION, ROLE.BRANCH], String(role))}
           />
