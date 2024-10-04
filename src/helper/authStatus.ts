@@ -1,8 +1,14 @@
 import { ROLE } from "./const";
 
-export const clearAuthStatus = () => {
-    localStorage.clear();
+export const clearAuthStatusAdmin = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
 };
+
+export const clearAuthStatusBm = () => {
+    localStorage.removeItem('tokenBm');
+    localStorage.removeItem('profileFacebook')
+}
 
 export const storeAuthStatus = (
     token: string,
@@ -31,7 +37,6 @@ export const storeAuthStatus = (
 };
 
 export const storeAuthFBStatus = (token: string) => {
-    localStorage.setItem("isBM", "true");
     localStorage.setItem("BmToken", token);
 };
 
