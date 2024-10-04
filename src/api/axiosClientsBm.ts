@@ -1,5 +1,5 @@
 import axios from "axios";
-import { clearAuthStatus } from "../helper/authStatus";
+import { clearAuthStatusBm } from "../helper/authStatus";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const axiosBmInstance = axios.create({
@@ -28,7 +28,7 @@ axiosBmInstance.interceptors.response.use(
     },
     (error) => {
         if (error.response.status === 401) {
-            clearAuthStatus();
+            clearAuthStatusBm();
             window.location.href = "/loginBM";
         }
         return Promise.reject(error);

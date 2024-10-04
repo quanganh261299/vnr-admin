@@ -60,6 +60,9 @@ const StatisticManagement: FC<Props> = (props) => {
       trigger: 'axis',
       axisPointer: {
         type: 'shadow'
+      },
+      textStyle: {
+        fontFamily: "sans-serif"
       }
     },
     legend: {
@@ -71,6 +74,9 @@ const StatisticManagement: FC<Props> = (props) => {
         data: totalAmountSpentData?.x?.length ? totalAmountSpentData.x : [],
         axisTick: {
           alignWithLabel: true
+        },
+        axisLabel: {
+          fontFamily: "sans-serif" 
         }
       }
     ],
@@ -97,6 +103,9 @@ const StatisticManagement: FC<Props> = (props) => {
       trigger: 'axis',
       axisPointer: {
         type: 'shadow'
+      },
+      textStyle: {
+        fontFamily: "sans-serif"
       }
     },
     legend: {
@@ -108,6 +117,9 @@ const StatisticManagement: FC<Props> = (props) => {
         data: highestEmployeeResultData?.x?.length ? highestEmployeeResultData.x : [],
         axisTick: {
           alignWithLabel: true
+        },
+        axisLabel: {
+          fontFamily: "sans-serif" 
         }
       }
     ],
@@ -134,6 +146,9 @@ const StatisticManagement: FC<Props> = (props) => {
       trigger: 'axis',
       axisPointer: {
         type: 'shadow'
+      },
+      textStyle: {
+        fontFamily: "sans-serif"
       }
     },
     legend: {
@@ -145,6 +160,9 @@ const StatisticManagement: FC<Props> = (props) => {
         data: totalCostPerResultData?.x?.length ? totalCostPerResultData.x : [],
         axisTick: {
           alignWithLabel: true
+        },
+        axisLabel: {
+          fontFamily: "sans-serif" 
         }
       }
     ],
@@ -171,6 +189,9 @@ const StatisticManagement: FC<Props> = (props) => {
       trigger: 'axis',
       axisPointer: {
         type: 'shadow'
+      },
+      textStyle: {
+        fontFamily: "sans-serif"
       }
     },
     legend: {
@@ -182,6 +203,9 @@ const StatisticManagement: FC<Props> = (props) => {
         data: totalResultCampaignData?.x?.length ? totalResultCampaignData.x : [],
         axisTick: {
           alignWithLabel: true
+        },
+        axisLabel: {
+          fontFamily: "sans-serif" 
         }
       }
     ],
@@ -219,6 +243,9 @@ const StatisticManagement: FC<Props> = (props) => {
         data: totalCostOfMaterialsData?.x?.length ? totalCostOfMaterialsData.x : [],
         axisTick: {
           alignWithLabel: true
+        },
+        axisLabel: {
+          fontFamily: "sans-serif" 
         }
       }
     ],

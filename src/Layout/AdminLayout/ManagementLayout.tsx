@@ -24,7 +24,7 @@ import classNames from 'classnames/bind';
 import { Footer } from 'antd/es/layout/layout';
 import logo from '../../assets/images/logo.png'
 import avatar from '../../assets/images/avatar.png'
-import { clearAuthStatus } from '../../helper/authStatus';
+import { clearAuthStatusAdmin } from '../../helper/authStatus';
 import { handleDisplay, hasRole, ROLE } from '../../helper/const';
 import { useTranslation } from 'react-i18next';
 import { EPath } from '../../routes/routesConfig';
@@ -41,7 +41,7 @@ const ManagementLayout: React.FC = () => {
   const { t } = useTranslation()
 
   const Logout = () => {
-    clearAuthStatus()
+    clearAuthStatusAdmin();
     window.location.href = EPath.loginPage
   }
 

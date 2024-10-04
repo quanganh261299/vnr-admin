@@ -1,5 +1,5 @@
 import { Button, DatePicker, Flex, message, Spin } from "antd"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import BmApi from "../../api/BmApi"
 import { useNavigate } from "react-router-dom"
 import { FacebookFilled, LogoutOutlined } from "@ant-design/icons"
@@ -9,6 +9,7 @@ import logo from '../../assets/images/logo.png'
 import { formatDateYMD } from "../../helper/const"
 import dayjs, { Dayjs } from "dayjs"
 import { EPath } from "../../routes/routesConfig"
+import { clearAuthStatusBm, getAuthFbStatus } from "../../helper/authStatus"
 
 const BmHomePage: React.FC = () => {
   const cx = classNames.bind(styles)
@@ -36,8 +37,7 @@ const BmHomePage: React.FC = () => {
   }
 
   const Logout = () => {
-    localStorage.removeItem('isBM')
-    localStorage.removeItem('BmToken')
+    clearAuthStatusBm();
     navigate(EPath.loginBmPage)
   }
 
@@ -70,6 +70,12 @@ const BmHomePage: React.FC = () => {
       content: message,
     });
   };
+
+  useEffect(() => {
+    if(getAuthFbStatus()) {
+      window.location.href = EPath.loginBmPage
+    }
+  }, [localStorage.getItem('BmToken')])
 
   return (
     <>
