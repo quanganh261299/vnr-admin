@@ -3,7 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import styles from './style.module.scss'
 import { DatePicker, Spin } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
-import { formatDateYMD } from '../../helper/const';
+import { convertStringToRoundNumber, formatDateYMD } from '../../helper/const';
 import { useEffect, useState } from 'react';
 import { TBarChartData } from '../../models/statistic/statistic';
 import axios from 'axios';
@@ -112,7 +112,7 @@ const Dashboard = () => {
               fontFamily: 'sans-serif'
             },
             data: totalAmountSpentData.x.map((item, index) => ({
-              value: totalAmountSpentData.y[index],
+              value: convertStringToRoundNumber(totalAmountSpentData.y[index]),
               name: item,
             })),
             emphasis: {
@@ -150,7 +150,7 @@ const Dashboard = () => {
               fontFamily: 'sans-serif'
             },
             data: highestEmployeeResultData.x.map((item, index) => ({
-              value: highestEmployeeResultData.y[index],
+              value: convertStringToRoundNumber(highestEmployeeResultData.y[index]),
               name: item,
             })),
             emphasis: {
@@ -188,7 +188,7 @@ const Dashboard = () => {
               fontFamily: 'sans-serif'
             },
             data: totalCostPerResultData.x.map((item, index) => ({
-              value: totalCostPerResultData.y[index],
+              value: convertStringToRoundNumber(totalCostPerResultData.y[index]),
               name: item,
             })),
             emphasis: {
@@ -226,7 +226,7 @@ const Dashboard = () => {
               fontFamily: 'sans-serif'
             },
             data: totalResultCampaignData.x.map((item, index) => ({
-              value: totalResultCampaignData.y[index],
+              value: convertStringToRoundNumber(totalResultCampaignData.y[index]),
               name: item,
             })),
             emphasis: {
@@ -264,7 +264,7 @@ const Dashboard = () => {
               fontFamily: 'sans-serif'
             },
             data: totalCostOfMaterialsData.x.map((item, index) => ({
-              value: totalCostOfMaterialsData.y[index],
+              value: convertStringToRoundNumber(totalCostOfMaterialsData.y[index]),
               name: item,
             })),
             emphasis: {
