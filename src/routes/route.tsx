@@ -3,7 +3,7 @@ import AdSetManagement from "../pages/AdSetManagement/AdSetManagement";
 import AdvertisementManagement from "../pages/AdvertisementManagement/AdvertisementManagement";
 import AgencyManagement from "../pages/AgencyManagement/AgencyManagement";
 import CampaignsManagment from "../pages/CampaignsManagement/CampaignsManagement";
-import ErrorPage from "../Components/Error/ErrorPage";
+import ErrorPage from "../components/Error/ErrorPage";
 import Login from "../pages/Login/Login";
 import MemberManagement from "../pages/MemberManagement/MemberManagement";
 import SystemManagement from "../pages/SystemManagement/SystemManagement";
