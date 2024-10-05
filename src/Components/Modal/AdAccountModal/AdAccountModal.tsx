@@ -386,7 +386,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         <Form.Item
           label="Nguồn tài khoản"
           name="sourceAccount"
-          rules={[{ required: true, message: 'Không được để trống loại tài khoản' }]}
+          rules={[{ required: true, message: 'Không được để trống nguồn tài khoản' }]}
           className={cx("custom-margin-form")}
         >
           <Input />
