@@ -47,5 +47,6 @@ export const getAuthStatus = () => {
 
 export const getAuthFbStatus = () => {
     const auth = localStorage.getItem("BmToken");
+    console.log(auth)
     return !!auth;
 };

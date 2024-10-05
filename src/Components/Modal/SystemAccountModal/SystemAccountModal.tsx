@@ -167,6 +167,7 @@ const SystemAccountModal = forwardRef<{ submit: () => void; reset: () => void },
       onCancel={handleCancel}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
+      maskClosable={false}
     >
       <Form
         form={form}

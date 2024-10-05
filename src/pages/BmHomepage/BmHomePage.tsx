@@ -72,8 +72,8 @@ const BmHomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if(getAuthFbStatus()) {
-      window.location.href = EPath.loginBmPage
+    if (!getAuthFbStatus()) {
+        window.location.href = EPath.loginBmPage
     }
   }, [localStorage.getItem('BmToken')])
 

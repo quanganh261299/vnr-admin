@@ -120,6 +120,7 @@ const TeamModal = forwardRef<{ submit: () => void; reset: () => void; saveReset:
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
+      maskClosable={false}
       centered
       footer={(
         <Flex gap={"small"} justify="flex-end">

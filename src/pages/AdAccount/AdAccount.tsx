@@ -387,6 +387,7 @@ const AdAccount: FC<Props> = (props) => {
             </div>
           ),
           closable: true,
+          maskClosable: false,
           centered: true,
         });
       })
