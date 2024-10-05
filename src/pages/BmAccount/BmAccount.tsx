@@ -110,7 +110,7 @@ const SystemManagement: FC<Props> = (props) => {
         id: dataRecord?.id,
         email: values.email,
         groupId: values.groupId,
-        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost) })),
+        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost.toString().replace(/\./g, '')) })),
         chatId: values.chatId,
         tokenTelegram: values.tokenTelegram
       }
@@ -128,7 +128,7 @@ const SystemManagement: FC<Props> = (props) => {
       const data = {
         email: values.email,
         groupId: values.groupId,
-        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost) })),
+        bms: values.bms.map((item) => ({ ...item, cost: convertStringToRoundNumber(item.cost.toString().replace(/\./g, '')) })),
         chatId: values.chatId,
         tokenTelegram: values.tokenTelegram
       }

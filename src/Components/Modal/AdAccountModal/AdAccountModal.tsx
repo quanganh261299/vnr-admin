@@ -229,7 +229,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
         id: editingData?.accountId,
         typeAccount: editingData?.typeAccount,
         sourceAccount: editingData?.sourceAccount,
-        cost: editingData?.cost,
+        cost: editingData?.cost?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
         informationLogin: editingData?.informationLogin
       });
     } else {
@@ -406,7 +406,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
           name="cost"
           rules={[{ required: true, message: 'Không được để trống giá tiền' }]}
           className={cx("custom-margin-form")}
-          getValueFromEvent={(event) => handleNumber(event)}
+          getValueFromEvent={(event) => handleNumber(event).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
         >
           <Input />
         </Form.Item>

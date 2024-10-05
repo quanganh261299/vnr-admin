@@ -6,6 +6,7 @@ import BmApi from "../../api/BmApi";
 import { formatDateYMD } from "../../helper/const";
 import { useEffect } from "react";
 import { EPath } from "../../routes/routesConfig";
+import { clearAuthStatusBm } from "../../helper/authStatus";
 
 const BMLayout: React.FC = () => {
   const { Header, Footer, Content } = Layout;
@@ -17,7 +18,7 @@ const BMLayout: React.FC = () => {
   const yesterday = new Date(currentDate);
   yesterday.setDate(currentDate.getDate() - 1);
 
-
+  // Kéo data facebook
   const fetchData = async () => {
     if (token) {
       console.log('Kéo dữ liệu Facebook ...')
@@ -31,6 +32,7 @@ const BMLayout: React.FC = () => {
     }
   };
 
+  // Set thời gian kéo data facebook
   const scheduleNextFetch = () => {
     const now = new Date();
     const targetHour = 10;
@@ -50,13 +52,12 @@ const BMLayout: React.FC = () => {
     }, delay);
   };
 
+  // Set khoảng thời gian để check token facebook
   setInterval(() => {
     BmApi.checkAccount().then(() => console.log('Check account thành công!'))
       .catch(() => {
         console.log('Check account thất bại!')
-        localStorage.removeItem('BmToken')
-        localStorage.removeItem('isBM')
-        localStorage.removeItem('profileFacebook')
+        clearAuthStatusBm()
         navigate(EPath.loginBmPage)
       })
   }, 2 * 60 * 1000)

@@ -213,7 +213,7 @@ const AdAccount: FC<Props> = (props) => {
         : values.pms,
       typeAccount: values.typeAccount,
       sourceAccount: values.sourceAccount,
-      cost: convertStringToRoundNumber(values.cost || ''),
+      cost: convertStringToRoundNumber(values.cost?.replace(/\./g, '') || ''),
       informationLogin: values.informationLogin
     }
 
