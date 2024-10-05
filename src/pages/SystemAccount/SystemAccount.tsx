@@ -6,9 +6,9 @@ import type { FormProps, TableProps } from 'antd';
 import { TSystemUser, TUser, TUserOption } from '../../models/user/user';
 import userApi from '../../api/userApi';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import SystemAccountModal from '../../components/Modal/SystemAccountModal/SystemAccountModal';
+import SystemAccountModal from '../../Components/Modal/SystemAccountModal/SystemAccountModal';
 import { SelectType } from '../../models/common';
-import DeleteModal from '../../components/Modal/DeleteModal/DeleteModal';
+import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { DEFAULT_PAGE_SIZE, hasRole, ROLE } from '../../helper/const';
 import { useTranslation } from 'react-i18next';
 
