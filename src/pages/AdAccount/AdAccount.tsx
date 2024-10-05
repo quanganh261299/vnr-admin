@@ -7,10 +7,10 @@ import { DeleteOutlined, EditOutlined, FileExcelOutlined, PlusOutlined, UndoOutl
 import { TAdvertisementField } from '../../models/advertisement/advertisement';
 import advertisementApi from '../../api/advertisementApi';
 import { TAdUserTable } from '../../models/user/user';
-import AdAccountModal from '../../components/Modal/AdAccountModal/AdAccountModal';
+import AdAccountModal from '../../Components/Modal/AdAccountModal/AdAccountModal';
 import { useSearchParams } from 'react-router-dom';
-import ConfirmModal from '../../components/Modal/ConfirmModal/ConfirmModal';
-import DeleteModal from '../../components/Modal/DeleteModal/DeleteModal';
+import ConfirmModal from '../../Components/Modal/ConfirmModal/ConfirmModal';
+import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
 import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatNumberWithCommasNotZero, hasRole, ROLE } from '../../helper/const';
 import { UploadChangeParam } from 'antd/es/upload';
 import { SelectType } from '../../models/common';
