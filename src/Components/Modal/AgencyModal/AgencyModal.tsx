@@ -67,6 +67,7 @@ const AgencyModal = forwardRef<{ submit: () => void; reset: () => void; organiza
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
+      maskClosable={false}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
     >
