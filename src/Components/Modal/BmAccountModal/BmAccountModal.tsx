@@ -153,6 +153,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
+      maskClosable={false}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
       style={{ maxHeight: '520px', overflowY: 'auto' }}

@@ -261,6 +261,7 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
       centered
       onCancel={handleCancel}
       style={{ maxHeight: '520px', overflowY: 'auto' }}
+      maskClosable={false}
       footer={(
         <Flex gap={"small"} justify="flex-end">
           <Button onClick={handleCancel}>Cancel</Button>

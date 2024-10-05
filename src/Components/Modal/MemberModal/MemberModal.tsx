@@ -170,6 +170,7 @@ const MemberModal = forwardRef<{
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
+      maskClosable={false}
       centered
       footer={(
         <Flex gap={"small"} justify="flex-end">

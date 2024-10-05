@@ -24,6 +24,7 @@ const DeleteModal: FC<Props> = (props: Props) => {
         okButtonProps={{ danger: true, loading: isLoadingBtn }}
         onOk={handleOk}
         onCancel={handleCancel}
+        maskClosable={false}
       >
         <p>{description}</p>
       </Modal>

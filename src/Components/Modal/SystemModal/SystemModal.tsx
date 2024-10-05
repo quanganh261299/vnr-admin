@@ -43,6 +43,7 @@ const SystemModal = forwardRef<{ submit: () => void; reset: () => void }, Props>
       onCancel={handleCancel}
       centered
       okButtonProps={{ loading: isLoadingBtn }}
+      maskClosable={false}
     >
       <Form
         form={form}

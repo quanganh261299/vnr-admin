@@ -30,7 +30,7 @@ const LoginBM = () => {
 
   useEffect(() => {
     if (getAuthFbStatus()) {
-      navigate(EPath.loginBmPage, { replace: true })
+        window.location.href = EPath.bmHomePage
     }
   }, [localStorage.getItem('BmToken')])
 

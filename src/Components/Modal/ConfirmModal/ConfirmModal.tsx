@@ -24,6 +24,7 @@ const ConfirmModal: FC<Props> = (props: Props) => {
         okButtonProps={{ loading: isLoadingBtn }}
         onOk={handleOk}
         onCancel={handleCancel}
+        maskClosable={false}
       >
         <p>{description}</p>
       </Modal>
