@@ -73,6 +73,15 @@ const AdAccountModal = forwardRef<{ submit: () => void; reset: () => void; saveR
     reset: () => {
       form.resetFields();
     },
+    organizationReset: () => {
+      form.resetFields(['employeeId', 'branchId', 'groupId', 'pms', 'id', 'typeAccount', 'sourceAccount', 'cost', 'informationLogin'])
+    },
+    branchReset: () => {
+      form.resetFields(['employeeId', 'groupId', 'pms', 'id', 'typeAccount', 'sourceAccount', 'cost', 'informationLogin']);
+    },
+    groupReset: () => {
+      form.resetFields(['employeeId', 'pms', 'id', 'typeAccount', 'sourceAccount', 'cost', 'informationLogin']);
+    },
     saveReset: () => {
       form.resetFields(['id', 'typeAccount', 'sourceAccount', 'cost', 'informationLogin']);
     }
