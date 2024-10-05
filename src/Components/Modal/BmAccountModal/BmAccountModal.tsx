@@ -9,7 +9,7 @@ import { TAgencyTable } from "../../../models/agency/agency";
 import branchApi from "../../../api/branchApi";
 import styles from './style.module.scss'
 import classNames from "classnames/bind";
-import { EMAIL_REGEX, hasRole, ROLE } from "../../../helper/const";
+import { EMAIL_REGEX, handleNumber, hasRole, ROLE } from "../../../helper/const";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 
@@ -87,6 +87,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
 
   useEffect(() => {
     if (editingData) {
+      console.log('edit', editingData)
       setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
       setSelectAgencyModalId(editingData?.group?.branch.id as string)
       form.setFieldsValue({
@@ -94,7 +95,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
         branchId: editingData.group?.branch.id,
         groupId: editingData.group.id,
         email: editingData.email,
-        bms: editingData.pms.map((item) => ({ ...item, bmId: item.id, cost: (item.cost || '').toString() })),
+        bms: editingData.pms.map((item) => ({ ...item, bmId: item.id, cost: (item.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || '').toString() })),
         chatId: editingData.chatId,
       });
     } else {
@@ -272,6 +273,7 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
                       name={[field.name, 'cost']}
                       key={`cost-${field.key}`}
                       rules={[{ required: true, whitespace: true, message: 'Không được để trống giá tiền' }]}
+                      getValueFromEvent={(event) => handleNumber(event).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                       className={cx('custom-margin-form')}
                     >
                       <Input />

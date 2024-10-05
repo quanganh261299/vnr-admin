@@ -2,6 +2,8 @@ export const EPath = {
     loginPage: "/login",
     loginBmPage: "/loginBM",
     dashboard: "/",
+
+    // System Management
     systemManagement: "/system",
     agencyManagement: "/agency",
     teamManagement: "/team",
