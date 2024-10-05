@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import { Button, message, Select, Space, Table, Tag, Tooltip } from 'antd';
 import type { FormProps, TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import DeleteModal from '../../Components/Modal/DeleteModal/DeleteModal';
+import DeleteModal from '../../components/Modal/DeleteModal/DeleteModal';
 import userApi from '../../api/userApi';
 import { TBmList, TBmUser, TBmUserField } from '../../models/user/user';
 import { SelectType } from '../../models/common';
@@ -14,7 +14,7 @@ import branchApi from '../../api/branchApi';
 import { TAgencyTable } from '../../models/agency/agency';
 import { TSystemTable } from '../../models/system/system';
 import organizationApi from '../../api/organizationApi';
-import BmAccountModal from '../../Components/Modal/BmAccountModal/BmAccountModal';
+import BmAccountModal from '../../components/Modal/BmAccountModal/BmAccountModal';
 import { convertStringToRoundNumber, DEFAULT_PAGE_SIZE, formatNumberWithCommas, hasRole, ROLE } from '../../helper/const';
 
 interface Props {
