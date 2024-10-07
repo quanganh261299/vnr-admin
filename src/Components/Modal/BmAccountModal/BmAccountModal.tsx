@@ -87,7 +87,6 @@ const BmAccountModal = forwardRef<{ submit: () => void; reset: () => void }, Pro
 
   useEffect(() => {
     if (editingData) {
-      console.log('edit', editingData)
       setSelectSystemModalId(editingData?.group?.branch.organization.id as string)
       setSelectAgencyModalId(editingData?.group?.branch.id as string)
       form.setFieldsValue({
